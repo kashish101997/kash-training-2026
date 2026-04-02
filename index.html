@@ -1370,7 +1370,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <div class="metric-label">Body Composition</div>
-                            <div class="metric-value" id="weight-value">94.5<span style="font-size: 0.875rem; font-weight: 500; color: var(--text-secondary)"> kg</span></div>
+                            <div class="metric-value" id="weight-value">93.5<span style="font-size: 0.875rem; font-weight: 500; color: var(--text-secondary)"> kg</span></div>
                             <div class="metric-sub">Target: 85&ndash;87 kg by Apr 26</div>
                             <div class="bf-display" id="bodyfat-display" style="display:none;"></div>
                         </div>
@@ -1435,8 +1435,42 @@
                 <!-- Populated dynamically by renderWeeklyScheduleGrid() -->
             </div>
 
-            <!-- Recent Achievement -->
-            <div class="card-glass animate-in delay-4" style="margin-bottom: 28px; border-left: 3px solid var(--color-running);">
+            <!-- Health Alerts -->
+            <div class="card-glass animate-in delay-4" style="margin-bottom: 28px; border-left: 3px solid var(--color-race);">
+                <div class="flex items-center gap-sm" style="margin-bottom: 10px;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--color-race)" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v7M8 11v1"/><circle cx="8" cy="8" r="7"/></svg>
+                    <span class="text-sm font-bold uppercase" style="letter-spacing: 0.08em; color: var(--color-race);">Health Alerts</span>
+                    <span class="text-xs text-tertiary" style="margin-left:auto;">Blood Work — Apr 1, 2026</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                    <div style="padding:8px 12px;border-radius:8px;background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.2);">
+                        <span class="text-xs text-tertiary">HbA1c</span>
+                        <div class="text-sm font-bold" style="color:var(--color-race);">6.0% <span class="text-xs" style="font-weight:400;">PRE-DIABETIC</span></div>
+                    </div>
+                    <div style="padding:8px 12px;border-radius:8px;background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.2);">
+                        <span class="text-xs text-tertiary">Fasting Glucose</span>
+                        <div class="text-sm font-bold" style="color:var(--color-race);">115 mg/dL <span class="text-xs" style="font-weight:400;">HIGH</span></div>
+                    </div>
+                    <div style="padding:8px 12px;border-radius:8px;background:rgba(255,107,44,0.08);border:1px solid rgba(255,107,44,0.2);">
+                        <span class="text-xs text-tertiary">SGPT/ALT (Liver)</span>
+                        <div class="text-sm font-bold" style="color:var(--color-strength);">55 U/L <span class="text-xs" style="font-weight:400;">ELEVATED</span></div>
+                    </div>
+                    <div style="padding:8px 12px;border-radius:8px;background:rgba(255,107,44,0.08);border:1px solid rgba(255,107,44,0.2);">
+                        <span class="text-xs text-tertiary">CRP (Inflammation)</span>
+                        <div class="text-sm font-bold" style="color:var(--color-strength);">4.0 mg/L <span class="text-xs" style="font-weight:400;">ELEVATED</span></div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span class="pill pill-sm" style="background:rgba(57,255,20,0.1);color:var(--color-running);border:1px solid rgba(57,255,20,0.2);">Testosterone 458 ↑↑↑</span>
+                    <span class="pill pill-sm" style="background:rgba(57,255,20,0.1);color:var(--color-running);border:1px solid rgba(57,255,20,0.2);">B12 776 ✓</span>
+                    <span class="pill pill-sm" style="background:rgba(57,255,20,0.1);color:var(--color-running);border:1px solid rgba(57,255,20,0.2);">Thyroid Normal ✓</span>
+                    <span class="pill pill-sm" style="background:rgba(57,255,20,0.1);color:var(--color-running);border:1px solid rgba(57,255,20,0.2);">Lipids Good ✓</span>
+                </div>
+                <p class="text-xs text-tertiary" style="margin-top:10px;">Priority: Fix blood sugar (stop OMAD → 3 meals/day), reduce inflammation, post-meal walks, Zone 2 cardio</p>
+            </div>
+
+            <!-- Recent Achievements -->
+            <div class="card-glass animate-in delay-4" style="margin-bottom: 12px; border-left: 3px solid var(--color-running);">
                 <div class="flex items-center gap-sm" style="margin-bottom: 6px;">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--color-running)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="8,1 10,6 15,6.5 11.5,10 12.5,15 8,12.5 3.5,15 4.5,10 1,6.5 6,6"/>
@@ -1445,6 +1479,14 @@
                 </div>
                 <p class="text-base font-semibold" style="margin-bottom: 2px;">Juhu Half Marathon &mdash; 2:41:00</p>
                 <p class="text-sm text-secondary">Mar 1, 2026 &middot; 11 min personal best!</p>
+            </div>
+            <div class="card-glass animate-in delay-4" style="margin-bottom: 28px; border-left: 3px solid var(--color-strength);">
+                <div class="flex items-center gap-sm" style="margin-bottom: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--color-strength)" stroke-width="1.5" stroke-linecap="round"><path d="M3 13l4-6 3 4 3-8"/></svg>
+                    <span class="text-sm font-bold uppercase" style="letter-spacing: 0.08em; color: var(--color-strength);">5K Comeback</span>
+                </div>
+                <p class="text-base font-semibold" style="margin-bottom: 2px;">5K Test Run &mdash; 35:40 (7:08/km avg)</p>
+                <p class="text-sm text-secondary">Apr 1, 2026 &middot; First run post-shin rehab. No pain! Splits: 6:00, 6:30, 7:45, 7:06, 8:14</p>
             </div>
 
             <!-- Quick Actions -->
@@ -1917,18 +1959,18 @@
             </div>
 
             <!-- Diet Phase Indicator -->
-            <div class="card-glass" id="diet-phase-card" style="margin-bottom: 24px; border-left: 3px solid var(--color-running);">
+            <div class="card-glass" id="diet-phase-card" style="margin-bottom: 24px; border-left: 3px solid var(--color-race);">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-active" id="diet-phase-label">POST-OMAD PHASE</span>
+                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);border:1px solid rgba(255,45,85,0.3);" id="diet-phase-label">BLOOD SUGAR CONTROL PHASE</span>
                 </div>
-                <p class="text-sm text-secondary" id="diet-phase-desc">2 meals + 1 snack per day. Target: 2,200–2,400 kcal | Protein: 150–170g | Carbs: 180–220g | Fat: 55–65g</p>
+                <p class="text-sm text-secondary" id="diet-phase-desc">3 meals + 1 snack per day. OMAD stopped — caused glucose spike (86→115). Every meal: protein + fiber + healthy fat. Post-meal walks mandatory.</p>
             </div>
 
             <!-- Daily Targets -->
             <div class="grid-4" style="margin-bottom: 28px;">
                 <div class="metric-card accent-green">
                     <div class="metric-label">Calories</div>
-                    <div class="metric-value text-green">2,300</div>
+                    <div class="metric-value text-green">2,100</div>
                     <div class="metric-sub">kcal/day target</div>
                 </div>
                 <div class="metric-card accent-cyan">
@@ -1938,142 +1980,229 @@
                 </div>
                 <div class="metric-card accent-orange">
                     <div class="metric-label">Carbs</div>
-                    <div class="metric-value text-orange">200g</div>
-                    <div class="metric-sub">fuel for training</div>
+                    <div class="metric-value text-orange">170g</div>
+                    <div class="metric-sub">low-GI focus</div>
                 </div>
                 <div class="metric-card" style="border-top: 2px solid #a78bfa;">
                     <div class="metric-label">Fat</div>
-                    <div class="metric-value" style="color: #a78bfa;">60g</div>
-                    <div class="metric-sub">healthy fats focus</div>
+                    <div class="metric-value" style="color: #a78bfa;">65g</div>
+                    <div class="metric-sub">HDL-boosting fats</div>
                 </div>
             </div>
 
             <!-- Meal Plan Content -->
             <div id="diet-plan-content">
-                <!-- MEAL 1 -->
-                <div class="section-header"><span class="section-title">Meal 1 — Post-Workout (7:30–8:30 AM) ~700 kcal</span></div>
+
+                <!-- Blood Sugar Management -->
+                <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 24px;">
+                    <h4 style="color: var(--color-race); margin-bottom: 8px;">Blood Sugar Rules (HbA1c 6.0%, Glucose 115)</h4>
+                    <div class="grid-2" style="gap:12px;">
+                        <ul class="meal-list">
+                            <li><strong>Every meal:</strong> protein + fiber + healthy fat (slows glucose)</li>
+                            <li><strong>No refined carbs:</strong> white rice → brown rice/quinoa</li>
+                            <li><strong>Cinnamon:</strong> ½ tsp/day in oats or tea (insulin sensitivity)</li>
+                            <li><strong>ACV:</strong> 1 tbsp in water before lunch &amp; dinner</li>
+                        </ul>
+                        <ul class="meal-list">
+                            <li><strong>Post-meal walk:</strong> 10-15 min after dinner (mandatory)</li>
+                            <li><strong>Methi seeds:</strong> 1 tsp soaked overnight, drink morning water</li>
+                            <li><strong>Carb timing:</strong> More carbs AM (around training), fewer PM</li>
+                            <li><strong>Post-run:</strong> Eat within 30-60 min (don't fast after exercise)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- MEAL 1 — Breakfast -->
+                <div class="section-header"><span class="section-title">Meal 1 — Breakfast / Post-Workout (7:30–8:30 AM) ~550 kcal</span></div>
                 <div class="grid-2" style="margin-bottom: 24px;">
                     <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option A: Egg Omelette</h4>
+                        <h4 class="text-green" style="margin-bottom: 8px;">Option A: Egg Omelette + Toast</h4>
                         <ul class="meal-list">
-                            <li>3 egg omelette with onion, tomato, spinach</li>
-                            <li>2 whole wheat toast with butter</li>
-                            <li>1 banana</li>
-                            <li>Black coffee</li>
+                            <li>3 egg omelette with spinach, onion, tomato</li>
+                            <li>2 whole wheat toast (no white bread)</li>
+                            <li>½ avocado or 1 tbsp peanut butter</li>
+                            <li>Black coffee + ½ tsp cinnamon</li>
                         </ul>
-                        <div class="macro-pills"><span class="mp p">P: 28g</span><span class="mp c">C: 65g</span><span class="mp f">F: 22g</span></div>
+                        <div class="macro-pills"><span class="mp p">P: 30g</span><span class="mp c">C: 40g</span><span class="mp f">F: 22g</span></div>
                     </div>
                     <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option B: Poha Power Bowl</h4>
+                        <h4 class="text-green" style="margin-bottom: 8px;">Option B: Oats + Protein</h4>
                         <ul class="meal-list">
-                            <li>Poha with peanuts, potato, curry leaves (1.5 cups)</li>
-                            <li>3 boiled eggs on the side</li>
-                            <li>1 seasonal fruit</li>
-                            <li>Green tea</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 30g</span><span class="mp c">C: 70g</span><span class="mp f">F: 18g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option C: Oats + Protein</h4>
-                        <ul class="meal-list">
-                            <li>Oats (1 cup) cooked in milk with protein scoop</li>
-                            <li>1 banana + handful of almonds</li>
+                            <li>Steel-cut oats (1 cup) with protein scoop + cinnamon</li>
+                            <li>10 almonds + 5 walnuts (HDL boost)</li>
                             <li>1 boiled egg</li>
-                            <li>Coffee</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 38g</span><span class="mp c">C: 68g</span><span class="mp f">F: 16g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option D: Idli Plate</h4>
-                        <ul class="meal-list">
-                            <li>4 idli with sambar and coconut chutney</li>
-                            <li>2 boiled eggs</li>
-                            <li>1 cup curd</li>
-                            <li>Coffee</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 26g</span><span class="mp c">C: 72g</span><span class="mp f">F: 14g</span></div>
-                    </div>
-                </div>
-
-                <!-- SNACK -->
-                <div class="section-header"><span class="section-title">Snack (2:00–3:00 PM) ~300 kcal</span></div>
-                <div class="grid-3" style="margin-bottom: 24px;">
-                    <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 8px;">Popcorn + Protein Shake</h4>
-                        <ul class="meal-list">
-                            <li>Air-popped popcorn (3 cups, ~100 kcal)</li>
-                            <li>Whey protein shake (1 scoop in water)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 27g</span><span class="mp c">C: 22g</span><span class="mp f">F: 4g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 8px;">Chana + Buttermilk</h4>
-                        <ul class="meal-list">
-                            <li>Roasted chana (½ cup)</li>
-                            <li>Masala buttermilk (1 glass)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 14g</span><span class="mp c">C: 30g</span><span class="mp f">F: 6g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 8px;">Sprouts Chaat</h4>
-                        <ul class="meal-list">
-                            <li>Mixed sprouts chaat (1 cup)</li>
                             <li>Green tea</li>
                         </ul>
-                        <div class="macro-pills"><span class="mp p">P: 12g</span><span class="mp c">C: 28g</span><span class="mp f">F: 3g</span></div>
+                        <div class="macro-pills"><span class="mp p">P: 38g</span><span class="mp c">C: 45g</span><span class="mp f">F: 18g</span></div>
+                    </div>
+                    <div class="card">
+                        <h4 class="text-green" style="margin-bottom: 8px;">Option C: Moong Dal Chilla</h4>
+                        <ul class="meal-list">
+                            <li>2 moong dal chilla with paneer stuffing</li>
+                            <li>Mint chutney + curd (½ cup)</li>
+                            <li>1 seasonal fruit (low-GI: apple, guava, pear)</li>
+                            <li>Coffee</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 28g</span><span class="mp c">C: 42g</span><span class="mp f">F: 14g</span></div>
+                    </div>
+                    <div class="card">
+                        <h4 class="text-green" style="margin-bottom: 8px;">Option D: Idli + Sambar</h4>
+                        <ul class="meal-list">
+                            <li>3 idli (not 4 — carb control) with sambar</li>
+                            <li>2 boiled eggs on the side</li>
+                            <li>Coconut chutney (healthy fat)</li>
+                            <li>Coffee</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 24g</span><span class="mp c">C: 48g</span><span class="mp f">F: 12g</span></div>
                     </div>
                 </div>
 
-                <!-- MEAL 2 -->
-                <div class="section-header"><span class="section-title">Meal 2 — Dinner (7:00–8:00 PM) ~1,100–1,200 kcal</span></div>
+                <!-- MEAL 2 — Lunch (NEW) -->
+                <div class="section-header"><span class="section-title">Meal 2 — Lunch (12:30–1:30 PM) ~550 kcal</span></div>
                 <div class="grid-2" style="margin-bottom: 24px;">
                     <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option A: Chicken + Dal + Rice</h4>
+                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option A: Chicken + Dal + Brown Rice</h4>
                         <ul class="meal-list">
-                            <li>Grilled/curry chicken breast (200g)</li>
+                            <li>Grilled chicken breast (150g)</li>
                             <li>Dal (moong/masoor, 1 cup)</li>
-                            <li>Rice (1 cup cooked)</li>
-                            <li>Mixed sabzi (2 cups)</li>
-                            <li>Curd (1 cup)</li>
+                            <li>Brown rice (¾ cup cooked) or quinoa</li>
+                            <li>Mixed sabzi (2 cups) + cucumber raita</li>
                         </ul>
-                        <div class="macro-pills"><span class="mp p">P: 62g</span><span class="mp c">C: 85g</span><span class="mp f">F: 18g</span></div>
+                        <div class="macro-pills"><span class="mp p">P: 45g</span><span class="mp c">C: 50g</span><span class="mp f">F: 12g</span></div>
                     </div>
                     <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option B: Paneer Tikka + Roti</h4>
+                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option B: Paneer + Roti + Salad</h4>
                         <ul class="meal-list">
-                            <li>Paneer tikka (150g paneer)</li>
-                            <li>2 whole wheat roti</li>
-                            <li>Dal (1 cup)</li>
-                            <li>Salad + curd</li>
+                            <li>Paneer bhurji (120g paneer) with veggies</li>
+                            <li>2 multigrain roti</li>
+                            <li>Big green salad with lemon + olive oil</li>
+                            <li>Buttermilk (1 glass)</li>
                         </ul>
-                        <div class="macro-pills"><span class="mp p">P: 42g</span><span class="mp c">C: 78g</span><span class="mp f">F: 28g</span></div>
+                        <div class="macro-pills"><span class="mp p">P: 32g</span><span class="mp c">C: 48g</span><span class="mp f">F: 20g</span></div>
                     </div>
                     <div class="card">
                         <h4 class="text-cyan" style="margin-bottom: 8px;">Option C: Egg Curry + Rice</h4>
                         <ul class="meal-list">
-                            <li>Egg curry (4 eggs)</li>
-                            <li>Rice (1 cup cooked)</li>
-                            <li>Rajma (½ cup)</li>
-                            <li>Vegetables + curd</li>
+                            <li>Egg curry (3 eggs) with turmeric + black pepper</li>
+                            <li>Brown rice (¾ cup) or 1 multigrain roti</li>
+                            <li>Spinach sabzi (iron + vitamin C from lemon)</li>
+                            <li>Curd (½ cup)</li>
                         </ul>
-                        <div class="macro-pills"><span class="mp p">P: 40g</span><span class="mp c">C: 90g</span><span class="mp f">F: 22g</span></div>
+                        <div class="macro-pills"><span class="mp p">P: 28g</span><span class="mp c">C: 45g</span><span class="mp f">F: 18g</span></div>
                     </div>
                     <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option D: Chicken Keema + Roti</h4>
+                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option D: Rajma + Rice Bowl</h4>
                         <ul class="meal-list">
-                            <li>Chicken keema (200g mince)</li>
-                            <li>2 whole wheat roti</li>
-                            <li>Raita (1 cup)</li>
-                            <li>Mixed sabzi</li>
+                            <li>Rajma (1 cup) — high fiber, low GI</li>
+                            <li>Brown rice (¾ cup cooked)</li>
+                            <li>Onion-tomato salad with lemon</li>
+                            <li>Curd (½ cup)</li>
                         </ul>
-                        <div class="macro-pills"><span class="mp p">P: 58g</span><span class="mp c">C: 68g</span><span class="mp f">F: 22g</span></div>
+                        <div class="macro-pills"><span class="mp p">P: 22g</span><span class="mp c">C: 55g</span><span class="mp f">F: 8g</span></div>
                     </div>
+                </div>
+
+                <!-- SNACK -->
+                <div class="section-header"><span class="section-title">Snack (4:00–5:00 PM) ~250 kcal</span></div>
+                <div class="grid-3" style="margin-bottom: 24px;">
+                    <div class="card">
+                        <h4 class="text-orange" style="margin-bottom: 8px;">Protein Shake + Nuts</h4>
+                        <ul class="meal-list">
+                            <li>Whey protein (1 scoop in water)</li>
+                            <li>10 almonds + 5 walnuts (HDL boost)</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 30g</span><span class="mp c">C: 8g</span><span class="mp f">F: 12g</span></div>
+                    </div>
+                    <div class="card">
+                        <h4 class="text-orange" style="margin-bottom: 8px;">Sprouts + Buttermilk</h4>
+                        <ul class="meal-list">
+                            <li>Mixed sprouts chaat (1 cup) with lemon</li>
+                            <li>Masala buttermilk (1 glass)</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 14g</span><span class="mp c">C: 25g</span><span class="mp f">F: 4g</span></div>
+                    </div>
+                    <div class="card">
+                        <h4 class="text-orange" style="margin-bottom: 8px;">Roasted Chana + Green Tea</h4>
+                        <ul class="meal-list">
+                            <li>Roasted chana (½ cup) — low GI snack</li>
+                            <li>Green tea (hepatoprotective for liver)</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 10g</span><span class="mp c">C: 22g</span><span class="mp f">F: 4g</span></div>
+                    </div>
+                </div>
+
+                <!-- MEAL 3 — Dinner -->
+                <div class="section-header"><span class="section-title">Meal 3 — Dinner (7:00–8:00 PM) ~550 kcal + 10 min walk after</span></div>
+                <div class="grid-2" style="margin-bottom: 24px;">
+                    <div class="card">
+                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option A: Grilled Chicken + Veggies</h4>
+                        <ul class="meal-list">
+                            <li>Grilled chicken (150g) with turmeric + pepper</li>
+                            <li>1 multigrain roti (lower carbs at night)</li>
+                            <li>Sauteed vegetables (2 cups) in olive oil</li>
+                            <li>Dal (½ cup) + small salad</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 45g</span><span class="mp c">C: 35g</span><span class="mp f">F: 16g</span></div>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option B: Paneer Tikka + Salad</h4>
+                        <ul class="meal-list">
+                            <li>Paneer tikka (120g) — grilled, not fried</li>
+                            <li>1 multigrain roti</li>
+                            <li>Big mixed salad with flaxseed dressing</li>
+                            <li>Ginger turmeric tea (anti-inflammatory)</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 30g</span><span class="mp c">C: 30g</span><span class="mp f">F: 22g</span></div>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option C: Egg Bhurji + Roti</h4>
+                        <ul class="meal-list">
+                            <li>Egg bhurji (3 eggs) with onion, tomato, spinach</li>
+                            <li>1 multigrain roti</li>
+                            <li>Cucumber-mint raita (½ cup)</li>
+                            <li>Green tea</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 28g</span><span class="mp c">C: 28g</span><span class="mp f">F: 18g</span></div>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option D: Chicken Keema + Salad</h4>
+                        <ul class="meal-list">
+                            <li>Chicken keema (150g) with peas</li>
+                            <li>1 multigrain roti</li>
+                            <li>Mixed sabzi + raita</li>
+                            <li>Ginger tea</li>
+                        </ul>
+                        <div class="macro-pills"><span class="mp p">P: 42g</span><span class="mp c">C: 30g</span><span class="mp f">F: 14g</span></div>
+                    </div>
+                </div>
+
+                <!-- Supplement Protocol -->
+                <div class="section-header"><span class="section-title">Supplement Protocol</span></div>
+                <div class="card-glass" style="border-left: 3px solid var(--color-cricket); margin-bottom: 24px;">
+                    <div class="grid-2" style="gap:12px;">
+                        <ul class="meal-list">
+                            <li><strong>Vitamin D3:</strong> 5,000 IU/day (current: 35.8, target: 50-70)</li>
+                            <li><strong>Ashwagandha KSM-66:</strong> 600mg/day (testosterone + stress)</li>
+                            <li><strong>Omega-3 (Flaxseed oil):</strong> 1 tbsp/day (HDL + anti-inflammatory)</li>
+                        </ul>
+                        <ul class="meal-list">
+                            <li><strong>Turmeric + Black Pepper:</strong> with lunch &amp; dinner (CRP reduction)</li>
+                            <li><strong>Cinnamon:</strong> ½ tsp/day in oats or tea (insulin sensitivity)</li>
+                            <li><strong>Zinc (pumpkin seeds):</strong> 1 tbsp/day (testosterone support)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Anti-Inflammatory Foods -->
+                <div class="card-glass" style="border-left: 3px solid var(--color-strength); margin-bottom: 24px;">
+                    <h4 style="color: var(--color-strength); margin-bottom: 8px;">Anti-Inflammatory Focus (ESR 14, CRP 4.0)</h4>
+                    <p class="text-sm text-secondary">Daily: turmeric + black pepper in meals, ginger tea (2x), leafy greens, walnuts/flaxseed. Reduce: fried food, excess oil, processed snacks, refined sugar. Green tea 2 cups/day (liver protection). Avoid tea/coffee WITH meals (inhibits iron absorption — 1 hr gap).</p>
                 </div>
 
                 <!-- Hydration -->
                 <div class="card-glass" style="border-left: 3px solid var(--color-info); margin-bottom: 24px;">
-                    <h4 style="color: var(--color-info); margin-bottom: 8px;">💧 Daily Hydration</h4>
-                    <p class="text-sm text-secondary">3–4 litres water daily. Add electrolyte tabs on training days. Black coffee pre-workout. Buttermilk with lunch. Avoid sugary drinks. Mumbai heat demands extra hydration Apr–Jun.</p>
+                    <h4 style="color: var(--color-info); margin-bottom: 8px;">Hydration + Timing</h4>
+                    <p class="text-sm text-secondary">3–4 litres water daily. ACV (1 tbsp in water) before lunch &amp; dinner. Methi water first thing AM. Black coffee pre-workout only. Buttermilk with lunch. Green tea 2x/day. No sugary drinks. Mumbai heat demands extra electrolytes Apr–Jun.</p>
                 </div>
 
                 <!-- Race Week Nutrition -->
@@ -2082,15 +2211,15 @@
                     <div class="grid-3">
                         <div>
                             <h4 class="text-race" style="margin-bottom: 6px;">3 Days Before</h4>
-                            <p class="text-sm text-secondary">Increase carbs to 7–10g/kg body weight. Rice, pasta, bread, potatoes, oats. Extra hydration.</p>
+                            <p class="text-sm text-secondary">Increase carbs to 7–10g/kg. Brown rice, oats, sweet potato, whole grain bread. Extra hydration. Keep blood sugar rules.</p>
                         </div>
                         <div>
                             <h4 class="text-race" style="margin-bottom: 6px;">Night Before</h4>
-                            <p class="text-sm text-secondary">Familiar dinner only. No new foods. No spicy food. Limit alcohol. Early to bed.</p>
+                            <p class="text-sm text-secondary">Familiar dinner only. No new foods. No spicy. Zero alcohol. Early bed. Light carbs + protein.</p>
                         </div>
                         <div>
                             <h4 class="text-race" style="margin-bottom: 6px;">Race Morning</h4>
-                            <p class="text-sm text-secondary">Eat 2.5–3 hrs before. Toast + banana + peanut butter + coffee. Only tested foods.</p>
+                            <p class="text-sm text-secondary">Eat 2.5 hrs before. Oats + banana + peanut butter + coffee. Slow-release carbs for blood sugar stability.</p>
                         </div>
                     </div>
                 </div>
@@ -2111,7 +2240,7 @@
                                 </svg>
                                 <div class="calorie-ring-label">
                                     <span class="calorie-ring-value" id="calorie-total">0</span>
-                                    <span class="calorie-ring-sub">/ 2,300 kcal</span>
+                                    <span class="calorie-ring-sub">/ 2,100 kcal</span>
                                 </div>
                             </div>
                         </div>
@@ -2126,12 +2255,12 @@
                                 <div class="macro-bar-row">
                                     <span class="macro-bar-label">Carbs</span>
                                     <div class="macro-bar-track"><div class="macro-bar-fill" id="carbs-bar" style="width:0%; background: var(--color-strength);"></div></div>
-                                    <span class="macro-bar-value" id="carbs-value">0/200g</span>
+                                    <span class="macro-bar-value" id="carbs-value">0/170g</span>
                                 </div>
                                 <div class="macro-bar-row">
                                     <span class="macro-bar-label">Fat</span>
                                     <div class="macro-bar-track"><div class="macro-bar-fill" id="fat-bar" style="width:0%; background: #a78bfa;"></div></div>
-                                    <span class="macro-bar-value" id="fat-value">0/60g</span>
+                                    <span class="macro-bar-value" id="fat-value">0/65g</span>
                                 </div>
                             </div>
                         </div>
@@ -2163,45 +2292,73 @@
             <div id="diet-shopping-content" style="display:none;">
                 <div class="grid-2" style="margin-bottom: 24px;">
                     <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 10px;">🥩 Protein Sources</h4>
+                        <h4 class="text-green" style="margin-bottom: 10px;">Protein Sources</h4>
                         <ul class="meal-list">
-                            <li>Chicken breast/thigh: 1.4 kg</li>
-                            <li>Eggs: 2 dozen</li>
-                            <li>Paneer: 300g</li>
+                            <li>Chicken breast/thigh: 1.5 kg</li>
+                            <li>Eggs: 2.5 dozen</li>
+                            <li>Paneer: 400g</li>
                             <li>Whey protein: 1 tub (ongoing)</li>
+                            <li>Moong dal: 500g (for chilla + dal)</li>
+                            <li>Mixed sprouts: 500g</li>
                         </ul>
                     </div>
                     <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 10px;">🌾 Grains & Pulses</h4>
+                        <h4 class="text-orange" style="margin-bottom: 10px;">Grains & Pulses (Low-GI)</h4>
                         <ul class="meal-list">
-                            <li>Rice: 1 kg</li>
-                            <li>Oats: 500g</li>
-                            <li>Whole wheat flour/roti: 1 kg</li>
-                            <li>Poha: 500g</li>
-                            <li>Moong dal + Masoor dal: 500g each</li>
-                            <li>Chana/Rajma: 250g each</li>
+                            <li>Brown rice / quinoa: 1 kg (NO white rice)</li>
+                            <li>Steel-cut oats: 500g</li>
+                            <li>Multigrain atta/roti: 1 kg</li>
+                            <li>Masoor dal: 500g</li>
+                            <li>Rajma: 500g (high fiber)</li>
+                            <li>Roasted chana: 250g</li>
                         </ul>
                     </div>
                     <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 10px;">🥛 Dairy</h4>
+                        <h4 class="text-cyan" style="margin-bottom: 10px;">Dairy & Fats</h4>
                         <ul class="meal-list">
                             <li>Curd: 2L</li>
-                            <li>Milk: 2L</li>
-                            <li>Ghee: 200ml</li>
+                            <li>Milk: 1.5L</li>
+                            <li>Ghee: 200ml (moderate use)</li>
                             <li>Buttermilk: 1L</li>
-                            <li>Butter: 100g</li>
+                            <li>Olive oil: 500ml (for salads)</li>
+                            <li>Flaxseed oil: 200ml (omega-3)</li>
                         </ul>
                     </div>
                     <div class="card">
-                        <h4 style="color: #a78bfa; margin-bottom: 10px;">🥬 Fruits, Veg & Snacks</h4>
+                        <h4 style="color: #a78bfa; margin-bottom: 10px;">Fruits, Veg & Anti-Inflammatory</h4>
                         <ul class="meal-list">
+                            <li>Spinach, methi, palak: 1 kg (iron + folate)</li>
                             <li>Mixed vegetables: 2–3 kg</li>
-                            <li>Onions, tomatoes, ginger-garlic</li>
+                            <li>Onions, tomatoes, ginger, garlic, turmeric</li>
+                            <li>Low-GI fruit: apples, guava, pears</li>
+                            <li>Lemons: 10 (vitamin C for iron absorption)</li>
                             <li>Bananas: 7</li>
-                            <li>Seasonal fruit</li>
-                            <li>Popcorn kernels: 500g</li>
-                            <li>Almonds: 200g</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4 class="text-race" style="margin-bottom: 10px;">Supplements & Specifics</h4>
+                        <ul class="meal-list">
+                            <li>Almonds: 200g + Walnuts: 200g</li>
+                            <li>Pumpkin seeds: 100g (zinc)</li>
+                            <li>Flaxseeds: 200g (ground)</li>
+                            <li>Cinnamon powder: 50g</li>
+                            <li>Apple cider vinegar: 500ml</li>
+                            <li>Methi (fenugreek) seeds: 100g</li>
+                            <li>Ashwagandha KSM-66: 600mg caps</li>
+                            <li>Vitamin D3: 5000 IU caps</li>
+                            <li>Green tea bags: 1 box</li>
                             <li>Electrolyte tabs</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: var(--color-info); margin-bottom: 10px;">Avoid / Reduce</h4>
+                        <ul class="meal-list">
+                            <li>White rice → switch to brown rice</li>
+                            <li>White bread → multigrain only</li>
+                            <li>Fried foods → grill/bake instead</li>
+                            <li>Refined sugar → jaggery (moderate)</li>
+                            <li>Processed snacks → roasted chana, sprouts</li>
+                            <li>Alcohol → zero or absolute minimum</li>
                         </ul>
                     </div>
                 </div>
@@ -2405,8 +2562,8 @@
 
             <!-- Injury Prevention Note -->
             <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 28px;">
-                <h4 class="text-race" style="margin-bottom: 8px;">⚠️ Injury Risk at 94.5 kg</h4>
-                <p class="text-sm text-secondary">Front foot landing creates 9× body weight forces (~850 kg!). Maintain <1% body mass dehydration loss during bowling. Hydrate between overs. Banana + water provides optimal recovery (COX2 anti-inflammatory benefits superior to sports drinks).</p>
+                <h4 class="text-race" style="margin-bottom: 8px;">⚠️ Injury Risk at 93.5 kg</h4>
+                <p class="text-sm text-secondary">Front foot landing creates 9× body weight forces (~840 kg!). Maintain <1% body mass dehydration loss during bowling. Hydrate between overs. Banana + water provides optimal recovery (COX2 anti-inflammatory benefits superior to sports drinks).</p>
             </div>
         </div>
     </section>
@@ -2450,37 +2607,38 @@
                     <span class="text-xs text-secondary">Apr 26, 2026</span>
                 </div>
                 <h3>Bangalore TCSW 10K</h3>
-                <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-1:05 (6:30/km) | B: Sub-1:08 (6:48/km) | C: Sub-1:10 (7:00/km)</p>
-                <p class="text-sm text-secondary" style="margin-bottom: 12px;">Targets revised after 16 days off + OMAD. Negative split strategy. Bangalore altitude ~920m.</p>
+                <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-1:12 (7:12/km) | B: Sub-1:15 (7:30/km) | C: Finish with negative split</p>
+                <p class="text-sm text-secondary" style="margin-bottom: 12px;">Revised after 5K test (35:40, Apr 1). Pre-diabetic blood sugar = early fatigue risk. Negative split is the real goal. Bangalore altitude ~920m.</p>
 
-                <h4 class="text-sm" style="margin: 12px 0 8px; color: var(--text-primary);">B-Goal Splits (Sub-1:08 = 6:48/km avg)</h4>
+                <h4 class="text-sm" style="margin: 12px 0 8px; color: var(--text-primary);">B-Goal Splits (Sub-1:15 = 7:30/km avg)</h4>
                 <table class="splits-table">
                     <thead><tr><th>Segment</th><th>KM</th><th>Pace</th><th>Cumulative</th><th>Notes</th></tr></thead>
                     <tbody>
-                        <tr><td>Start–2K</td><td>0–2</td><td>7:00/km</td><td>~14:00</td><td>Conservative for altitude</td></tr>
-                        <tr><td>2K–5K</td><td>2–5</td><td>6:50/km</td><td>~34:30</td><td>Settle into rhythm</td></tr>
-                        <tr><td>5K–7K</td><td>5–7</td><td>6:45/km</td><td>~48:00</td><td>Begin picking up</td></tr>
-                        <tr><td>7K–9K</td><td>7–9</td><td>6:40/km</td><td>~1:01:20</td><td>Push here</td></tr>
-                        <tr><td>9K–Finish</td><td>9–10</td><td>6:30/km</td><td>~1:07:50</td><td>Strong finish</td></tr>
+                        <tr><td>Start–2K</td><td>0–2</td><td>7:45/km</td><td>~15:30</td><td>EASY start — learn from 5K blowup</td></tr>
+                        <tr><td>2K–5K</td><td>2–5</td><td>7:35/km</td><td>~38:15</td><td>Settle in, stay controlled</td></tr>
+                        <tr><td>5K–7K</td><td>5–7</td><td>7:25/km</td><td>~53:05</td><td>Begin picking up if feeling good</td></tr>
+                        <tr><td>7K–9K</td><td>7–9</td><td>7:15/km</td><td>~1:07:35</td><td>Push — negative split territory</td></tr>
+                        <tr><td>9K–Finish</td><td>9–10</td><td>7:00/km</td><td>~1:14:35</td><td>Strong finish, leave nothing</td></tr>
                     </tbody>
                 </table>
 
-                <h4 class="text-sm" style="margin: 16px 0 8px; color: var(--text-primary);">A-Goal Splits (Sub-1:05 = 6:30/km avg)</h4>
+                <h4 class="text-sm" style="margin: 16px 0 8px; color: var(--text-primary);">A-Goal Splits (Sub-1:12 = 7:12/km avg)</h4>
                 <table class="splits-table">
                     <thead><tr><th>Segment</th><th>KM</th><th>Pace</th><th>Cumulative</th><th>Notes</th></tr></thead>
                     <tbody>
-                        <tr><td>Start–2K</td><td>0–2</td><td>6:40/km</td><td>~13:20</td><td>Slightly faster start</td></tr>
-                        <tr><td>2K–5K</td><td>2–5</td><td>6:32/km</td><td>~32:56</td><td>Lock in, don't drift</td></tr>
-                        <tr><td>5K–7K</td><td>5–7</td><td>6:28/km</td><td>~45:52</td><td>Commit to A-goal</td></tr>
-                        <tr><td>7K–9K</td><td>7–9</td><td>6:25/km</td><td>~58:42</td><td>Dig deep</td></tr>
-                        <tr><td>9K–Finish</td><td>9–10</td><td>6:15/km</td><td>~1:04:57</td><td>Sprint finish</td></tr>
+                        <tr><td>Start–2K</td><td>0–2</td><td>7:25/km</td><td>~14:50</td><td>Still conservative — don't repeat 5K mistake</td></tr>
+                        <tr><td>2K–5K</td><td>2–5</td><td>7:15/km</td><td>~36:35</td><td>Lock into rhythm</td></tr>
+                        <tr><td>5K–7K</td><td>5–7</td><td>7:05/km</td><td>~50:45</td><td>Commit to A-goal pace</td></tr>
+                        <tr><td>7K–9K</td><td>7–9</td><td>7:00/km</td><td>~1:04:45</td><td>Dig deep — this is where races are won</td></tr>
+                        <tr><td>9K–Finish</td><td>9–10</td><td>6:50/km</td><td>~1:11:35</td><td>Sprint finish</td></tr>
                     </tbody>
                 </table>
 
                 <div style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                    <p class="text-sm text-secondary"><strong>Warm-Up:</strong> 10 min easy jog + 4×strides, 20 min before start.</p>
-                    <p class="text-sm text-secondary"><strong>Fueling:</strong> No gels. Light breakfast 2.5 hrs before (banana + toast + coffee).</p>
-                    <p class="text-sm text-secondary"><strong>Mental:</strong> Disrupted prep, but you ran 2:41 HM at 95 kg on 3 hrs sleep. Trust current fitness.</p>
+                    <p class="text-sm text-secondary"><strong>Warm-Up:</strong> 10 min easy jog + 4x strides, 20 min before start.</p>
+                    <p class="text-sm text-secondary"><strong>Blood Sugar:</strong> Eat 2.5 hrs before — oats + banana + peanut butter (slow-release carbs). No fasting before race.</p>
+                    <p class="text-sm text-secondary"><strong>Fueling:</strong> No gels needed for 10K. Water at 5K station only if thirsty.</p>
+                    <p class="text-sm text-secondary"><strong>Mental:</strong> 5K test showed you went out too fast (6:00 → 8:14). Discipline the first 3K and you'll negative split. Trust the plan.</p>
                 </div>
             </div>
 
@@ -2563,8 +2721,123 @@
                 </div>
                 <canvas id="weight-chart" width="800" height="250" style="width: 100%; height: auto;"></canvas>
                 <div class="flex items-center justify-between" style="margin-top: 12px;">
-                    <span class="text-xs text-secondary">Start: 94.5 kg (Mar 2026)</span>
+                    <span class="text-xs text-secondary">Start: 93.5 kg (Apr 2026)</span>
                     <span class="text-xs text-secondary">Target: 85–87 kg (Apr 26)</span>
+                </div>
+            </div>
+
+            <!-- Blood Work Tracker -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
+                    <h3>Blood Work Tracker</h3>
+                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.1);color:var(--color-race);border:1px solid rgba(255,45,85,0.2);">Latest: Apr 1, 2026</span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="splits-table" style="min-width:600px;">
+                        <thead>
+                            <tr>
+                                <th>Marker</th>
+                                <th>Oct 2025</th>
+                                <th>Jan 2026</th>
+                                <th>Apr 2026</th>
+                                <th>Range</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>HbA1c</strong></td>
+                                <td>6.3%</td>
+                                <td>6.2%</td>
+                                <td style="color:var(--color-race);font-weight:700;">6.0%</td>
+                                <td>4.0–5.6%</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);font-size:0.6rem;">PRE-DIABETIC</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fasting Glucose</strong></td>
+                                <td>91</td>
+                                <td>86</td>
+                                <td style="color:var(--color-race);font-weight:700;">115</td>
+                                <td>70–99 mg/dL</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);font-size:0.6rem;">SPIKED</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>SGPT/ALT</strong></td>
+                                <td>51</td>
+                                <td>81</td>
+                                <td style="color:var(--color-strength);font-weight:700;">55</td>
+                                <td>10–49 U/L</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">IMPROVING</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>ESR</strong></td>
+                                <td>—</td>
+                                <td>11</td>
+                                <td style="color:var(--color-strength);font-weight:700;">14</td>
+                                <td>0–10 mm/hr</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">ELEVATED</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRP</strong></td>
+                                <td>—</td>
+                                <td>4.2</td>
+                                <td style="color:var(--color-strength);font-weight:700;">4.0</td>
+                                <td>0–3.3 mg/L</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">ELEVATED</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hemoglobin</strong></td>
+                                <td>14.7</td>
+                                <td>14.3</td>
+                                <td style="color:var(--color-strength);font-weight:700;">13.7</td>
+                                <td>13–17 g/dL</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">DECLINING</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Testosterone</strong></td>
+                                <td style="color:var(--color-race);">165</td>
+                                <td>—</td>
+                                <td style="color:var(--color-running);font-weight:700;">458</td>
+                                <td>240–871 ng/dL</td>
+                                <td><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">RECOVERED</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vitamin D</strong></td>
+                                <td style="color:var(--color-race);">15.4</td>
+                                <td>—</td>
+                                <td style="color:var(--color-strength);font-weight:700;">35.8</td>
+                                <td>30–100 ng/ml</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">LOW-NORMAL</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>HDL</strong></td>
+                                <td>65.2</td>
+                                <td>—</td>
+                                <td style="color:var(--color-strength);font-weight:700;">54</td>
+                                <td>&ge;40 mg/dL</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">DROPPED</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vitamin B12</strong></td>
+                                <td>417</td>
+                                <td>—</td>
+                                <td style="color:var(--color-running);font-weight:700;">776</td>
+                                <td>200–900 pg/ml</td>
+                                <td><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">EXCELLENT</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>TSH (Thyroid)</strong></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td style="color:var(--color-running);font-weight:700;">1.67</td>
+                                <td>0.35–4.94</td>
+                                <td><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">NORMAL</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top:12px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                    <p class="text-xs text-tertiary"><strong>Next test:</strong> July 2026 (3 months). Key targets: HbA1c &lt;5.7%, Fasting Glucose &lt;100, SGPT &lt;49, CRP &lt;3.3, Vitamin D &gt;50, Testosterone &gt;550</p>
                 </div>
             </div>
 
@@ -2894,17 +3167,17 @@ const TRAINING_DATA = {
     {
       id: 2, name: "10K Speed Block", dates: "Mar 22 – Apr 26", weeks: 5, startWeek: 5,
       focus: "Rebuild fitness after 16 days off. Only 3 real training weeks post-OMAD. Focus on getting race-ready.",
-      keyResult: "Targets: A: Sub-1:05 | B: Sub-1:08 | C: Sub-1:10. OMAD ends ~Mar 27.",
+      keyResult: "Targets: A: Sub-1:12 | B: Sub-1:15 | C: Negative split finish. 5K test: 35:40 (Apr 1).",
       runsPerWeek: 3, strengthPerWeek: "1–2",
       schedule: [
         { num:5, dates:"Mar 22–28", km:16, notes:"EASY BASE week. Still on OMAD — volume capped. No intensity.",
           days:["Easy run 4 km","REST","Easy run 4 km + strides","Strength A 30 min","Easy run 3 km","REST (OMAD ends)","Easy run 5 km + strides"]},
-        { num:6, dates:"Mar 29–Apr 4", km:22, notes:"First tempo session. Normal diet resumes. Speed introduction.",
-          days:["Long Run 8 km (easy)","REST","Tempo: 10 min easy + 15 min @ 6:30–7:00 + 10 min easy","Strength B 45 min","Easy Run 5 km + strides","REST","Strength B 30 min"]},
-        { num:7, dates:"Apr 5–11", km:28, notes:"PEAK SPEED week. Key session: 6x800m intervals Tuesday.",
-          days:["Long Run 10 km (easy)","REST","6x800m @ 5:45–6:15/km, 2 min walk","Strength B 45 min","Easy Run 6 km + strides","REST","Easy Run 4 km"]},
-        { num:8, dates:"Apr 12–18", km:25, notes:"SHARPENING week. Race-specific work at target pace.",
-          days:["Long Run 8 km: 5 easy + 3 @ 10k pace","REST","4x1km @ 6:30–6:48/km, 2 min jog","Strength B 30 min","Easy Run 5 km + strides","REST","Easy Run 4 km"]},
+        { num:6, dates:"Mar 29–Apr 4", km:22, notes:"First tempo session. 3-meal diet resumes. Blood sugar focus. Speed introduction.",
+          days:["Long Run 8 km (easy)","REST","Tempo: 10 min easy + 15 min @ 7:00–7:15 + 10 min easy","Strength B 45 min","Easy Run 5 km + strides","REST","Strength B 30 min"]},
+        { num:7, dates:"Apr 5–11", km:26, notes:"PEAK SPEED week. Key session: 5x800m intervals (adjusted post-5K test).",
+          days:["Long Run 10 km (easy)","REST","5x800m @ 6:30–6:45/km, 2 min walk","Strength B 45 min","Easy Run 6 km + strides","REST","Easy Run 4 km"]},
+        { num:8, dates:"Apr 12–18", km:25, notes:"SHARPENING week. Race-specific work at realistic 10K pace.",
+          days:["Long Run 8 km: 5 easy + 3 @ 10k pace","REST","4x1km @ 7:00–7:15/km, 2 min jog","Strength B 30 min","Easy Run 5 km + strides","REST","Easy Run 4 km"]},
         { num:9, dates:"Apr 19–26", km:17, notes:"RACE WEEK taper. Fly to Bangalore Friday. Race Sunday Apr 26.",
           days:["Easy Run 6 km","REST","Sharpener: 3x1km @ 10k pace","REST","Easy 3 km + strides","Travel to Bangalore","Walk + strides (pre-race)"]}
       ]
@@ -3120,7 +3393,7 @@ const AppState = {
     },
     
     getLatestWeight() {
-        return this.weights.length > 0 ? this.weights[this.weights.length - 1].value : 94.5;
+        return this.weights.length > 0 ? this.weights[this.weights.length - 1].value : 93.5;
     },
     
     getStreak() {
@@ -3638,7 +3911,7 @@ function updateDashboard() {
         weightValEl.innerHTML = `${latestWeight}<span style="font-size:0.875rem;font-weight:500;color:var(--text-secondary)"> kg</span>`;
     }
     // Weight ring progress (94.5 start → 86 target = 8.5 kg range)
-    const startWeight = 94.5, targetWeight = 86;
+    const startWeight = 93.5, targetWeight = 86;
     const weightLost = startWeight - latestWeight;
     const totalToLose = startWeight - targetWeight;
     const weightPct = Math.max(0, Math.min(100, (weightLost / totalToLose) * 100));
@@ -3781,7 +4054,7 @@ function updateMacroBars() {
         fat: acc.fat + m.fat
     }), { protein: 0, carbs: 0, fat: 0 });
     
-    const targets = { protein: 160, carbs: 220, fat: 60 };
+    const targets = { protein: 160, carbs: 170, fat: 65 };
     
     const pBar = document.getElementById('protein-bar');
     const cBar = document.getElementById('carbs-bar');
@@ -3841,6 +4114,15 @@ const AdaptiveEngine = {
                 recs.push({ type: 'success', text: 'Training load is well managed — steady progression. Keep it up!' });
             }
         }
+
+        // Blood sugar management (pre-diabetic: HbA1c 6.0%, Glucose 115)
+        recs.push({ type: 'error', text: 'Pre-diabetic Alert: Prioritize Zone 2 cardio (2x/week) + 10-15 min post-meal walks. Every meal must combine protein + fiber + healthy fat. No fasting after exercise.' });
+
+        // Inflammation monitoring (ESR 14, CRP 4.0)
+        recs.push({ type: 'warning', text: 'Inflammation elevated (CRP 4.0, ESR 14): Daily turmeric + black pepper, ginger tea 2x, omega-3 (flaxseed). Sleep 7-8 hrs. Weight loss is the biggest lever.' });
+
+        // Hemoglobin declining
+        recs.push({ type: 'info', text: 'Hemoglobin trending down (14.7→13.7): Iron-rich foods (spinach + lemon), avoid tea/coffee with meals (1 hr gap). Consider Hb electrophoresis test for thalassemia trait.' });
 
         return recs;
     },
@@ -4140,7 +4422,7 @@ function updateCalorieRing() {
     const today = new Date().toISOString().slice(0, 10);
     const todayLog = (AppState.foodLog || []).filter(f => f.date === today);
     const totalCal = todayLog.reduce((sum, f) => sum + (f.cal || 0), 0);
-    const target = 2300;
+    const target = 2100;
     const pct = Math.min(1, totalCal / target);
 
     const ring = document.getElementById('calorie-ring');
