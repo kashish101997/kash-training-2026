@@ -1345,6 +1345,13 @@
                 </div>
                 <h1 class="hero-name animate-in delay-1">Kash Agarwal</h1>
                 <p class="hero-sub animate-in delay-2" id="hero-sub">29M &middot; Mumbai &middot; Next up: <strong>Bangalore TCSW 10K &mdash; Apr 26</strong></p>
+                <div class="animate-in delay-2" style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
+                    <span class="pill pill-sm" style="background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.25);font-size:0.6rem;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366" style="vertical-align:-2px;margin-right:3px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492l4.614-1.47A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-2.16 0-4.16-.686-5.798-1.853l-.416-.302-2.735.871.89-2.647-.332-.44A9.72 9.72 0 012.25 12 9.75 9.75 0 0112 2.25 9.75 9.75 0 0121.75 12 9.75 9.75 0 0112 21.75z"/></svg>
+                        WhatsApp <span id="whatsapp-status">Connected</span>
+                    </span>
+                    <span class="pill pill-sm" style="background:rgba(255,107,44,0.1);color:var(--color-strength);border:1px solid rgba(255,107,44,0.2);font-size:0.6rem;">Runna Plan Active</span>
+                </div>
             </div>
 
             <!-- Today's Workout -->
@@ -3165,21 +3172,21 @@ const TRAINING_DATA = {
       ]
     },
     {
-      id: 2, name: "10K Speed Block", dates: "Mar 22 – Apr 26", weeks: 5, startWeek: 5,
-      focus: "Rebuild fitness after 16 days off. Only 3 real training weeks post-OMAD. Focus on getting race-ready.",
-      keyResult: "Targets: A: Sub-1:12 | B: Sub-1:15 | C: Negative split finish. 5K test: 35:40 (Apr 1).",
-      runsPerWeek: 3, strengthPerWeek: "1–2",
+      id: 2, name: "10K Speed Block (Runna)", dates: "Mar 22 – Apr 26", weeks: 5, startWeek: 5,
+      focus: "Professional Runna 10K plan. High volume (5-6 runs + 3 strength/week). Blood sugar focus diet. 5K test: 35:40 (Apr 1).",
+      keyResult: "Targets: A: Sub-1:12 | B: Sub-1:15 | C: Negative split finish. Runna coaching plan active.",
+      runsPerWeek: "4–6", strengthPerWeek: "3",
       schedule: [
         { num:5, dates:"Mar 22–28", km:16, notes:"EASY BASE week. Still on OMAD — volume capped. No intensity.",
           days:["Easy run 4 km","REST","Easy run 4 km + strides","Strength A 30 min","Easy run 3 km","REST (OMAD ends)","Easy run 5 km + strides"]},
-        { num:6, dates:"Mar 29–Apr 4", km:22, notes:"First tempo session. 3-meal diet resumes. Blood sugar focus. Speed introduction.",
-          days:["Long Run 8 km (easy)","REST","Tempo: 10 min easy + 15 min @ 7:00–7:15 + 10 min easy","Strength B 45 min","Easy Run 5 km + strides","REST","Strength B 30 min"]},
-        { num:7, dates:"Apr 5–11", km:26, notes:"PEAK SPEED week. Key session: 5x800m intervals (adjusted post-5K test).",
-          days:["Long Run 10 km (easy)","REST","5x800m @ 6:30–6:45/km, 2 min walk","Strength B 45 min","Easy Run 6 km + strides","REST","Easy Run 4 km"]},
-        { num:8, dates:"Apr 12–18", km:25, notes:"SHARPENING week. Race-specific work at realistic 10K pace.",
-          days:["Long Run 8 km: 5 easy + 3 @ 10k pace","REST","4x1km @ 7:00–7:15/km, 2 min jog","Strength B 30 min","Easy Run 5 km + strides","REST","Easy Run 4 km"]},
-        { num:9, dates:"Apr 19–26", km:17, notes:"RACE WEEK taper. Fly to Bangalore Friday. Race Sunday Apr 26.",
-          days:["Easy Run 6 km","REST","Sharpener: 3x1km @ 10k pace","REST","Easy 3 km + strides","Travel to Bangalore","Walk + strides (pre-race)"]}
+        { num:6, dates:"Mar 29–Apr 4", km:38, notes:"RUNNA WEEK 1. High volume starts. 5 runs + 3 strength sessions. Blood sugar diet active.",
+          days:["Long Run 8 km (easy)","Legs & Core 45 min","1km Repeats 5 km","Easy Run 5 km + Full Body 45 min","Progressive Run 5 km","Easy Run 5 km + Legs & Core 45 min","Easy Run 5 km"]},
+        { num:7, dates:"Apr 5–11", km:36, notes:"RUNNA WEEK 2. Progressive long run. 400m repeats Thursday. Volume stays high.",
+          days:["Progressive Long Run 9 km","Legs & Core 45 min","Easy Run 6.5 km","400m Repeats 5 km + Full Body 45 min","Easy Run 5.5 km","Easy Run 5 km + Legs & Core 45 min","Easy Run 5 km"]},
+        { num:8, dates:"Apr 12–18", km:38, notes:"RUNNA WEEK 3. On-Off Ks + Broken Miles — speed endurance. Last hard week before taper.",
+          days:["Long Run 8 km","Legs & Core 45 min","On-Off Ks 5 km","Easy Run 5 km + Full Body 45 min","Broken Miles 5 km","Easy Run 5 km + Legs & Core 45 min","Easy Run 5 km"]},
+        { num:9, dates:"Apr 19–26", km:15, notes:"RUNNA WEEK 4 — RACE WEEK. Taper 400s Wednesday. Fly to Bangalore Friday. RACE Sunday Apr 26.",
+          days:["REST","Easy Run 5 km + Legs & Core 45 min","Taper 400s 5 km","REST","Easy Run 5 km","REST","RACE: Bangalore TCSW 10K"]}
       ]
     },
     {
@@ -3339,6 +3346,55 @@ const AppState = {
                 this.save();
             }
         } catch(e) { console.warn('State load failed:', e); }
+    },
+
+    async loadRemote() {
+        try {
+            const res = await fetch('data.json?t=' + Date.now());
+            if (!res.ok) return;
+            const remote = await res.json();
+            if (!remote.lastUpdated) return; // empty file, nothing to merge
+            let merged = false;
+            // Merge weights
+            (remote.weights || []).forEach(rw => {
+                const exists = this.weights.some(w => w.date === rw.date && Math.abs(w.value - rw.value) < 0.01);
+                if (!exists) { rw.source = rw.source || 'whatsapp'; this.weights.push(rw); merged = true; }
+            });
+            // Merge workouts
+            (remote.workouts || []).forEach(rw => {
+                const exists = this.workouts.some(w => w.date === rw.date && w.name === rw.name);
+                if (!exists) { rw.source = rw.source || 'whatsapp'; this.workouts.push(rw); merged = true; }
+            });
+            // Merge foodLog
+            if (!this.foodLog) this.foodLog = [];
+            (remote.foodLog || []).forEach(rf => {
+                const exists = this.foodLog.some(f => f.date === rf.date && f.name === rf.name && f.time === rf.time);
+                if (!exists) {
+                    rf.source = rf.source || 'whatsapp';
+                    this.foodLog.push(rf);
+                    // Also add to meals for macro tracking
+                    this.meals.push({ date: rf.date, protein: rf.protein || 0, carbs: rf.carbs || 0, fat: rf.fat || 0 });
+                    merged = true;
+                }
+            });
+            // Merge injuries
+            (remote.injuries || []).forEach(ri => {
+                const exists = this.injuries.some(i => i.date === ri.date && i.area === ri.area);
+                if (!exists) { ri.source = ri.source || 'whatsapp'; this.injuries.push(ri); merged = true; }
+            });
+            if (merged) {
+                this.save();
+                console.log('WhatsApp data merged successfully');
+                // Update UI if dashboard is visible
+                if (typeof updateDashboard === 'function') updateDashboard();
+                if (typeof renderFoodLog === 'function') renderFoodLog();
+                if (typeof updateCalorieRing === 'function') updateCalorieRing();
+                if (typeof updateMacroBars === 'function') updateMacroBars();
+                // Show indicator
+                const indicator = document.getElementById('whatsapp-status');
+                if (indicator) indicator.textContent = 'Synced';
+            }
+        } catch(e) { console.log('Remote data fetch skipped:', e.message); }
     },
     
     save() {
@@ -4625,6 +4681,9 @@ document.addEventListener('DOMContentLoaded', () => {
     AppState.load();
     // Initialize foodLog if not present (backward compat)
     if (!AppState.foodLog) AppState.foodLog = [];
+
+    // Fetch remote data from WhatsApp logger (data.json)
+    AppState.loadRemote();
 
     updateDashboard();
     renderWeightChart();
