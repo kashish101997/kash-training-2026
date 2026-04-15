@@ -265,6 +265,11 @@
             opacity: 1;
         }
 
+        .nav-tab[data-tab="dharma"].active {
+            border-bottom-color: var(--color-dharma);
+            color: var(--color-dharma);
+        }
+
         .nav-tab svg {
             width: 16px;
             height: 16px;
@@ -1441,7 +1446,7 @@
                     Phase 2 &middot; 10K Speed Block &middot; Week 5
                 </div>
                 <h1 class="hero-name animate-in delay-1">Kash Agarwal</h1>
-                <p class="hero-sub animate-in delay-2" id="hero-sub">29M &middot; Mumbai &middot; Next up: <strong>Bangalore TCSW 10K &mdash; Apr 26</strong></p>
+                <p class="hero-sub animate-in delay-2" id="hero-sub">28M &middot; Mumbai &middot; Next up: <strong>Bangalore TCSW 10K &mdash; Apr 26</strong></p>
                 <div class="animate-in delay-2" style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
                     <span class="pill pill-sm" style="background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.25);font-size:0.6rem;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366" style="vertical-align:-2px;margin-right:3px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492l4.614-1.47A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-2.16 0-4.16-.686-5.798-1.853l-.416-.302-2.735.871.89-2.647-.332-.44A9.72 9.72 0 012.25 12 9.75 9.75 0 0112 2.25 9.75 9.75 0 0121.75 12 9.75 9.75 0 0112 21.75z"/></svg>
@@ -4665,7 +4670,7 @@ function updateDashboard() {
         const nextRace = getNextUpcomingRace();
         if (nextRace) {
             const raceDateStr = new Date(nextRace.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            heroSub.innerHTML = `29M &middot; Mumbai &middot; Next up: <strong>${nextRace.name} &mdash; ${raceDateStr}</strong>`;
+            heroSub.innerHTML = `28M &middot; Mumbai &middot; Next up: <strong>${nextRace.name} &mdash; ${raceDateStr}</strong>`;
         }
     }
 
@@ -5653,14 +5658,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize foodLog if not present (backward compat)
     if (!AppState.foodLog) AppState.foodLog = [];
 
-    // Seed known weight entries if none exist
-    if (!AppState.weights || AppState.weights.length === 0) {
-        AppState.weights = [
-            { date: "2026-04-11", value: 98.4, source: "manual" },
-            { date: "2026-04-13", value: 97.25, source: "manual" }
-        ];
-        AppState.save();
-    }
+    // Ensure known baseline weights always exist (merge, don't overwrite)
+    const baselineWeights = [
+        { date: "2026-04-11", value: 98.4, source: "manual" },
+        { date: "2026-04-12", value: 97.8, source: "manual" },
+        { date: "2026-04-13", value: 97.25, source: "manual" },
+        { date: "2026-04-14", value: 97.0, source: "manual" },
+        { date: "2026-04-15", value: 97.0, source: "manual" }
+    ];
+    if (!AppState.weights) AppState.weights = [];
+    // Remove any stale entries before Apr 11 (pre-plan data)
+    AppState.weights = AppState.weights.filter(w => w.date >= '2026-04-11');
+    // Merge baseline entries if missing
+    baselineWeights.forEach(bw => {
+        const exists = AppState.weights.some(w => w.date === bw.date);
+        if (!exists) AppState.weights.push(bw);
+    });
+    // Sort by date
+    AppState.weights.sort((a, b) => a.date.localeCompare(b.date));
+    AppState.save();
 
     // Fetch remote data from WhatsApp logger (data.json)
     AppState.loadRemote();
