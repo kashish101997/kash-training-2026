@@ -33,6 +33,7 @@
             --color-race: #FF2D55;
             --color-hyrox: #BF40BF;
             --color-rest: #666666;
+            --color-dharma: #F59E0B;
 
             /* Activity Glows */
             --glow-running: rgba(57, 255, 20, 0.15);
@@ -40,6 +41,7 @@
             --glow-cricket: rgba(0, 229, 255, 0.15);
             --glow-race: rgba(255, 45, 85, 0.15);
             --glow-hyrox: rgba(191, 64, 191, 0.15);
+            --glow-dharma: rgba(245, 158, 11, 0.15);
 
             /* Text */
             --text-primary: #FFFFFF;
@@ -456,6 +458,11 @@
             background: rgba(102, 102, 102, 0.1);
             color: var(--color-rest);
             border: 1px solid rgba(102, 102, 102, 0.2);
+        }
+        .pill-dharma {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-dharma);
+            border: 1px solid rgba(245, 158, 11, 0.2);
         }
         .pill-active {
             background: rgba(57, 255, 20, 0.15);
@@ -1240,6 +1247,88 @@
             body { padding-top: 0; background: #fff; color: #000; }
             .card, .metric-card { border: 1px solid #ddd; background: #fff; }
         }
+
+        /* ── Dharma Tab Components ── */
+        .dharma-check-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 0; border-bottom: 1px solid var(--border-subtle);
+            cursor: pointer; transition: all var(--transition-fast);
+        }
+        .dharma-check-item:last-child { border-bottom: none; }
+        .dharma-check-item:hover { padding-left: 4px; }
+        .dharma-checkbox {
+            width: 22px; height: 22px; border-radius: 6px;
+            border: 2px solid rgba(245, 158, 11, 0.3); background: transparent;
+            flex-shrink: 0; margin-top: 1px; display: flex;
+            align-items: center; justify-content: center;
+            transition: all var(--transition-fast); cursor: pointer;
+        }
+        .dharma-checkbox.checked {
+            background: var(--color-dharma); border-color: var(--color-dharma);
+        }
+        .dharma-checkbox.checked::after {
+            content: ''; width: 6px; height: 10px;
+            border: 2px solid #000; border-top: none; border-left: none;
+            transform: rotate(45deg) translateY(-1px);
+        }
+        .dharma-check-text { flex: 1; }
+        .dharma-check-title {
+            font-size: 0.8125rem; font-weight: 600; color: var(--text-primary);
+            margin-bottom: 2px; transition: color var(--transition-fast);
+        }
+        .dharma-check-item.done .dharma-check-title {
+            color: var(--text-tertiary); text-decoration: line-through;
+        }
+        .dharma-check-sub {
+            font-size: 0.6875rem; color: var(--text-tertiary); line-height: 1.4;
+        }
+        .dharma-time-badge {
+            display: inline-flex; padding: 2px 8px; border-radius: var(--radius-full);
+            font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.05em;
+            background: rgba(245, 158, 11, 0.08); color: var(--color-dharma); white-space: nowrap;
+        }
+        .shloka-card {
+            position: relative; padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, rgba(245, 158, 11, 0.01) 100%);
+            border-left: 3px solid var(--color-dharma); border-radius: var(--radius-lg); margin-bottom: 16px;
+        }
+        .shloka-sanskrit {
+            font-size: 1rem; font-weight: 600; color: var(--color-dharma);
+            line-height: 1.8; margin-bottom: 8px; font-style: italic;
+        }
+        .shloka-translation {
+            font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 6px;
+        }
+        .shloka-reference { font-size: 0.6875rem; color: var(--text-tertiary); font-weight: 500; }
+        .quality-card {
+            text-align: center; padding: 20px 14px; position: relative; overflow: hidden;
+        }
+        .quality-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--color-dharma); opacity: 0; transition: opacity var(--transition-base);
+        }
+        .quality-card:hover::before { opacity: 1; }
+        .quality-num {
+            display: inline-flex; width: 32px; height: 32px;
+            align-items: center; justify-content: center;
+            background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--color-dharma); border-radius: 50%;
+            font-size: 0.8125rem; font-weight: 800; margin-bottom: 10px;
+        }
+        .quality-sanskrit {
+            font-size: 0.625rem; color: var(--color-dharma); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
+        }
+        .dharma-progress-ring { position: relative; width: 100px; height: 100px; margin: 0 auto; }
+        .dharma-progress-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .dharma-progress-label {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .quality-card { padding: 14px 10px; }
+            .shloka-sanskrit { font-size: 0.875rem; }
+        }
     </style>
 </head>
 <body>
@@ -1292,6 +1381,14 @@
                     <polyline points="11,2 15,2 15,6"/>
                 </svg>
                 <span class="tab-label">Progress</span>
+            </button>
+            <button class="nav-tab" data-tab="dharma" aria-selected="false" role="tab">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="5" r="3.5"/>
+                    <path d="M8 8.5v6"/>
+                    <path d="M5 11.5h6"/>
+                </svg>
+                <span class="tab-label">Dharma</span>
             </button>
         </div>
     </nav>
@@ -3083,6 +3180,430 @@
         </div>
     </section>
 
+    <!-- ========================================
+         DHARMA TAB
+         ======================================== -->
+    <section class="tab-panel" id="panel-dharma" style="display:none" role="tabpanel" aria-label="Dharma">
+        <div class="container">
+
+            <!-- Tab Header -->
+            <div style="padding: 24px 0 20px;">
+                <div class="section-header">
+                    <span class="section-title">DHARMA &middot; THE WARRIOR'S PATH</span>
+                    <div class="flex items-center gap-sm">
+                        <span class="pill pill-sm pill-dharma" id="dharma-streak-pill">0-Day Streak</span>
+                        <span class="pill pill-sm pill-dharma" id="dharma-date-pill"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Quote Card -->
+            <div class="card-glass animate-in" style="margin-bottom: 28px; text-align: center; padding: 32px 24px; border-top: 2px solid var(--color-dharma); background: linear-gradient(180deg, rgba(245,158,11,0.04) 0%, transparent 60%);">
+                <p style="font-size: 1.125rem; font-weight: 300; color: var(--color-dharma); line-height: 1.8; font-style: italic; max-width: 600px; margin: 0 auto 12px;">
+                    "You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions."
+                </p>
+                <span class="text-xs" style="color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;">Bhagavad Gita 2.47 &middot; Karma Yoga</span>
+                <div class="flex justify-center" style="margin-top: 16px;">
+                    <div class="dharma-progress-ring" id="dharma-day-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+                            <circle id="dharma-ring-progress" cx="50" cy="50" r="42" fill="none" stroke="var(--color-dharma)" stroke-width="6" stroke-linecap="round"
+                                stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+                        </svg>
+                        <div class="dharma-progress-label">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--color-dharma);" id="dharma-pct">0%</span>
+                            <span class="text-xs" style="color: var(--text-tertiary);">today</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 1: MORNING RITUAL (Brahma Muhurta) ===== -->
+            <div class="section-header animate-in delay-1">
+                <span class="section-title">Pratah Kriya &middot; Morning Ritual</span>
+                <span class="dharma-time-badge">4:45 &ndash; 6:30 AM</span>
+            </div>
+            <div class="card animate-in delay-2" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-morning-card">
+                <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Brahma Muhurta (approx. 96 min before sunrise) is the Vedic hour of creation. The mind is sattvic, cortisol is naturally rising, and the world is still. Arjuna rose before the camp. So do you.</p>
+
+                <div class="dharma-check-item" data-key="wake">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Wake at 4:45 AM (Brahma Muhurta)</div>
+                        <div class="dharma-check-sub">No snooze. Feet on floor. Look at your hands &mdash; "Karaagre vasate Lakshmi." Your hands hold your destiny today.</div>
+                    </div>
+                    <span class="dharma-time-badge">4:45</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="water">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Ushapan &mdash; Drink 500ml warm water with lemon</div>
+                        <div class="dharma-check-sub">Ayurvedic morning cleanse. Activates digestion, helps fasting glucose. Add a pinch of Himalayan salt for electrolytes (critical during PSMF phases).</div>
+                    </div>
+                    <span class="dharma-time-badge">4:50</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="breath">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Pranayama &mdash; 10 minutes breathwork</div>
+                        <div class="dharma-check-sub">5 min Nadi Shodhana (alternate nostril &mdash; calms nervous system). 3 min Kapalabhati (40 strokes/min &mdash; activates agni). 2 min Bhramari (humming &mdash; reduces cortisol). Patanjali Yoga Sutra 2.49.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:00</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="surya">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Surya Namaskar &mdash; 12 rounds</div>
+                        <div class="dharma-check-sub">The warrior's salute to the sun. 12 rounds = 288 asanas. Takes ~15 min. Warms the body, mobilizes spine, builds heat (tapas). On run days, this replaces warm-up stretching.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:10</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="dhyana">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Dhyana &mdash; 10 minutes seated meditation</div>
+                        <div class="dharma-check-sub">Sit still. Watch the breath. When the mind wanders, return. This IS the training. Gita 6.35: "The mind is restless, but it is restrained by practice (abhyasa) and detachment (vairagya)."</div>
+                    </div>
+                    <span class="dharma-time-badge">5:30</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="sankalpa">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Sankalpa &mdash; Set today's intention</div>
+                        <div class="dharma-check-sub">One sentence. Speak it aloud. "Today I train with full focus. Today I eat only what serves my body." This is your arrow &mdash; nock it before you draw the bow.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:40</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="journal">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Warrior's Journal &mdash; 3 lines</div>
+                        <div class="dharma-check-sub">1) What is my dharma (duty) today? 2) What obstacle will I face? 3) How would Arjuna handle it? Write by hand. The Mahabharata was dictated &mdash; words spoken become real.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:45</span>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 2: DAILY DISCIPLINES (Niyamas) ===== -->
+            <div class="section-header animate-in delay-2">
+                <span class="section-title">Niyamas &middot; Daily Disciplines</span>
+                <span class="text-xs text-secondary font-medium" id="dharma-niyama-count">0 / 10</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-2" style="margin-bottom: 16px;">Patanjali's Niyamas mapped to your 100-day transformation. These are not habits &mdash; they are non-negotiable vows (vratas). Arjuna did not "try" to practice archery. He practiced.</p>
+
+            <div class="grid-2 animate-in delay-3" style="margin-bottom: 28px;">
+                <!-- Left column: Body disciplines -->
+                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                    <h4 style="color: var(--color-dharma); margin-bottom: 12px;">Tapas (Austerity of Body)</h4>
+
+                    <div class="dharma-check-item" data-key="training">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Complete today's training session</div>
+                            <div class="dharma-check-sub">Run, strength, or cricket &mdash; whatever the plan says. No skipping. No half-reps. Gita 18.48: "Every endeavor is covered by some fault, as fire by smoke."</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="diet">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Hit protein target (180g+)</div>
+                            <div class="dharma-check-sub">Sattvic fuel for the warrior's body. Whey + eggs + soy chunks. No excuses, no shortcuts.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="calories">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Stay within calorie target</div>
+                            <div class="dharma-check-sub">The body is the chariot (Katha Upanishad). Feed it precisely. Not more, not less.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="walk">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Post-meal walk (10 min after lunch &amp; dinner)</div>
+                            <div class="dharma-check-sub">Blood sugar management. Your HbA1c drops with every step. Walk after every meal without exception.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="steps">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">10,000 steps minimum</div>
+                            <div class="dharma-check-sub">NEAT expenditure. The Pandavas walked 13 years in exile. You can walk 10,000 steps.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column: Mind disciplines -->
+                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                    <h4 style="color: var(--color-dharma); margin-bottom: 12px;">Svadhyaya (Self-Study)</h4>
+
+                    <div class="dharma-check-item" data-key="nosugar">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Zero refined sugar</div>
+                            <div class="dharma-check-sub">Sugar is your Duryodhana &mdash; seductive, destructive, always near. HbA1c 6.0% is the battlefield. Win it daily.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="supplements">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Full supplement stack taken</div>
+                            <div class="dharma-check-sub">Omega-3, D3+K2, Magnesium, Ashwagandha, Curcumin, NAC. The warrior sharpens every weapon.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="sleep">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Lights off by 10:00 PM</div>
+                            <div class="dharma-check-sub">7 hours minimum. No screens after 9:30. Recovery is where the body transforms. Juhu HM on 3 hrs sleep &mdash; never again.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="noalcohol">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">No alcohol</div>
+                            <div class="dharma-check-sub">100 days. Not one drop. Alcohol raises CRP, disrupts sleep, spikes glucose. The Pandavas abstained during their vow. So do you.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="grateful">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Santosha &mdash; 3 things you are grateful for</div>
+                            <div class="dharma-check-sub">Patanjali's second Niyama. Contentment is not complacency &mdash; it is fuel. Speak them aloud at dinner.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 3: ARJUNA'S 7 QUALITIES ===== -->
+            <div class="section-header animate-in delay-3">
+                <span class="section-title">Arjuna's Seven Qualities</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-3" style="margin-bottom: 16px;">Each quality of the Mahabharata's greatest warrior maps directly to your transformation. You are not "becoming like" Arjuna. You are building these same qualities through the same method: daily practice under pressure.</p>
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 28px;" class="animate-in delay-4">
+                <div class="card quality-card">
+                    <div class="quality-num">1</div>
+                    <div class="quality-sanskrit">Ekagrata</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Single-Pointed Focus</h4>
+                    <p class="text-xs text-secondary">Arjuna saw only the bird's eye. You see only the next rep, the next km, the next meal. No multitasking. No half-presence.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Training + Meditation</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">2</div>
+                    <div class="quality-sanskrit">Abhyasa</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Relentless Practice</h4>
+                    <p class="text-xs text-secondary">10,000 arrows before breakfast. Your equivalent: 100 days without a break. The body transforms through repetition, not inspiration.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">100-Day Streak</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">3</div>
+                    <div class="quality-sanskrit">Viveka</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Discrimination</h4>
+                    <p class="text-xs text-secondary">Knowing what serves you and what destroys you. Sugar vs. protein. Sleep vs. scrolling. This run vs. this excuse. Choose correctly 100 times.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Diet Discipline</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">4</div>
+                    <div class="quality-sanskrit">Dhairya</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Courage &amp; Patience</h4>
+                    <p class="text-xs text-secondary">Arjuna faced Karna knowing he might die. You face PSMF at 900 kcal knowing it will hurt. Courage is not absence of suffering &mdash; it is action despite it.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">PSMF + Race Day</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">5</div>
+                    <div class="quality-sanskrit">Vinaya</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Humility</h4>
+                    <p class="text-xs text-secondary">Arjuna bowed to every guru. You ran a 2:41 HM. You blew up at 5K. You have pre-diabetes at 28. Start from truth, not ego.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Blood Work Reality</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">6</div>
+                    <div class="quality-sanskrit">Sthitaprajna</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Steady Wisdom</h4>
+                    <p class="text-xs text-secondary">Equanimity in victory and defeat. The scale goes up one day &mdash; you stay the course. A race goes badly &mdash; you analyze, not despair. Gita 2.56: "Unshaken by adversity."</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Mental Fortitude</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">7</div>
+                    <div class="quality-sanskrit">Nishkama Karma</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Action Without Attachment</h4>
+                    <p class="text-xs text-secondary">Train because it is your dharma, not because you want to look good. The process IS the reward. Sub-4:15 marathon is a byproduct of being the person who trains every day.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">The Core Philosophy</span>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 4: EVENING RITUAL (Sandhya) ===== -->
+            <div class="section-header animate-in delay-3">
+                <span class="section-title">Sandhya Kriya &middot; Evening Ritual</span>
+                <span class="dharma-time-badge">9:00 &ndash; 10:00 PM</span>
+            </div>
+            <div class="card animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-evening-card">
+                <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Sandhya means "junction" &mdash; the transition between day and night. The warrior cleans his weapons, reviews the battle, and prepares for tomorrow.</p>
+
+                <div class="dharma-check-item" data-key="review">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Daily Review &mdash; Did I follow my dharma?</div>
+                        <div class="dharma-check-sub">2 minutes. Open this tab. Look at your checkboxes. Where did you succeed? Where did you falter? No judgment &mdash; only observation. Svadhyaya.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:00</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="stretch">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">5 min stretching + foam roll</div>
+                        <div class="dharma-check-sub">Hip flexors, hamstrings, calves, thoracic spine. Your body at 97 kg takes more damage than you think. Recovery is dharma too.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:10</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="magnesium">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Magnesium Glycinate 400mg + screen off</div>
+                        <div class="dharma-check-sub">Magnesium at 9:30. Phone in another room by 9:45. The battlefield of insomnia is won before you lie down.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:30</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="shavasana">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Shavasana or body scan &mdash; 5 min in bed</div>
+                        <div class="dharma-check-sub">Lie flat, scan from toes to crown. Release each muscle group. This is yogic sleep preparation (Yoga Nidra lite). Fall asleep with a clear mind.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:50</span>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 5: WEEKLY SADHANA SCHEDULE ===== -->
+            <div class="section-header animate-in delay-4">
+                <span class="section-title">Weekly Sadhana &middot; Spiritual Practice Schedule</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Sadhana means sustained spiritual practice. This schedule layers onto your existing training plan. The body and the spirit are trained in parallel.</p>
+
+            <div style="overflow-x:auto;margin-bottom:28px;" class="animate-in delay-4">
+                <table class="splits-table">
+                    <thead>
+                        <tr><th>Day</th><th>Morning Focus</th><th>Training Link</th><th>Evening Focus</th><th>Gita Chapter</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Monday</strong></td><td>Standard Pratah Kriya + Sankalpa for the week</td><td style="color:var(--color-running);">Easy Run &mdash; moving meditation, Zone 2</td><td>Extended meditation (15 min)</td><td style="color:var(--color-dharma);">Ch. 2 &mdash; Sankhya Yoga</td></tr>
+                        <tr><td><strong>Tuesday</strong></td><td>12 Surya Namaskar + extra hip mobility</td><td style="color:var(--color-strength);">Strength &mdash; Tapas through heavy lifting</td><td>Gratitude practice (3 things)</td><td style="color:var(--color-dharma);">Ch. 3 &mdash; Karma Yoga</td></tr>
+                        <tr><td><strong>Wednesday</strong></td><td>Pranayama focus: 15 min (extended Kapalabhati)</td><td style="color:var(--color-running);">Intervals &mdash; Arjuna's arrow: explosive, precise</td><td>Read 5 pages of the Gita</td><td style="color:var(--color-dharma);">Ch. 6 &mdash; Dhyana Yoga</td></tr>
+                        <tr><td><strong>Thursday</strong></td><td>Standard Pratah Kriya</td><td style="color:var(--color-strength);">Strength &mdash; posterior chain power</td><td>5 min body scan (deep recovery)</td><td style="color:var(--color-dharma);">Ch. 11 &mdash; Vishvarupa</td></tr>
+                        <tr><td><strong>Friday</strong></td><td>24 Surya Namaskar (double &mdash; end of week tapas)</td><td style="color:var(--color-running);">Tempo Run &mdash; sustained discipline</td><td>Warrior's journal: weekly reflection</td><td style="color:var(--color-dharma);">Ch. 12 &mdash; Bhakti Yoga</td></tr>
+                        <tr><td><strong>Saturday</strong></td><td>Standard Pratah Kriya + cold water finish</td><td style="color:var(--color-hyrox);">Long Run or HYROX sim &mdash; endurance as tapas</td><td>Extended meditation (20 min)</td><td style="color:var(--color-dharma);">Ch. 18 &mdash; Moksha Sannyasa</td></tr>
+                        <tr><td><strong>Sunday</strong></td><td>Extended meditation (20 min) + pranayama (15 min)</td><td style="color:var(--color-rest);">REST &mdash; Vishram. Even Arjuna rested between battles.</td><td>Plan next week's sankalpa</td><td style="color:var(--color-dharma);">Re-read any chapter</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ===== SECTION 6: KEY SHLOKAS ===== -->
+            <div class="section-header animate-in delay-4">
+                <span class="section-title">Shlokas for the Warrior's Path</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Seven verses from the Bhagavad Gita, each chosen for a specific moment in your 100-day journey. Memorize one per week. Let them become your inner voice when the body wants to quit.</p>
+
+            <div class="animate-in delay-4" style="margin-bottom: 28px;">
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">karmanye vadhikaraste ma phaleshu kadachana</div>
+                    <div class="shloka-translation">"You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions."</div>
+                    <div class="shloka-reference">Gita 2.47 &mdash; THE foundational verse. Train because it is your duty. Not for the Instagram photo at 78 kg. The action itself is the reward.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">yogasthah kuru karmani sangam tyaktva dhananjaya</div>
+                    <div class="shloka-translation">"Perform your duty with equanimity, abandoning attachment to success and failure."</div>
+                    <div class="shloka-reference">Gita 2.48 &mdash; The scale shows +0.5 kg after a perfect day. You do not react. You analyze, adjust, continue. Equanimity is the warrior's superpower.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">uddhared atmanatmanam natmanam avasadayet</div>
+                    <div class="shloka-translation">"Elevate yourself through the power of your own mind. Do not degrade yourself."</div>
+                    <div class="shloka-reference">Gita 6.5 &mdash; No one is coming to save you from pre-diabetes. You are both the problem and the solution. The self is the friend of the self, and the self is the enemy of the self.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">nainam chindanti shastrani nainam dahati pavakah</div>
+                    <div class="shloka-translation">"Weapons cannot cut it, fire cannot burn it, water cannot wet it, wind cannot dry it."</div>
+                    <div class="shloka-reference">Gita 2.23 &mdash; Your willpower, once forged, is indestructible. PSMF hunger cannot cut it. Mumbai heat cannot burn it. Build it daily and nothing can break it.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">abhyasa-yogena tato mam icchaptum dhananjaya</div>
+                    <div class="shloka-translation">"Through constant practice, O Arjuna, you can know Me."</div>
+                    <div class="shloka-reference">Gita 12.9 &mdash; Mastery of anything &mdash; running form, diet discipline, blood sugar control &mdash; comes only through abhyasa. There are no shortcuts in the Gita. There are none in transformation either.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">shanaih shanair uparamed buddhya dhriti-grhitaya</div>
+                    <div class="shloka-translation">"Gradually, step by step, with full conviction, one should become situated in trance by means of intelligence."</div>
+                    <div class="shloka-reference">Gita 6.25 &mdash; 98.4 to 78 kg is not one leap. It is 100 days of 200g losses. Each run a little faster. Each meal more precise. Shanai shanai &mdash; gradually, gradually.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">yada yada hi dharmasya glanir bhavati bharata</div>
+                    <div class="shloka-translation">"Whenever there is a decline of righteousness and rise of unrighteousness, I manifest Myself."</div>
+                    <div class="shloka-reference">Gita 4.7 &mdash; Your body declined. HbA1c 6.3 to 6.0. Weight 98.4. CRP elevated. Apr 11, 2026 is the day you manifested your own restoration. You ARE the intervention.</div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 7: THE CHARIOT METAPHOR ===== -->
+            <div class="card-glass animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 28px; background: linear-gradient(135deg, rgba(245,158,11,0.04) 0%, transparent 100%);">
+                <h4 style="color: var(--color-dharma); margin-bottom: 12px;">The Chariot of the Self &mdash; Katha Upanishad</h4>
+                <p class="text-sm text-secondary" style="margin-bottom: 16px;">The Katha Upanishad describes the self as a chariot. Map this to your transformation:</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Atman (The Self)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">The real you &mdash; beyond the 97 kg body, beyond pre-diabetes, beyond the 2:41 HM. The consciousness that decides to change.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Buddhi (The Charioteer)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your intellect &mdash; the part that reads blood work, follows the plan, counts macros. Krishna's role. Train this through meditation and study.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Manas (The Reins)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your mind &mdash; which wants to skip the run, eat the biryani, sleep in. The reins must be held firmly. Pranayama and meditation tighten them.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Indriyas (The Horses)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your senses &mdash; taste (craving sugar), comfort (craving sleep), laziness (craving rest). Powerful horses. Untrained, they run wild. Trained, they win wars.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);grid-column:1/-1;">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Sharira (The Chariot)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your body &mdash; 97.25 kg today, 78 kg by Day 100. The chariot must be strong, light, and well-maintained. Training, nutrition, sleep, supplements are chariot maintenance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 8: 100-DAY VOW ===== -->
+            <div class="card animate-in delay-4" style="border: 1px solid var(--color-dharma); margin-bottom: 20px; background: rgba(245, 158, 11, 0.03); text-align: center; padding: 28px;">
+                <h3 style="color: var(--color-dharma); margin-bottom: 12px;">The 100-Day Vow (Vrata)</h3>
+                <p class="text-sm text-secondary" style="max-width: 560px; margin: 0 auto 16px; line-height: 1.7;">
+                    In the Mahabharata, every great undertaking begins with a vow. Bhishma's vow of celibacy. Arjuna's vow to kill Jayadratha before sunset. A vow is not a goal &mdash; it is a binding contract with your own dharma.
+                </p>
+                <div style="padding: 16px 20px; border-radius: 12px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); max-width: 500px; margin: 0 auto;">
+                    <p style="font-size: 0.9375rem; font-weight: 600; color: var(--color-dharma); line-height: 1.6; font-style: italic;">
+                        "I, Kash, vow to follow this dharma for 100 days &mdash; Apr 11 to Jul 19, 2026. I will train every scheduled day. I will eat within my plan. I will rise before the sun. I will face every discomfort without retreat. This is my Kurukshetra. This body is my battlefield. I will not fail myself."
+                    </p>
+                </div>
+                <p class="text-xs" style="color: var(--text-tertiary); margin-top: 12px;">Day <span id="dharma-vow-day">1</span> of 100 &middot; <span id="dharma-vow-remaining">99</span> days remaining</p>
+            </div>
+
+        </div>
+    </section>
+
     <!-- Toast Container -->
     <div id="toast-container" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;"></div>
 
@@ -3523,6 +4044,7 @@ const AppState = {
     workouts: [],
     injuries: [],
     meals: [],
+    dharmaChecks: {},
     currentPhase: 2,
     trainingView: 'phase',
     settings: {},
@@ -3601,6 +4123,7 @@ const AppState = {
                 injuries: this.injuries,
                 meals: this.meals,
                 foodLog: this.foodLog || [],
+                dharmaChecks: this.dharmaChecks || {},
                 currentPhase: this.currentPhase,
                 trainingView: this.trainingView,
                 settings: this.settings
@@ -4906,6 +5429,42 @@ function initScrollAnimations() {
                 { scale: 1, opacity: 1, stagger: 0.03, duration: 0.3, ease: 'power2.out', delay: 0.25, overwrite: 'auto' }
             );
         }
+
+        // Dharma quality card numbers spin-in
+        const qualityNums = panel.querySelectorAll('.quality-num');
+        if (qualityNums.length) {
+            gsap.fromTo(qualityNums,
+                { scale: 0, rotation: -180 },
+                { scale: 1, rotation: 0, stagger: 0.08, duration: 0.5, ease: 'back.out(2)', delay: 0.2, overwrite: 'auto' }
+            );
+        }
+
+        // Shloka cards stagger
+        const shlokas = panel.querySelectorAll('.shloka-card');
+        if (shlokas.length) {
+            gsap.fromTo(shlokas,
+                { x: -20, opacity: 0 },
+                { x: 0, opacity: 1, stagger: 0.06, duration: 0.4, ease: 'power2.out', delay: 0.1, overwrite: 'auto' }
+            );
+        }
+
+        // Dharma checkboxes slide-in
+        const dharmaCheckItems = panel.querySelectorAll('.dharma-check-item');
+        if (dharmaCheckItems.length) {
+            gsap.fromTo(dharmaCheckItems,
+                { x: -10, opacity: 0 },
+                { x: 0, opacity: 1, stagger: 0.04, duration: 0.3, ease: 'power1.out', delay: 0.15, overwrite: 'auto' }
+            );
+        }
+
+        // Dharma progress ring entrance
+        const dharmaRing = panel.querySelector('.dharma-progress-ring');
+        if (dharmaRing) {
+            gsap.fromTo(dharmaRing,
+                { scale: 0.7, opacity: 0, rotation: -90 },
+                { scale: 1, opacity: 1, rotation: 0, duration: 0.8, ease: 'back.out(1.5)', overwrite: 'auto' }
+            );
+        }
     };
 
     // Animate dashboard on load
@@ -4956,6 +5515,137 @@ function initScrollAnimations() {
 }
 
 // ============================================
+// DHARMA TAB FUNCTIONS
+// ============================================
+function getTodayDharmaKey() {
+    return new Date().toISOString().slice(0, 10);
+}
+
+function getTodayDharma() {
+    const key = getTodayDharmaKey();
+    if (!AppState.dharmaChecks) AppState.dharmaChecks = {};
+    if (!AppState.dharmaChecks[key]) AppState.dharmaChecks[key] = {};
+    return AppState.dharmaChecks[key];
+}
+
+function toggleDharma(checkboxEl) {
+    const item = checkboxEl.closest('.dharma-check-item');
+    const key = item.dataset.key;
+    const today = getTodayDharma();
+
+    today[key] = !today[key];
+    AppState.save();
+
+    // Update visual
+    checkboxEl.classList.toggle('checked', today[key]);
+    item.classList.toggle('done', today[key]);
+
+    // Update counts and ring
+    updateDharmaProgress();
+
+    // Toast on completion of all items
+    const allKeys = getAllDharmaKeys();
+    const doneCount = allKeys.filter(k => today[k]).length;
+    if (doneCount === allKeys.length) {
+        showToast('All dharma practices complete. Jai Shri Krishna.', 'success');
+    }
+}
+
+function getAllDharmaKeys() {
+    const items = document.querySelectorAll('#panel-dharma .dharma-check-item[data-key]');
+    return Array.from(items).map(el => el.dataset.key);
+}
+
+function updateDharmaProgress() {
+    const today = getTodayDharma();
+    const allKeys = getAllDharmaKeys();
+    const total = allKeys.length;
+    const done = allKeys.filter(k => today[k]).length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    // Update ring
+    const ring = document.getElementById('dharma-ring-progress');
+    if (ring) {
+        const circumference = 2 * Math.PI * 42; // r=42
+        ring.setAttribute('stroke-dashoffset', circumference - (circumference * pct / 100));
+    }
+
+    // Update percentage text
+    const pctEl = document.getElementById('dharma-pct');
+    if (pctEl) pctEl.textContent = pct + '%';
+
+    // Update niyama count (disciplines section only)
+    const niyamaEl = document.getElementById('dharma-niyama-count');
+    const niyamaKeys = ['training','diet','calories','walk','steps','nosugar','supplements','sleep','noalcohol','grateful'];
+    const niyamaDone = niyamaKeys.filter(k => today[k]).length;
+    if (niyamaEl) niyamaEl.textContent = niyamaDone + ' / ' + niyamaKeys.length;
+
+    // Update streak
+    updateDharmaStreak();
+}
+
+function updateDharmaStreak() {
+    if (!AppState.dharmaChecks) return;
+    let streak = 0;
+    const checkDate = new Date();
+    checkDate.setHours(0, 0, 0, 0);
+    const allKeys = getAllDharmaKeys();
+    const threshold = Math.floor(allKeys.length * 0.7); // 70% = counts as a dharma day
+
+    for (let i = 0; i < 120; i++) {
+        const dateStr = checkDate.toISOString().slice(0, 10);
+        const dayData = AppState.dharmaChecks[dateStr];
+        if (dayData) {
+            const done = allKeys.filter(k => dayData[k]).length;
+            if (done >= threshold) {
+                streak++;
+            } else if (i > 0) {
+                break;
+            }
+        } else if (i > 0) {
+            break;
+        }
+        checkDate.setDate(checkDate.getDate() - 1);
+    }
+
+    const streakPill = document.getElementById('dharma-streak-pill');
+    if (streakPill) streakPill.textContent = streak + '-Day Streak';
+}
+
+function initDharmaTab() {
+    const today = getTodayDharma();
+
+    // Set date pill
+    const datePill = document.getElementById('dharma-date-pill');
+    if (datePill) {
+        datePill.textContent = new Date().toLocaleDateString('en-IN', {
+            weekday: 'short', month: 'short', day: 'numeric'
+        });
+    }
+
+    // Restore checkbox states
+    document.querySelectorAll('#panel-dharma .dharma-check-item[data-key]').forEach(item => {
+        const key = item.dataset.key;
+        const checkbox = item.querySelector('.dharma-checkbox');
+        if (today[key]) {
+            checkbox.classList.add('checked');
+            item.classList.add('done');
+        }
+    });
+
+    // Update 100-day vow counter
+    const start = new Date('2026-04-11');
+    const now = new Date();
+    const dayNum = Math.max(1, Math.min(100, Math.ceil((now - start) / (1000 * 60 * 60 * 24)) + 1));
+    const vowDay = document.getElementById('dharma-vow-day');
+    const vowRemain = document.getElementById('dharma-vow-remaining');
+    if (vowDay) vowDay.textContent = dayNum;
+    if (vowRemain) vowRemain.textContent = Math.max(0, 100 - dayNum);
+
+    updateDharmaProgress();
+}
+
+// ============================================
 // INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -4981,6 +5671,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFoodLog();
     updateCalorieRing();
     AdaptiveEngine.renderRecommendations();
+    initDharmaTab();
 
     // Highlight completed milestones
     document.querySelectorAll('.milestone-item').forEach(item => {

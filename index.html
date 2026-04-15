@@ -33,6 +33,7 @@
             --color-race: #FF2D55;
             --color-hyrox: #BF40BF;
             --color-rest: #666666;
+            --color-dharma: #F59E0B;
 
             /* Activity Glows */
             --glow-running: rgba(57, 255, 20, 0.15);
@@ -40,6 +41,7 @@
             --glow-cricket: rgba(0, 229, 255, 0.15);
             --glow-race: rgba(255, 45, 85, 0.15);
             --glow-hyrox: rgba(191, 64, 191, 0.15);
+            --glow-dharma: rgba(245, 158, 11, 0.15);
 
             /* Text */
             --text-primary: #FFFFFF;
@@ -456,6 +458,11 @@
             background: rgba(102, 102, 102, 0.1);
             color: var(--color-rest);
             border: 1px solid rgba(102, 102, 102, 0.2);
+        }
+        .pill-dharma {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-dharma);
+            border: 1px solid rgba(245, 158, 11, 0.2);
         }
         .pill-active {
             background: rgba(57, 255, 20, 0.15);
@@ -1240,6 +1247,88 @@
             body { padding-top: 0; background: #fff; color: #000; }
             .card, .metric-card { border: 1px solid #ddd; background: #fff; }
         }
+
+        /* ── Dharma Tab Components ── */
+        .dharma-check-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 0; border-bottom: 1px solid var(--border-subtle);
+            cursor: pointer; transition: all var(--transition-fast);
+        }
+        .dharma-check-item:last-child { border-bottom: none; }
+        .dharma-check-item:hover { padding-left: 4px; }
+        .dharma-checkbox {
+            width: 22px; height: 22px; border-radius: 6px;
+            border: 2px solid rgba(245, 158, 11, 0.3); background: transparent;
+            flex-shrink: 0; margin-top: 1px; display: flex;
+            align-items: center; justify-content: center;
+            transition: all var(--transition-fast); cursor: pointer;
+        }
+        .dharma-checkbox.checked {
+            background: var(--color-dharma); border-color: var(--color-dharma);
+        }
+        .dharma-checkbox.checked::after {
+            content: ''; width: 6px; height: 10px;
+            border: 2px solid #000; border-top: none; border-left: none;
+            transform: rotate(45deg) translateY(-1px);
+        }
+        .dharma-check-text { flex: 1; }
+        .dharma-check-title {
+            font-size: 0.8125rem; font-weight: 600; color: var(--text-primary);
+            margin-bottom: 2px; transition: color var(--transition-fast);
+        }
+        .dharma-check-item.done .dharma-check-title {
+            color: var(--text-tertiary); text-decoration: line-through;
+        }
+        .dharma-check-sub {
+            font-size: 0.6875rem; color: var(--text-tertiary); line-height: 1.4;
+        }
+        .dharma-time-badge {
+            display: inline-flex; padding: 2px 8px; border-radius: var(--radius-full);
+            font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.05em;
+            background: rgba(245, 158, 11, 0.08); color: var(--color-dharma); white-space: nowrap;
+        }
+        .shloka-card {
+            position: relative; padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, rgba(245, 158, 11, 0.01) 100%);
+            border-left: 3px solid var(--color-dharma); border-radius: var(--radius-lg); margin-bottom: 16px;
+        }
+        .shloka-sanskrit {
+            font-size: 1rem; font-weight: 600; color: var(--color-dharma);
+            line-height: 1.8; margin-bottom: 8px; font-style: italic;
+        }
+        .shloka-translation {
+            font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 6px;
+        }
+        .shloka-reference { font-size: 0.6875rem; color: var(--text-tertiary); font-weight: 500; }
+        .quality-card {
+            text-align: center; padding: 20px 14px; position: relative; overflow: hidden;
+        }
+        .quality-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--color-dharma); opacity: 0; transition: opacity var(--transition-base);
+        }
+        .quality-card:hover::before { opacity: 1; }
+        .quality-num {
+            display: inline-flex; width: 32px; height: 32px;
+            align-items: center; justify-content: center;
+            background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--color-dharma); border-radius: 50%;
+            font-size: 0.8125rem; font-weight: 800; margin-bottom: 10px;
+        }
+        .quality-sanskrit {
+            font-size: 0.625rem; color: var(--color-dharma); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
+        }
+        .dharma-progress-ring { position: relative; width: 100px; height: 100px; margin: 0 auto; }
+        .dharma-progress-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .dharma-progress-label {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .quality-card { padding: 14px 10px; }
+            .shloka-sanskrit { font-size: 0.875rem; }
+        }
     </style>
 </head>
 <body>
@@ -1292,6 +1381,14 @@
                     <polyline points="11,2 15,2 15,6"/>
                 </svg>
                 <span class="tab-label">Progress</span>
+            </button>
+            <button class="nav-tab" data-tab="dharma" aria-selected="false" role="tab">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="5" r="3.5"/>
+                    <path d="M8 8.5v6"/>
+                    <path d="M5 11.5h6"/>
+                </svg>
+                <span class="tab-label">Dharma</span>
             </button>
         </div>
     </nav>
@@ -1377,8 +1474,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <div class="metric-label">Body Composition</div>
-                            <div class="metric-value" id="weight-value">93.5<span style="font-size: 0.875rem; font-weight: 500; color: var(--text-secondary)"> kg</span></div>
-                            <div class="metric-sub">Target: 85&ndash;87 kg by Apr 26</div>
+                            <div class="metric-value" id="weight-value">98.4<span style="font-size: 0.875rem; font-weight: 500; color: var(--text-secondary)"> kg</span></div>
+                            <div class="metric-sub">Target: 78 kg by Jul 19</div>
                             <div class="bf-display" id="bodyfat-display" style="display:none;"></div>
                         </div>
                         <div class="ring-container">
@@ -1476,6 +1573,93 @@
                 <p class="text-xs text-tertiary" style="margin-top:10px;">Priority: Fix blood sugar (stop OMAD → 3 meals/day), reduce inflammation, post-meal walks, Zone 2 cardio</p>
             </div>
 
+            <!-- 100-Day Transformation -->
+            <div class="card-glass animate-in delay-4" style="margin-bottom: 20px; border-left: 3px solid var(--color-race); background: linear-gradient(135deg, rgba(255,45,85,0.06) 0%, rgba(255,107,44,0.04) 100%);">
+                <div class="flex items-center justify-between" style="margin-bottom: 12px;">
+                    <div class="flex items-center gap-sm">
+                        <span class="text-sm font-bold uppercase" style="letter-spacing: 0.08em; color: var(--color-race);">100-Day Transformation</span>
+                        <span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);border:1px solid rgba(255,45,85,0.3);font-size:0.6rem;" id="transform-phase-pill">PHASE 1: MODERATE CUT</span>
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="text-xl font-bold" style="color:var(--color-race);" id="transform-countdown">100</div>
+                        <div class="text-xs text-tertiary">days left</div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+                    <div style="text-align:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);">
+                        <div class="text-xs text-tertiary">Start</div>
+                        <div class="text-base font-bold" style="color:var(--text-primary);">98.4 kg</div>
+                        <div class="text-xs text-tertiary">Apr 11</div>
+                    </div>
+                    <div style="text-align:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);">
+                        <div class="text-xs text-tertiary">Current</div>
+                        <div class="text-base font-bold text-green" id="transform-current-weight">98.4 kg</div>
+                        <div class="text-xs text-tertiary" id="transform-lost">0 kg lost</div>
+                    </div>
+                    <div style="text-align:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);">
+                        <div class="text-xs text-tertiary">Goal</div>
+                        <div class="text-base font-bold" style="color:var(--color-race);">78 kg</div>
+                        <div class="text-xs text-tertiary">Jul 19</div>
+                    </div>
+                </div>
+                <!-- Progress bar -->
+                <div style="background:rgba(255,255,255,0.06);border-radius:6px;height:8px;overflow:hidden;">
+                    <div id="transform-progress-bar" style="height:100%;border-radius:6px;background:linear-gradient(90deg,var(--color-running),var(--color-race));width:0%;transition:width 1s var(--ease-out-expo);"></div>
+                </div>
+                <div class="flex items-center justify-between" style="margin-top:6px;">
+                    <span class="text-xs text-tertiary">Day <span id="transform-day">1</span> of 100</span>
+                    <span class="text-xs text-tertiary" id="transform-pct">0% complete</span>
+                </div>
+            </div>
+
+            <!-- InBody Scan -->
+            <div class="card-glass animate-in delay-4" style="margin-bottom: 20px; border-left: 3px solid #00b4d8;">
+                <div class="flex items-center gap-sm" style="margin-bottom: 10px;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v14M4 4h8M3 8h10M4 12h8"/></svg>
+                    <span class="text-sm font-bold uppercase" style="letter-spacing: 0.08em; color: #00b4d8;">InBody Scan</span>
+                    <span class="text-xs text-tertiary" style="margin-left:auto;">Apr 10, 2026</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+                    <div style="padding:10px;border-radius:8px;background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.15);text-align:center;">
+                        <div class="text-xs text-tertiary">Body Fat</div>
+                        <div class="text-lg font-bold" style="color:var(--color-race);">35.4%</div>
+                        <div class="text-xs" style="color:var(--color-race);">34.8 kg</div>
+                    </div>
+                    <div style="padding:10px;border-radius:8px;background:rgba(57,255,20,0.06);border:1px solid rgba(57,255,20,0.15);text-align:center;">
+                        <div class="text-xs text-tertiary">Muscle Mass</div>
+                        <div class="text-lg font-bold text-green">35.7 kg</div>
+                        <div class="text-xs text-green">PROTECT</div>
+                    </div>
+                    <div style="padding:10px;border-radius:8px;background:rgba(255,107,44,0.08);border:1px solid rgba(255,107,44,0.15);text-align:center;">
+                        <div class="text-xs text-tertiary">Visceral Fat</div>
+                        <div class="text-lg font-bold" style="color:var(--color-strength);">15</div>
+                        <div class="text-xs" style="color:var(--color-strength);">Target: &lt;10</div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+                    <div style="text-align:center;padding:6px;border-radius:6px;background:rgba(255,255,255,0.03);">
+                        <div class="text-xs text-tertiary">BMI</div>
+                        <div class="text-sm font-bold" style="color:var(--color-race);">30.4</div>
+                        <div class="text-xs text-tertiary">Obese I</div>
+                    </div>
+                    <div style="text-align:center;padding:6px;border-radius:6px;background:rgba(255,255,255,0.03);">
+                        <div class="text-xs text-tertiary">WHR</div>
+                        <div class="text-sm font-bold" style="color:var(--color-strength);">0.98</div>
+                        <div class="text-xs text-tertiary">&lt;0.90</div>
+                    </div>
+                    <div style="text-align:center;padding:6px;border-radius:6px;background:rgba(255,255,255,0.03);">
+                        <div class="text-xs text-tertiary">BMR</div>
+                        <div class="text-sm font-bold" style="color:var(--text-primary);">1,744</div>
+                        <div class="text-xs text-tertiary">kcal/day</div>
+                    </div>
+                    <div style="text-align:center;padding:6px;border-radius:6px;background:rgba(255,255,255,0.03);">
+                        <div class="text-xs text-tertiary">Fat to Lose</div>
+                        <div class="text-sm font-bold" style="color:var(--color-race);">~20 kg</div>
+                        <div class="text-xs text-tertiary">to 15% BF</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Recent Achievements -->
             <div class="card-glass animate-in delay-4" style="margin-bottom: 12px; border-left: 3px solid var(--color-running);">
                 <div class="flex items-center gap-sm" style="margin-bottom: 6px;">
@@ -1564,7 +1748,7 @@
             let bodyHTML = '';
             if (type === 'weight') {
                 bodyHTML = `
-                    <input class="modal-input" type="number" placeholder="Weight in kg (e.g. 93.5)" id="modal-input" autocomplete="off" step="0.1">
+                    <input class="modal-input" type="number" placeholder="Weight in kg (e.g. 98.4)" id="modal-input" autocomplete="off" step="0.1">
                     <input class="modal-input" type="number" style="margin-top:10px" placeholder="Body fat % (optional, e.g. 22.5)" id="modal-bodyfat" autocomplete="off" step="0.1">
                     <input class="modal-input" type="number" style="margin-top:10px" placeholder="Muscle mass kg (optional)" id="modal-musclemass" autocomplete="off" step="0.1">
                 `;
@@ -1965,270 +2149,251 @@
                 </div>
             </div>
 
-            <!-- Diet Phase Indicator -->
+            <!-- Diet Phase Indicator (dynamic) -->
             <div class="card-glass" id="diet-phase-card" style="margin-bottom: 24px; border-left: 3px solid var(--color-race);">
-                <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);border:1px solid rgba(255,45,85,0.3);" id="diet-phase-label">BLOOD SUGAR CONTROL PHASE</span>
+                <div class="flex items-center justify-between" style="margin-bottom: 8px;">
+                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);border:1px solid rgba(255,45,85,0.3);" id="diet-phase-label">PHASE 1: MODERATE CUT</span>
+                    <span class="text-xs text-tertiary" id="diet-phase-dates">Day 1–16 &middot; Apr 11–26</span>
                 </div>
-                <p class="text-sm text-secondary" id="diet-phase-desc">3 meals + 1 snack per day. OMAD stopped — caused glucose spike (86→115). Every meal: protein + fiber + healthy fat. Post-meal walks mandatory.</p>
+                <p class="text-sm text-secondary" id="diet-phase-desc">~1,400 kcal/day. 10K race on Apr 26 — no PSMF during race prep. 180g protein from whey + eggs + soy chunks + chicken 2-3x/wk. Deficit ~1,100 kcal/day. Expected loss: 3–4 kg.</p>
+
+                <!-- Phase timeline -->
+                <div style="display:flex;gap:4px;margin-top:12px;">
+                    <div class="diet-phase-seg" data-phase="1" style="flex:16;height:6px;border-radius:3px;background:var(--color-race);opacity:1;cursor:pointer;" title="Phase 1: Moderate Cut (Days 1–16)"></div>
+                    <div class="diet-phase-seg" data-phase="2" style="flex:14;height:6px;border-radius:3px;background:var(--color-strength);opacity:0.3;cursor:pointer;" title="Phase 2: PSMF Sprint (Days 17–30)"></div>
+                    <div class="diet-phase-seg" data-phase="3" style="flex:28;height:6px;border-radius:3px;background:var(--color-running);opacity:0.3;cursor:pointer;" title="Phase 3: Structured Cut (Days 31–58)"></div>
+                    <div class="diet-phase-seg" data-phase="4" style="flex:14;height:6px;border-radius:3px;background:var(--color-strength);opacity:0.3;cursor:pointer;" title="Phase 4: PSMF Sprint 2 (Days 59–72)"></div>
+                    <div class="diet-phase-seg" data-phase="5" style="flex:28;height:6px;border-radius:3px;background:var(--color-hyrox);opacity:0.3;cursor:pointer;" title="Phase 5: HYROX Prep (Days 73–100)"></div>
+                </div>
             </div>
 
-            <!-- Daily Targets -->
-            <div class="grid-4" style="margin-bottom: 28px;">
+            <!-- Daily Targets (dynamic per phase) -->
+            <div class="grid-4" style="margin-bottom: 28px;" id="diet-macro-cards">
                 <div class="metric-card accent-green">
                     <div class="metric-label">Calories</div>
-                    <div class="metric-value text-green">2,100</div>
-                    <div class="metric-sub">kcal/day target</div>
+                    <div class="metric-value text-green" id="diet-cal-target">1,400</div>
+                    <div class="metric-sub" id="diet-cal-sub">kcal/day &middot; deficit ~1,100</div>
                 </div>
                 <div class="metric-card accent-cyan">
                     <div class="metric-label">Protein</div>
-                    <div class="metric-value text-cyan">160g</div>
-                    <div class="metric-sub">1.7g/kg target</div>
+                    <div class="metric-value text-cyan" id="diet-protein-target">180g</div>
+                    <div class="metric-sub" id="diet-protein-sub">1.8g/kg &middot; muscle sparing</div>
                 </div>
                 <div class="metric-card accent-orange">
                     <div class="metric-label">Carbs</div>
-                    <div class="metric-value text-orange">170g</div>
-                    <div class="metric-sub">low-GI focus</div>
+                    <div class="metric-value text-orange" id="diet-carbs-target">80g</div>
+                    <div class="metric-sub" id="diet-carbs-sub">oats, roti, fruit, soy</div>
                 </div>
                 <div class="metric-card" style="border-top: 2px solid #a78bfa;">
                     <div class="metric-label">Fat</div>
-                    <div class="metric-value" style="color: #a78bfa;">65g</div>
-                    <div class="metric-sub">HDL-boosting fats</div>
+                    <div class="metric-value" style="color: #a78bfa;" id="diet-fat-target">45g</div>
+                    <div class="metric-sub" id="diet-fat-sub">eggs, peanut butter, oil</div>
                 </div>
             </div>
 
             <!-- Meal Plan Content -->
             <div id="diet-plan-content">
 
-                <!-- Blood Sugar Management -->
-                <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 24px;">
-                    <h4 style="color: var(--color-race); margin-bottom: 8px;">Blood Sugar Rules (HbA1c 6.0%, Glucose 115)</h4>
-                    <div class="grid-2" style="gap:12px;">
-                        <ul class="meal-list">
-                            <li><strong>Every meal:</strong> protein + fiber + healthy fat (slows glucose)</li>
-                            <li><strong>No refined carbs:</strong> white rice → brown rice/quinoa</li>
-                            <li><strong>Cinnamon:</strong> ½ tsp/day in oats or tea (insulin sensitivity)</li>
-                            <li><strong>ACV:</strong> 1 tbsp in water before lunch &amp; dinner</li>
-                        </ul>
-                        <ul class="meal-list">
-                            <li><strong>Post-meal walk:</strong> 10-15 min after dinner (mandatory)</li>
-                            <li><strong>Methi seeds:</strong> 1 tsp soaked overnight, drink morning water</li>
-                            <li><strong>Carb timing:</strong> More carbs AM (around training), fewer PM</li>
-                            <li><strong>Post-run:</strong> Eat within 30-60 min (don't fast after exercise)</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- MEAL 1 — Breakfast -->
-                <div class="section-header"><span class="section-title">Meal 1 — Breakfast / Post-Workout (7:30–8:30 AM) ~550 kcal</span></div>
-                <div class="grid-2" style="margin-bottom: 24px;">
-                    <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option A: Egg Omelette + Toast</h4>
-                        <ul class="meal-list">
-                            <li>3 egg omelette with spinach, onion, tomato</li>
-                            <li>2 whole wheat toast (no white bread)</li>
-                            <li>½ avocado or 1 tbsp peanut butter</li>
-                            <li>Black coffee + ½ tsp cinnamon</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 30g</span><span class="mp c">C: 40g</span><span class="mp f">F: 22g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option B: Oats + Protein</h4>
-                        <ul class="meal-list">
-                            <li>Steel-cut oats (1 cup) with protein scoop + cinnamon</li>
-                            <li>10 almonds + 5 walnuts (HDL boost)</li>
-                            <li>1 boiled egg</li>
-                            <li>Green tea</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 38g</span><span class="mp c">C: 45g</span><span class="mp f">F: 18g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option C: Moong Dal Chilla</h4>
-                        <ul class="meal-list">
-                            <li>2 moong dal chilla with paneer stuffing</li>
-                            <li>Mint chutney + curd (½ cup)</li>
-                            <li>1 seasonal fruit (low-GI: apple, guava, pear)</li>
-                            <li>Coffee</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 28g</span><span class="mp c">C: 42g</span><span class="mp f">F: 14g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 8px;">Option D: Idli + Sambar</h4>
-                        <ul class="meal-list">
-                            <li>3 idli (not 4 — carb control) with sambar</li>
-                            <li>2 boiled eggs on the side</li>
-                            <li>Coconut chutney (healthy fat)</li>
-                            <li>Coffee</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 24g</span><span class="mp c">C: 48g</span><span class="mp f">F: 12g</span></div>
-                    </div>
-                </div>
-
-                <!-- MEAL 2 — Lunch (NEW) -->
-                <div class="section-header"><span class="section-title">Meal 2 — Lunch (12:30–1:30 PM) ~550 kcal</span></div>
-                <div class="grid-2" style="margin-bottom: 24px;">
-                    <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option A: Chicken + Dal + Brown Rice</h4>
-                        <ul class="meal-list">
-                            <li>Grilled chicken breast (150g)</li>
-                            <li>Dal (moong/masoor, 1 cup)</li>
-                            <li>Brown rice (¾ cup cooked) or quinoa</li>
-                            <li>Mixed sabzi (2 cups) + cucumber raita</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 45g</span><span class="mp c">C: 50g</span><span class="mp f">F: 12g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option B: Paneer + Roti + Salad</h4>
-                        <ul class="meal-list">
-                            <li>Paneer bhurji (120g paneer) with veggies</li>
-                            <li>2 multigrain roti</li>
-                            <li>Big green salad with lemon + olive oil</li>
-                            <li>Buttermilk (1 glass)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 32g</span><span class="mp c">C: 48g</span><span class="mp f">F: 20g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option C: Egg Curry + Rice</h4>
-                        <ul class="meal-list">
-                            <li>Egg curry (3 eggs) with turmeric + black pepper</li>
-                            <li>Brown rice (¾ cup) or 1 multigrain roti</li>
-                            <li>Spinach sabzi (iron + vitamin C from lemon)</li>
-                            <li>Curd (½ cup)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 28g</span><span class="mp c">C: 45g</span><span class="mp f">F: 18g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 8px;">Option D: Rajma + Rice Bowl</h4>
-                        <ul class="meal-list">
-                            <li>Rajma (1 cup) — high fiber, low GI</li>
-                            <li>Brown rice (¾ cup cooked)</li>
-                            <li>Onion-tomato salad with lemon</li>
-                            <li>Curd (½ cup)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 22g</span><span class="mp c">C: 55g</span><span class="mp f">F: 8g</span></div>
-                    </div>
-                </div>
-
-                <!-- SNACK -->
-                <div class="section-header"><span class="section-title">Snack (4:00–5:00 PM) ~250 kcal</span></div>
-                <div class="grid-3" style="margin-bottom: 24px;">
-                    <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 8px;">Protein Shake + Nuts</h4>
-                        <ul class="meal-list">
-                            <li>Whey protein (1 scoop in water)</li>
-                            <li>10 almonds + 5 walnuts (HDL boost)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 30g</span><span class="mp c">C: 8g</span><span class="mp f">F: 12g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 8px;">Sprouts + Buttermilk</h4>
-                        <ul class="meal-list">
-                            <li>Mixed sprouts chaat (1 cup) with lemon</li>
-                            <li>Masala buttermilk (1 glass)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 14g</span><span class="mp c">C: 25g</span><span class="mp f">F: 4g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 8px;">Roasted Chana + Green Tea</h4>
-                        <ul class="meal-list">
-                            <li>Roasted chana (½ cup) — low GI snack</li>
-                            <li>Green tea (hepatoprotective for liver)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 10g</span><span class="mp c">C: 22g</span><span class="mp f">F: 4g</span></div>
-                    </div>
-                </div>
-
-                <!-- MEAL 3 — Dinner -->
-                <div class="section-header"><span class="section-title">Meal 3 — Dinner (7:00–8:00 PM) ~550 kcal + 10 min walk after</span></div>
-                <div class="grid-2" style="margin-bottom: 24px;">
-                    <div class="card">
-                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option A: Grilled Chicken + Veggies</h4>
-                        <ul class="meal-list">
-                            <li>Grilled chicken (150g) with turmeric + pepper</li>
-                            <li>1 multigrain roti (lower carbs at night)</li>
-                            <li>Sauteed vegetables (2 cups) in olive oil</li>
-                            <li>Dal (½ cup) + small salad</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 45g</span><span class="mp c">C: 35g</span><span class="mp f">F: 16g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option B: Paneer Tikka + Salad</h4>
-                        <ul class="meal-list">
-                            <li>Paneer tikka (120g) — grilled, not fried</li>
-                            <li>1 multigrain roti</li>
-                            <li>Big mixed salad with flaxseed dressing</li>
-                            <li>Ginger turmeric tea (anti-inflammatory)</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 30g</span><span class="mp c">C: 30g</span><span class="mp f">F: 22g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option C: Egg Bhurji + Roti</h4>
-                        <ul class="meal-list">
-                            <li>Egg bhurji (3 eggs) with onion, tomato, spinach</li>
-                            <li>1 multigrain roti</li>
-                            <li>Cucumber-mint raita (½ cup)</li>
-                            <li>Green tea</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 28g</span><span class="mp c">C: 28g</span><span class="mp f">F: 18g</span></div>
-                    </div>
-                    <div class="card">
-                        <h4 style="color: #a78bfa; margin-bottom: 8px;">Option D: Chicken Keema + Salad</h4>
-                        <ul class="meal-list">
-                            <li>Chicken keema (150g) with peas</li>
-                            <li>1 multigrain roti</li>
-                            <li>Mixed sabzi + raita</li>
-                            <li>Ginger tea</li>
-                        </ul>
-                        <div class="macro-pills"><span class="mp p">P: 42g</span><span class="mp c">C: 30g</span><span class="mp f">F: 14g</span></div>
-                    </div>
-                </div>
-
-                <!-- Supplement Protocol -->
-                <div class="section-header"><span class="section-title">Supplement Protocol</span></div>
+                <!-- Protein Sources Reference -->
                 <div class="card-glass" style="border-left: 3px solid var(--color-cricket); margin-bottom: 24px;">
+                    <h4 style="color: var(--color-cricket); margin-bottom: 10px;">The Protein Problem &mdash; Solved</h4>
+                    <p class="text-xs text-secondary" style="margin-bottom:10px;">You need 180&ndash;200g protein/day in a vegetarian household. Whey + Eggs + Soy Chunks = daily foundation. Chicken ordered 2&ndash;3x/week.</p>
+                    <div style="overflow-x:auto;">
+                        <table class="splits-table" style="min-width:500px;">
+                            <thead><tr><th>Source</th><th>Portion</th><th>Protein</th><th>Calories</th><th>Notes</th></tr></thead>
+                            <tbody>
+                                <tr><td>Freak Labs Whey</td><td>1 scoop (35g)</td><td>24g</td><td>122</td><td>2&ndash;3 scoops/day = 48&ndash;72g</td></tr>
+                                <tr><td>Egg Whites</td><td>1 white</td><td>3.6g</td><td>17</td><td>Buy Keggs liquid &mdash; easy</td></tr>
+                                <tr><td>Whole Eggs</td><td>1 large</td><td>6g</td><td>70</td><td>Limit 2&ndash;3/day (fat adds up)</td></tr>
+                                <tr><td>Soy Chunks</td><td>50g dry</td><td>26g</td><td>170</td><td>Soak + cook. Some carbs.</td></tr>
+                                <tr><td>Paneer (low-fat)</td><td>100g</td><td>18g</td><td>265</td><td>High cal &mdash; use strategically</td></tr>
+                                <tr><td>Tofu (firm)</td><td>100g</td><td>8g</td><td>76</td><td>Lower protein but very lean</td></tr>
+                                <tr><td>Greek Yogurt/Curd</td><td>100g</td><td>10g</td><td>60</td><td>Make from regular curd overnight</td></tr>
+                                <tr><td>Moong Dal</td><td>100g cooked</td><td>9g</td><td>105</td><td>Good but lower protein density</td></tr>
+                                <tr><td>Chicken (ordered)</td><td>250g breast</td><td>60g</td><td>~400</td><td>ORDER 2&ndash;3x/wk tandoori/grilled</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-tertiary" style="margin-top:8px;">Pro tip: Buy liquid egg whites (Keggs) &mdash; 200ml = ~22g protein, ~100 kcal. Omelettes, bhurji, or chug in a shake.</p>
+                </div>
+
+                <!-- PHASE 1 & 3: Structured Cut -->
+                <div class="section-header"><span class="section-title">Structured Cut &mdash; Days 1&ndash;16, 31&ndash;58 (~1,400&ndash;1,500 kcal)</span></div>
+                <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 16px;">
+                    <div class="grid-4" style="gap:8px;">
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Protein</span><div class="text-sm font-bold" style="color:var(--color-cricket);">180g (720 kcal)</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Fat</span><div class="text-sm font-bold" style="color:#a78bfa;">45g (405 kcal)</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Carbs</span><div class="text-sm font-bold" style="color:var(--color-strength);">80g (320 kcal)</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Deficit</span><div class="text-sm font-bold" style="color:var(--color-race);">~1,100 kcal/day</div></div>
+                    </div>
+                </div>
+
+                <div class="section-header"><span class="section-title">Sample Home Day (~1,450 kcal)</span></div>
+                <div style="overflow-x:auto;margin-bottom:24px;">
+                    <table class="splits-table">
+                        <thead><tr><th>Meal</th><th>Time</th><th>Food</th><th>Protein</th><th>Cals</th></tr></thead>
+                        <tbody>
+                            <tr><td>Pre-run</td><td>6:00 AM</td><td>Black coffee + 1 banana (run days only)</td><td>1g</td><td>90</td></tr>
+                            <tr><td>Breakfast</td><td>8:30 AM</td><td>1 scoop whey + 40g oats + 5 almonds</td><td>30g</td><td>310</td></tr>
+                            <tr><td>Lunch</td><td>1:00 PM</td><td>Soy chunk sabzi (75g dry) + 1 roti + salad</td><td>32g</td><td>350</td></tr>
+                            <tr><td>Post-train</td><td>4:30 PM</td><td>1 scoop whey + water</td><td>24g</td><td>122</td></tr>
+                            <tr><td>Snack</td><td>5:30 PM</td><td>150g paneer tikka (dry) OR 4 boiled eggs</td><td>18&ndash;24g</td><td>200&ndash;280</td></tr>
+                            <tr><td>Dinner</td><td>8:30 PM</td><td>Moong dal + big salad + 40g rice + curd</td><td>18g</td><td>300</td></tr>
+                            <tr style="font-weight:700;"><td colspan="3">TOTAL</td><td>~150g</td><td>~1,450</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PHASE 2 & 4: PSMF -->
+                <div class="section-header"><span class="section-title">PSMF Sprint &mdash; Days 17&ndash;30, 59&ndash;72 (~900 kcal)</span></div>
+                <div class="card-glass" style="border-left: 3px solid var(--color-strength); margin-bottom: 16px;">
+                    <div class="grid-4" style="gap:8px;">
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Protein</span><div class="text-sm font-bold" style="color:var(--color-cricket);">200g (800 kcal)</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Fat</span><div class="text-sm font-bold" style="color:#a78bfa;">&lt;20g</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Carbs</span><div class="text-sm font-bold" style="color:var(--color-strength);">&lt;25g</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Deficit</span><div class="text-sm font-bold" style="color:var(--color-race);">~1,600 kcal/day</div></div>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-bottom:24px;">
+                    <div class="card">
+                        <h4 style="color:var(--color-strength);margin-bottom:8px;">PSMF &mdash; Home Day (No Chicken)</h4>
+                        <table class="splits-table" style="font-size:0.75rem;">
+                            <thead><tr><th>Meal</th><th>Time</th><th>Food</th><th>P</th><th>Cal</th></tr></thead>
+                            <tbody>
+                                <tr><td>Shake 1</td><td>7:30</td><td>1 scoop whey + water + black coffee</td><td>24g</td><td>122</td></tr>
+                                <tr><td>Meal 1</td><td>10:00</td><td>10 egg whites + 1 whole egg + spinach bhurji</td><td>42g</td><td>215</td></tr>
+                                <tr><td>Shake 2</td><td>1:00</td><td>1 scoop whey + 200ml egg white liquid</td><td>~46g</td><td>222</td></tr>
+                                <tr><td>Meal 2</td><td>4:30</td><td>75g soy chunks (soaked) + onion-tomato prep</td><td>39g</td><td>170</td></tr>
+                                <tr><td>Shake 3</td><td>7:00</td><td>1 scoop whey + water (post-workout if PM)</td><td>24g</td><td>122</td></tr>
+                                <tr><td>Meal 3</td><td>9:00</td><td>2 whole eggs + large salad</td><td>12g</td><td>170</td></tr>
+                                <tr style="font-weight:700;"><td colspan="3">TOTAL</td><td>~187g</td><td>~1,020</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <h4 style="color:var(--color-strength);margin-bottom:8px;">PSMF &mdash; Chicken Day (2&ndash;3x/wk)</h4>
+                        <table class="splits-table" style="font-size:0.75rem;">
+                            <thead><tr><th>Meal</th><th>Time</th><th>Food</th><th>P</th><th>Cal</th></tr></thead>
+                            <tbody>
+                                <tr><td>Shake 1</td><td>7:30</td><td>1 scoop whey + water + black coffee</td><td>24g</td><td>122</td></tr>
+                                <tr><td>Meal 1</td><td>10:00</td><td>6 egg whites + 1 whole egg scramble + greens</td><td>28g</td><td>145</td></tr>
+                                <tr><td>Meal 2</td><td>1:00</td><td>250g tandoori/grilled chicken breast (ordered)</td><td>60g</td><td>~350</td></tr>
+                                <tr><td>Shake 2</td><td>4:30</td><td>1 scoop whey + water</td><td>24g</td><td>122</td></tr>
+                                <tr><td>Meal 3</td><td>8:30</td><td>50g soy chunks + 4 egg whites + salad</td><td>~30g</td><td>160</td></tr>
+                                <tr style="font-weight:700;"><td colspan="3">TOTAL</td><td>~166g</td><td>~900</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-xs text-tertiary" style="margin-top:6px;">Order plain grilled/tandoori. Avoid butter chicken, gravies, tikka masala.</p>
+                    </div>
+                </div>
+
+                <!-- PHASE 5: HYROX Prep -->
+                <div class="section-header"><span class="section-title">HYROX Prep &mdash; Days 73&ndash;100 (~1,600 kcal)</span></div>
+                <div class="card-glass" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 16px;">
+                    <div class="grid-4" style="gap:8px;">
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Protein</span><div class="text-sm font-bold" style="color:var(--color-cricket);">170g</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Fat</span><div class="text-sm font-bold" style="color:#a78bfa;">45g</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Carbs</span><div class="text-sm font-bold" style="color:var(--color-strength);">120g</div></div>
+                        <div style="text-align:center;"><span class="text-xs text-tertiary">Focus</span><div class="text-sm font-bold" style="color:var(--color-hyrox);">Performance</div></div>
+                    </div>
+                    <p class="text-xs text-tertiary" style="margin-top:8px;">60% of carbs around workouts: banana + oats pre-workout, rice/roti post-workout. Moderate deficit, performance priority.</p>
+                </div>
+
+                <!-- Eat-Out Rules -->
+                <div class="card-glass" style="border-left: 3px solid var(--color-strength); margin-bottom: 24px;">
+                    <h4 style="color: var(--color-strength); margin-bottom: 8px;">Eat-Out Day Rules (Apr 11&ndash;12, Apr 24&ndash;26, May 14)</h4>
+                    <ul class="meal-list">
+                        <li><strong>Morning:</strong> Shake only (1 scoop, 122 kcal) &mdash; bank calories for dinner</li>
+                        <li><strong>Choose:</strong> tandoori chicken, grilled options, tikka, paneer tikka, dal. Avoid: naan, biryani, fried starters, butter chicken gravy</li>
+                        <li><strong>Target:</strong> ~1,800&ndash;2,000 kcal total (maintenance-ish) &mdash; NOT a cheat day</li>
+                        <li><strong>No alcohol.</strong> If unavoidable: max 2 vodka soda or whisky neat (no beer/cocktails)</li>
+                        <li><strong>Day after:</strong> extra 10,000 steps + back to plan immediately</li>
+                        <li><strong>Apr 25 (day before 10K):</strong> slightly higher carbs &mdash; rice/roti with dinner for glycogen</li>
+                    </ul>
+                </div>
+
+                <!-- Supplement Stack (Blueprint-enhanced) -->
+                <div class="section-header"><span class="section-title">Supplement Stack</span></div>
+                <div class="card-glass" style="border-left: 3px solid var(--color-cricket); margin-bottom: 16px;">
+                    <div class="flex items-center gap-sm" style="margin-bottom:10px;">
+                        <span class="text-sm font-bold" style="color:var(--color-cricket);">Core Stack (Non-Negotiable)</span>
+                        <span class="pill pill-sm" style="background:rgba(57,255,20,0.1);color:var(--color-running);font-size:0.6rem;">All available in India</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="splits-table" style="min-width:500px;">
+                            <thead><tr><th>Supplement</th><th>Dose</th><th>Timing</th><th>Why</th><th>India Brand</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Freak Labs Whey</strong></td><td>2&ndash;3 scoops/day</td><td>AM, post-workout, PM</td><td>48&ndash;72g protein + 6&ndash;9g creatine</td><td>Freak Labs</td></tr>
+                                <tr><td><strong>Omega-3 Fish Oil</strong></td><td>2&ndash;3g EPA+DHA</td><td>With lunch</td><td>Heart, brain, anti-inflammatory (CRP 4.0)</td><td>Carbamide Forte / HealthKart</td></tr>
+                                <tr><td><strong>Vitamin D3 + K2</strong></td><td>4000 IU D3 + 100mcg K2</td><td>With fatty meal</td><td>Level 35.8 &mdash; target &gt;50. K2 directs calcium to bones</td><td>HealthyHey / Naturyz</td></tr>
+                                <tr><td><strong>Magnesium Glycinate</strong></td><td>400mg</td><td>Before bed</td><td>Sleep quality, PSMF electrolytes, muscle cramps</td><td>Now Foods (iHerb) / Carbamide</td></tr>
+                                <tr><td><strong>Ashwagandha KSM-66</strong></td><td>600mg</td><td>Morning</td><td>Cortisol ↓, testosterone ↑ (458 → target 550+)</td><td>Himalaya / Kapiva</td></tr>
+                                <tr><td><strong>Curcumin (95%)</strong></td><td>500mg + 10mg piperine</td><td>With lunch &amp; dinner</td><td>CRP reduction, anti-inflammatory (Bryan: 2g/day)</td><td>Naturyz / HealthyHey</td></tr>
+                                <tr><td><strong>NAC</strong></td><td>600&ndash;1200mg</td><td>Evening</td><td>Glutathione precursor, liver support (SGPT 55)</td><td>Now Foods (iHerb) / Zenith</td></tr>
+                                <tr><td><strong>Electrolytes (PSMF)</strong></td><td>Lite salt 1&ndash;2 tsp</td><td>All day</td><td>Sodium + potassium &mdash; critical during 900 kcal phases</td><td>Tata Lite Salt</td></tr>
+                                <tr><td><strong>Psyllium (Isabgol)</strong></td><td>1 tbsp in water</td><td>Before bed</td><td>Fibre during PSMF &mdash; gut motility</td><td>Sat-Isabgol</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-glass" style="border-left: 3px solid #00b4d8; margin-bottom: 16px;">
+                    <div class="flex items-center gap-sm" style="margin-bottom:10px;">
+                        <span class="text-sm font-bold" style="color:#00b4d8;">Blueprint-Inspired Add-Ons (Level 2)</span>
+                        <span class="pill pill-sm" style="background:rgba(0,180,216,0.1);color:#00b4d8;font-size:0.6rem;">For longevity + blood sugar</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="splits-table" style="min-width:500px;">
+                            <thead><tr><th>Supplement</th><th>Dose</th><th>Timing</th><th>Why (Bryan&rsquo;s Protocol)</th><th>India Brand</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>CoQ10 (Ubiquinol)</strong></td><td>100&ndash;200mg</td><td>Morning with fat</td><td>Cellular energy, heart. Bryan takes 100mg/day</td><td>Now Foods / Zenith Nutrition</td></tr>
+                                <tr><td><strong>Taurine</strong></td><td>1&ndash;3g</td><td>Evening</td><td>Heart, longevity. Bryan takes 3g/day. Cheap and effective</td><td>Now Foods (iHerb) / MyProtein</td></tr>
+                                <tr><td><strong>Zinc</strong></td><td>15&ndash;30mg</td><td>Evening (not with meals)</td><td>Testosterone, immune. Bryan: 15mg. Your T=458, push it higher</td><td>Carbamide Forte / Naturyz</td></tr>
+                                <tr><td><strong>Ceylon Cinnamon</strong></td><td>1g (1/2 tsp)</td><td>In oats or tea</td><td>Blood sugar control. Bryan uses it. HbA1c 6.0% — you need this</td><td>True Elements / Urban Platter</td></tr>
+                                <tr><td><strong>Berberine</strong></td><td>500mg 2x/day</td><td>Before meals</td><td>Natural metformin alternative. Lowers fasting glucose + HbA1c. Highly studied</td><td>Himalaya / Now Foods (iHerb)</td></tr>
+                                <tr><td><strong>Prebiotic Fiber (Inulin)</strong></td><td>5&ndash;10g</td><td>Morning shake</td><td>Gut microbiome. Bryan: GOS + inulin + arabinogalactan daily</td><td>Now Foods / HealthyHey</td></tr>
+                                <tr><td><strong>ACV (liquid)</strong></td><td>1 tbsp in water</td><td>Before lunch &amp; dinner</td><td>Blood sugar blunting. Bryan uses it in Super Veggie. Well-studied</td><td>WOW / Bragg&rsquo;s</td></tr>
+                                <tr><td><strong>Collagen Peptides</strong></td><td>10&ndash;15g</td><td>Morning shake</td><td>Joints, skin. Bryan: 22g/day. Good during heavy training deficit</td><td>Wellbeing Nutrition / HK Vitals</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-tertiary" style="margin-top:8px;"><strong>Budget priority order:</strong> Core stack first. Then add Berberine (blood sugar #1 priority), CoQ10, Taurine, Collagen. Ceylon cinnamon + ACV are kitchen items, nearly free.</p>
+                </div>
+
+                <!-- Blueprint Longevity Habits -->
+                <div class="card-glass" style="border-left: 3px solid #a78bfa; margin-bottom: 24px;">
+                    <h4 style="color: #a78bfa; margin-bottom: 8px;">Blueprint Daily Habits (Adapted for Kash)</h4>
+                    <p class="text-xs text-secondary" style="margin-bottom:8px;">Borrowed from Bryan Johnson's protocol — adapted to your pre-diabetic, high-deficit context.</p>
                     <div class="grid-2" style="gap:12px;">
                         <ul class="meal-list">
-                            <li><strong>Vitamin D3:</strong> 5,000 IU/day (current: 35.8, target: 50-70)</li>
-                            <li><strong>Ashwagandha KSM-66:</strong> 600mg/day (testosterone + stress)</li>
-                            <li><strong>Omega-3 (Flaxseed oil):</strong> 1 tbsp/day (HDL + anti-inflammatory)</li>
+                            <li><strong>Post-meal walk:</strong> 5&ndash;10 min after every meal (blood sugar blunting)</li>
+                            <li><strong>Morning light:</strong> 10 min sunlight within 30 min of waking (circadian reset)</li>
+                            <li><strong>Stop fluids 4 hrs before bed</strong> (no waking to urinate)</li>
+                            <li><strong>Screens off by 8:30 PM</strong> &mdash; red/amber lighting only</li>
                         </ul>
                         <ul class="meal-list">
-                            <li><strong>Turmeric + Black Pepper:</strong> with lunch &amp; dinner (CRP reduction)</li>
-                            <li><strong>Cinnamon:</strong> ½ tsp/day in oats or tea (insulin sensitivity)</li>
-                            <li><strong>Zinc (pumpkin seeds):</strong> 1 tbsp/day (testosterone support)</li>
+                            <li><strong>Sleep 7&ndash;8 hrs:</strong> Same time every night. Non-negotiable.</li>
+                            <li><strong>Movement breaks:</strong> 2&ndash;3 min every 30 min of sitting (Bryan&rsquo;s protocol)</li>
+                            <li><strong>No alcohol:</strong> Raises resting HR 5&ndash;10 bpm, destroys sleep quality</li>
+                            <li><strong>Fermented foods:</strong> 1&ndash;2 tbsp daily (curd, pickle, kimchi) for gut health</li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Anti-Inflammatory Foods -->
-                <div class="card-glass" style="border-left: 3px solid var(--color-strength); margin-bottom: 24px;">
-                    <h4 style="color: var(--color-strength); margin-bottom: 8px;">Anti-Inflammatory Focus (ESR 14, CRP 4.0)</h4>
-                    <p class="text-sm text-secondary">Daily: turmeric + black pepper in meals, ginger tea (2x), leafy greens, walnuts/flaxseed. Reduce: fried food, excess oil, processed snacks, refined sugar. Green tea 2 cups/day (liver protection). Avoid tea/coffee WITH meals (inhibits iron absorption — 1 hr gap).</p>
-                </div>
-
-                <!-- Hydration -->
-                <div class="card-glass" style="border-left: 3px solid var(--color-info); margin-bottom: 24px;">
-                    <h4 style="color: var(--color-info); margin-bottom: 8px;">Hydration + Timing</h4>
-                    <p class="text-sm text-secondary">3–4 litres water daily. ACV (1 tbsp in water) before lunch &amp; dinner. Methi water first thing AM. Black coffee pre-workout only. Buttermilk with lunch. Green tea 2x/day. No sugary drinks. Mumbai heat demands extra electrolytes Apr–Jun.</p>
-                </div>
-
-                <!-- Race Week Nutrition -->
-                <div class="section-header"><span class="section-title">Race Week Protocol</span></div>
-                <div class="card" style="margin-bottom: 24px;">
-                    <div class="grid-3">
-                        <div>
-                            <h4 class="text-race" style="margin-bottom: 6px;">3 Days Before</h4>
-                            <p class="text-sm text-secondary">Increase carbs to 7–10g/kg. Brown rice, oats, sweet potato, whole grain bread. Extra hydration. Keep blood sugar rules.</p>
-                        </div>
-                        <div>
-                            <h4 class="text-race" style="margin-bottom: 6px;">Night Before</h4>
-                            <p class="text-sm text-secondary">Familiar dinner only. No new foods. No spicy. Zero alcohol. Early bed. Light carbs + protein.</p>
-                        </div>
-                        <div>
-                            <h4 class="text-race" style="margin-bottom: 6px;">Race Morning</h4>
-                            <p class="text-sm text-secondary">Eat 2.5 hrs before. Oats + banana + peanut butter + coffee. Slow-release carbs for blood sugar stability.</p>
-                        </div>
-                    </div>
+                <!-- Medical Safety -->
+                <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 24px;">
+                    <h4 style="color: var(--color-race); margin-bottom: 8px;">Medical &amp; Safety</h4>
+                    <ul class="meal-list">
+                        <li><strong>See a doctor before starting</strong> &mdash; discuss PSMF with your pre-diabetic profile</li>
+                        <li><strong>Retest FBS + HbA1c</strong> at Day 58 and Day 100</li>
+                        <li><strong>Retest SGPT</strong> at Day 100</li>
+                        <li><strong>PSMF safety:</strong> if dizzy / nauseous / can't complete runs → switch to structured cut</li>
+                        <li><strong>Hydration:</strong> 3&ndash;4L daily, more during PSMF and on run days</li>
+                        <li><strong>Sleep:</strong> 7&ndash;8 hours NON-NEGOTIABLE</li>
+                        <li><strong>No PSMF in the 2 weeks before HYROX</strong> &mdash; you need glycogen</li>
+                        <li><strong>No consecutive run days during PSMF</strong> at 90+ kg &mdash; joint stress</li>
+                    </ul>
                 </div>
             </div>
 
@@ -2247,7 +2412,7 @@
                                 </svg>
                                 <div class="calorie-ring-label">
                                     <span class="calorie-ring-value" id="calorie-total">0</span>
-                                    <span class="calorie-ring-sub">/ 2,100 kcal</span>
+                                    <span class="calorie-ring-sub" id="calorie-target-label">/ 1,400 kcal</span>
                                 </div>
                             </div>
                         </div>
@@ -2257,17 +2422,17 @@
                                 <div class="macro-bar-row">
                                     <span class="macro-bar-label">Protein</span>
                                     <div class="macro-bar-track"><div class="macro-bar-fill" id="protein-bar" style="width:0%; background: var(--color-cricket);"></div></div>
-                                    <span class="macro-bar-value" id="protein-value">0/160g</span>
+                                    <span class="macro-bar-value" id="protein-value">0/180g</span>
                                 </div>
                                 <div class="macro-bar-row">
                                     <span class="macro-bar-label">Carbs</span>
                                     <div class="macro-bar-track"><div class="macro-bar-fill" id="carbs-bar" style="width:0%; background: var(--color-strength);"></div></div>
-                                    <span class="macro-bar-value" id="carbs-value">0/170g</span>
+                                    <span class="macro-bar-value" id="carbs-value">0/80g</span>
                                 </div>
                                 <div class="macro-bar-row">
                                     <span class="macro-bar-label">Fat</span>
                                     <div class="macro-bar-track"><div class="macro-bar-fill" id="fat-bar" style="width:0%; background: #a78bfa;"></div></div>
-                                    <span class="macro-bar-value" id="fat-value">0/65g</span>
+                                    <span class="macro-bar-value" id="fat-value">0/45g</span>
                                 </div>
                             </div>
                         </div>
@@ -2299,73 +2464,83 @@
             <div id="diet-shopping-content" style="display:none;">
                 <div class="grid-2" style="margin-bottom: 24px;">
                     <div class="card">
-                        <h4 class="text-green" style="margin-bottom: 10px;">Protein Sources</h4>
+                        <h4 class="text-green" style="margin-bottom: 10px;">Protein Sources (Weekly)</h4>
                         <ul class="meal-list">
-                            <li>Chicken breast/thigh: 1.5 kg</li>
-                            <li>Eggs: 2.5 dozen</li>
-                            <li>Paneer: 400g</li>
-                            <li>Whey protein: 1 tub (ongoing)</li>
-                            <li>Moong dal: 500g (for chilla + dal)</li>
-                            <li>Mixed sprouts: 500g</li>
+                            <li><strong>Freak Labs Whey:</strong> 1 tub (ongoing)</li>
+                            <li><strong>Keggs Liquid Egg Whites:</strong> 2L (secret weapon)</li>
+                            <li><strong>Eggs:</strong> 5 dozen (whites heavy, 2&ndash;3 whole/day)</li>
+                            <li><strong>Soy Chunks (Nutrela):</strong> 500g dry</li>
+                            <li><strong>Paneer (low-fat):</strong> 300g (strategic use only)</li>
+                            <li><strong>Tofu (firm):</strong> 400g</li>
+                            <li><strong>Moong dal:</strong> 500g</li>
+                            <li><strong>Chicken (ordered):</strong> 2&ndash;3x/week tandoori/grilled via Swiggy</li>
                         </ul>
                     </div>
                     <div class="card">
-                        <h4 class="text-orange" style="margin-bottom: 10px;">Grains & Pulses (Low-GI)</h4>
+                        <h4 class="text-orange" style="margin-bottom: 10px;">Carbs &amp; Fibre (Structured Cut only)</h4>
                         <ul class="meal-list">
-                            <li>Brown rice / quinoa: 1 kg (NO white rice)</li>
-                            <li>Steel-cut oats: 500g</li>
-                            <li>Multigrain atta/roti: 1 kg</li>
-                            <li>Masoor dal: 500g</li>
-                            <li>Rajma: 500g (high fiber)</li>
-                            <li>Roasted chana: 250g</li>
+                            <li>Oats (steel-cut): 500g</li>
+                            <li>Brown rice: 1 kg (skip during PSMF)</li>
+                            <li>Multigrain roti: 1 kg atta</li>
+                            <li>Bananas: 7 (pre-run fuel)</li>
+                            <li>Broccoli + cauliflower: 1 kg (Blueprint staple)</li>
+                            <li>Spinach, methi, palak: 1 kg</li>
+                            <li>Mixed veggies: 2 kg (sabzi, salads)</li>
                         </ul>
                     </div>
                     <div class="card">
-                        <h4 class="text-cyan" style="margin-bottom: 10px;">Dairy & Fats</h4>
+                        <h4 class="text-cyan" style="margin-bottom: 10px;">Fats &amp; Dairy</h4>
                         <ul class="meal-list">
-                            <li>Curd: 2L</li>
-                            <li>Milk: 1.5L</li>
-                            <li>Ghee: 200ml (moderate use)</li>
-                            <li>Buttermilk: 1L</li>
-                            <li>Olive oil: 500ml (for salads)</li>
-                            <li>Flaxseed oil: 200ml (omega-3)</li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h4 style="color: #a78bfa; margin-bottom: 10px;">Fruits, Veg & Anti-Inflammatory</h4>
-                        <ul class="meal-list">
-                            <li>Spinach, methi, palak: 1 kg (iron + folate)</li>
-                            <li>Mixed vegetables: 2–3 kg</li>
-                            <li>Onions, tomatoes, ginger, garlic, turmeric</li>
-                            <li>Low-GI fruit: apples, guava, pears</li>
-                            <li>Lemons: 10 (vitamin C for iron absorption)</li>
-                            <li>Bananas: 7</li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h4 class="text-race" style="margin-bottom: 10px;">Supplements & Specifics</h4>
-                        <ul class="meal-list">
+                            <li>Curd: 1L (homemade hung curd &rarr; Greek yogurt)</li>
+                            <li>EVOO (Extra Virgin Olive Oil): 500ml (Blueprint: 3 tbsp/day)</li>
+                            <li>Peanut butter (natural): 250g</li>
                             <li>Almonds: 200g + Walnuts: 200g</li>
-                            <li>Pumpkin seeds: 100g (zinc)</li>
-                            <li>Flaxseeds: 200g (ground)</li>
-                            <li>Cinnamon powder: 50g</li>
-                            <li>Apple cider vinegar: 500ml</li>
-                            <li>Methi (fenugreek) seeds: 100g</li>
-                            <li>Ashwagandha KSM-66: 600mg caps</li>
-                            <li>Vitamin D3: 5000 IU caps</li>
-                            <li>Green tea bags: 1 box</li>
-                            <li>Electrolyte tabs</li>
+                            <li>Flaxseeds (ground): 200g (omega-3)</li>
+                            <li>Cooking oil: minimal use during deficit</li>
                         </ul>
                     </div>
                     <div class="card">
-                        <h4 style="color: var(--color-info); margin-bottom: 10px;">Avoid / Reduce</h4>
+                        <h4 style="color: #a78bfa; margin-bottom: 10px;">Blueprint Foods &amp; Anti-Inflammatory</h4>
                         <ul class="meal-list">
-                            <li>White rice → switch to brown rice</li>
-                            <li>White bread → multigrain only</li>
-                            <li>Fried foods → grill/bake instead</li>
-                            <li>Refined sugar → jaggery (moderate)</li>
-                            <li>Processed snacks → roasted chana, sprouts</li>
-                            <li>Alcohol → zero or absolute minimum</li>
+                            <li>Ginger root: fresh, weekly</li>
+                            <li>Garlic: 1&ndash;2 bulbs/week (Kyolic if available)</li>
+                            <li>Turmeric + black pepper: daily staple</li>
+                            <li>Lemons: 10 (ACV, iron absorption, salads)</li>
+                            <li>Berries: blueberries/strawberries (antioxidants)</li>
+                            <li>Fermented foods: pickle, kimchi, or sauerkraut</li>
+                            <li>Ceylon cinnamon: 50g powder</li>
+                            <li>ACV (Bragg's or WOW): 500ml</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-top: 2px solid var(--color-race);">
+                        <h4 class="text-race" style="margin-bottom: 10px;">Supplement Shopping List</h4>
+                        <ul class="meal-list">
+                            <li><strong>Core:</strong> Omega-3 fish oil (Carbamide Forte)</li>
+                            <li><strong>Core:</strong> Vitamin D3+K2 combo (HealthyHey/Naturyz)</li>
+                            <li><strong>Core:</strong> Magnesium Glycinate (Now Foods via iHerb)</li>
+                            <li><strong>Core:</strong> Ashwagandha KSM-66 600mg (Himalaya/Kapiva)</li>
+                            <li><strong>Core:</strong> Curcumin 95% + piperine (Naturyz)</li>
+                            <li><strong>Core:</strong> NAC 600mg (Zenith/iHerb)</li>
+                            <li><strong>Blueprint:</strong> Berberine 500mg (blood sugar — top priority)</li>
+                            <li><strong>Blueprint:</strong> CoQ10 100mg (Zenith Nutrition)</li>
+                            <li><strong>Blueprint:</strong> Taurine 1g caps (MyProtein/iHerb)</li>
+                            <li><strong>Blueprint:</strong> Collagen peptides (HK Vitals)</li>
+                            <li><strong>PSMF:</strong> Tata Lite Salt (electrolytes)</li>
+                            <li><strong>PSMF:</strong> Sat-Isabgol (psyllium husk)</li>
+                            <li><strong>PSMF:</strong> Inulin prebiotic (HealthyHey)</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: var(--color-info); margin-bottom: 10px;">Hard Rules</h4>
+                        <ul class="meal-list">
+                            <li>NO white rice, white bread, maida</li>
+                            <li>NO fried foods &mdash; grill/bake/air-fry only</li>
+                            <li>NO refined sugar &mdash; monk fruit or stevia if needed</li>
+                            <li>NO alcohol (raises HR 5&ndash;10 bpm, destroys sleep)</li>
+                            <li>NO processed snacks or packaged food</li>
+                            <li>NO naan, biryani, butter chicken, cream-based gravies</li>
+                            <li>NO fruit juice (eat whole fruit only)</li>
+                            <li>LIMIT paneer &mdash; 265 cal/100g is expensive in a deficit</li>
                         </ul>
                     </div>
                 </div>
@@ -2374,6 +2549,37 @@
     </section>
 
     <script>
+        // Update diet phase indicator on load
+        (function updateDietPhase() {
+            const start = new Date('2026-04-11');
+            const day = Math.max(1, Math.min(100, Math.ceil((new Date() - start) / (1000*60*60*24)) + 1));
+            const phases = [
+                { d:[1,16], label:'PHASE 1: MODERATE CUT', dates:'Day 1–16 · Apr 11–26', desc:'~1,400 kcal/day. 10K race on Apr 26 — no PSMF during race prep. 180g protein from whey + eggs + soy chunks + chicken 2-3x/wk. Deficit ~1,100 kcal/day. Expected loss: 3–4 kg.', cal:'1,400', p:'180g', c:'80g', f:'45g', csub:'kcal/day · deficit ~1,100', psub:'1.8g/kg · muscle sparing', ccsub:'oats, roti, fruit, soy', fsub:'eggs, peanut butter, oil', color:'var(--color-race)' },
+                { d:[17,30], label:'PHASE 2: PSMF SPRINT', dates:'Day 17–30 · Apr 27–May 10', desc:'~900 kcal/day. Protein-Sparing Modified Fast. 200g protein, near-zero carbs/fat. Aggressive deficit ~1,600 kcal/day. Expected loss: 4–5 kg. Easy/LISS runs only.', cal:'900', p:'200g', c:'<25g', f:'<20g', csub:'kcal/day · deficit ~1,600', psub:'2g/kg · maximum sparing', ccsub:'from soy + greens only', fsub:'incidental from eggs + soy', color:'var(--color-strength)' },
+                { d:[31,58], label:'PHASE 3: STRUCTURED CUT', dates:'Day 31–58 · May 11–Jun 7', desc:'~1,500 kcal/day. Metabolic reset after PSMF. Build weekly mileage ~10%/week, cap at 30-35 km/week. Expected loss: 4–5 kg.', cal:'1,500', p:'180g', c:'100g', f:'50g', csub:'kcal/day · deficit ~1,000', psub:'1.8g/kg · muscle sparing', ccsub:'oats, rice, roti, fruit', fsub:'eggs, PB, cooking oil', color:'var(--color-running)' },
+                { d:[59,72], label:'PHASE 4: PSMF SPRINT 2', dates:'Day 59–72 · Jun 8–21', desc:'~900 kcal/day. Second PSMF sprint. Reduce strength volume 40%, all runs easy/LISS. Expected loss: 3–3.5 kg.', cal:'900', p:'200g', c:'<25g', f:'<20g', csub:'kcal/day · deficit ~1,600', psub:'2g/kg · maximum sparing', ccsub:'from soy + greens only', fsub:'incidental from eggs + soy', color:'var(--color-strength)' },
+                { d:[73,100], label:'PHASE 5: HYROX PREP', dates:'Day 73–100 · Jun 22–Jul 19', desc:'~1,600 kcal/day. Performance focus — carbs return for HYROX training. 8x1km intervals, station work. Moderate deficit. Expected loss: 3–4 kg.', cal:'1,600', p:'170g', c:'120g', f:'45g', csub:'kcal/day · moderate deficit', psub:'slightly lower for carb room', ccsub:'fuel for 8x1km + stations', fsub:'same as structured cut', color:'var(--color-hyrox)' }
+            ];
+            const ph = phases.find(p => day >= p.d[0] && day <= p.d[1]) || phases[0];
+            const el = (id) => document.getElementById(id);
+            if (el('diet-phase-label')) el('diet-phase-label').textContent = ph.label;
+            if (el('diet-phase-dates')) el('diet-phase-dates').innerHTML = ph.dates;
+            if (el('diet-phase-desc')) el('diet-phase-desc').textContent = ph.desc;
+            if (el('diet-phase-card')) el('diet-phase-card').style.borderLeftColor = ph.color;
+            if (el('diet-cal-target')) el('diet-cal-target').textContent = ph.cal;
+            if (el('diet-protein-target')) el('diet-protein-target').textContent = ph.p;
+            if (el('diet-carbs-target')) el('diet-carbs-target').textContent = ph.c;
+            if (el('diet-fat-target')) el('diet-fat-target').textContent = ph.f;
+            if (el('diet-cal-sub')) el('diet-cal-sub').textContent = ph.csub;
+            if (el('diet-protein-sub')) el('diet-protein-sub').textContent = ph.psub;
+            if (el('diet-carbs-sub')) el('diet-carbs-sub').textContent = ph.ccsub;
+            if (el('diet-fat-sub')) el('diet-fat-sub').textContent = ph.fsub;
+            // Highlight active phase segment
+            document.querySelectorAll('.diet-phase-seg').forEach(seg => {
+                seg.style.opacity = seg.dataset.phase == phases.indexOf(ph) + 1 ? '1' : '0.3';
+            });
+        })();
+
         function setDietView(view) {
             document.getElementById('diet-plan-content').style.display = view === 'plan' ? '' : 'none';
             document.getElementById('diet-tracker-content').style.display = view === 'tracker' ? '' : 'none';
@@ -2569,8 +2775,8 @@
 
             <!-- Injury Prevention Note -->
             <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 28px;">
-                <h4 class="text-race" style="margin-bottom: 8px;">⚠️ Injury Risk at 93.5 kg</h4>
-                <p class="text-sm text-secondary">Front foot landing creates 9× body weight forces (~840 kg!). Maintain <1% body mass dehydration loss during bowling. Hydrate between overs. Banana + water provides optimal recovery (COX2 anti-inflammatory benefits superior to sports drinks).</p>
+                <h4 class="text-race" style="margin-bottom: 8px;">⚠️ Injury Risk at 98.4 kg</h4>
+                <p class="text-sm text-secondary">Front foot landing creates 9× body weight forces (~885 kg!). Maintain <1% body mass dehydration loss during bowling. Hydrate between overs. Banana + water provides optimal recovery (COX2 anti-inflammatory benefits superior to sports drinks).</p>
             </div>
         </div>
     </section>
@@ -2649,14 +2855,40 @@
                 </div>
             </div>
 
-            <!-- Hyrox -->
+            <!-- HYROX Delhi -->
+            <div class="card" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
+                <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
+                    <span class="pill pill-sm pill-hyrox">UPCOMING</span>
+                    <span class="text-xs text-secondary">Jul 26, 2026</span>
+                </div>
+                <h3>HYROX Delhi — Men's Singles</h3>
+                <p class="text-sm text-secondary" style="margin-top: 6px;">First Hyrox ever. Goal: finish strong, learn pacing and transitions. At ~78 kg post-100-day transformation. Conservative station approach — bank energy for running segments. Don't blow up on SkiErg or Rowing.</p>
+                <details style="margin-top: 12px;">
+                    <summary class="text-sm" style="cursor: pointer; color: var(--color-hyrox);">View Station Strategy →</summary>
+                    <table class="splits-table" style="margin-top: 10px;">
+                        <thead><tr><th>#</th><th>Station</th><th>Strategy (First Race — Conservative)</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>SkiErg 1km</td><td>Easy pulls, find rhythm. Don't redline — 7 stations left.</td></tr>
+                            <tr><td>2</td><td>Sled Push 50m</td><td>Low centre, drive with legs. Steady pace, save grip.</td></tr>
+                            <tr><td>3</td><td>Sled Pull 50m</td><td>Hand-over-hand, stay low. Short pulls, constant tension.</td></tr>
+                            <tr><td>4</td><td>Burpee Broad Jumps 80m</td><td>Steady rhythm — don't rush. Gel before this station.</td></tr>
+                            <tr><td>5</td><td>Rowing 1km</td><td>2:05–2:15/500m pace. Controlled — don't sprint.</td></tr>
+                            <tr><td>6</td><td>Farmer's Carry 200m</td><td>Grip and walk. Shake hands at turns. Breathe.</td></tr>
+                            <tr><td>7</td><td>Sandbag Lunges 100m</td><td>Short steps, upright posture. Gel before if needed.</td></tr>
+                            <tr><td>8</td><td>Wall Balls 75–100</td><td>Sets of 10, rest 5 breaths. Final push — everything left.</td></tr>
+                        </tbody>
+                    </table>
+                </details>
+            </div>
+
+            <!-- Hyrox Mumbai -->
             <div class="card" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                     <span class="pill pill-sm pill-hyrox">UPCOMING</span>
                     <span class="text-xs text-secondary">Sep 7, 2026</span>
                 </div>
-                <h3>Hyrox Mumbai — Goal: Finish Strong</h3>
-                <p class="text-sm text-secondary" style="margin-top: 6px;">8×1km runs + 8 stations. Running pace: 6:15–6:30/km (conservative). First Hyrox — learn the format.</p>
+                <h3>Hyrox Mumbai — Goal: Sub-1:30</h3>
+                <p class="text-sm text-secondary" style="margin-top: 6px;">Second Hyrox — use Delhi learnings to push for Sub-1:30. 8x1km runs + 8 stations. At ~78 kg, running pace: 5:15–5:30/km. Refine station pacing based on Delhi splits.</p>
                 <details style="margin-top: 12px;">
                     <summary class="text-sm" style="cursor: pointer; color: var(--color-hyrox);">View Station Strategy →</summary>
                     <table class="splits-table" style="margin-top: 10px;">
@@ -2682,8 +2914,8 @@
                     <span class="text-xs text-secondary">Oct 18, 2026</span>
                 </div>
                 <h3>Delhi Half Marathon</h3>
-                <p class="text-sm" style="color: var(--color-running); margin: 6px 0;">A: Sub-2:10 (6:10/km) | B: Sub-2:20 (6:37/km) | C: Sub-2:41 (PB)</p>
-                <p class="text-sm text-secondary">First 5 km should feel uncomfortably easy. The race begins at km 15. Delhi October weather ideal (~22–28°C). Gel at km 8 and km 15.</p>
+                <p class="text-sm" style="color: var(--color-running); margin: 6px 0;">A: Sub-2:00 (5:41/km) | B: Sub-2:10 (6:10/km) | C: Sub-2:20 (6:37/km)</p>
+                <p class="text-sm text-secondary">At ~78 kg (vs 95 kg at Juhu 2:41) — 17 kg lighter = ~30-40 min faster potential. Delhi October weather ideal (~22–28°C). Gel at km 8 and km 15. Blueprint: post-race walk 10 min, collagen + whey within 30 min.</p>
             </div>
 
             <!-- Kolkata 25K -->
@@ -2703,9 +2935,9 @@
                     <span class="text-xs text-secondary">Jan 17, 2027</span>
                 </div>
                 <h3>Tata Mumbai Marathon — 42.2 km</h3>
-                <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-4:45 (6:44/km) | B: Sub-5:00 (7:06/km) | C: Finish with pride</p>
-                <p class="text-sm text-secondary">Run first 10 km at EXACTLY target pace. Walk 30 sec at every 5 km water station. Gel every 45 min from km 8. Pedder Road climb at km 20 — maintain effort, not pace.</p>
-                <p class="text-sm text-secondary" style="margin-top: 8px; font-style: italic;">You started at 95 kg with a 2:41 half marathon on 3 hrs sleep. Whatever happens, you've already achieved something extraordinary. Run with joy.</p>
+                <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-4:15 (6:02/km) | B: Sub-4:30 (6:24/km) | C: Sub-4:45 (6:45/km)</p>
+                <p class="text-sm text-secondary">At ~78 kg, running economy is a different world. Run first 10 km at EXACTLY target pace. Walk 30 sec at every 5 km water station. Gel every 45 min from km 8. Pedder Road climb at km 20 — maintain effort, not pace.</p>
+                <p class="text-sm text-secondary" style="margin-top: 8px; font-style: italic;">You started at 98.4 kg with a 2:41 half marathon on 3 hrs sleep. 100 days later, 20 kg lighter, pre-diabetes reversed. Whatever happens on race day, you've already won. Run with joy.</p>
             </div>
         </div>
     </section>
@@ -2728,8 +2960,8 @@
                 </div>
                 <canvas id="weight-chart" width="800" height="250" style="width: 100%; height: auto;"></canvas>
                 <div class="flex items-center justify-between" style="margin-top: 12px;">
-                    <span class="text-xs text-secondary">Start: 93.5 kg (Apr 2026)</span>
-                    <span class="text-xs text-secondary">Target: 85–87 kg (Apr 26)</span>
+                    <span class="text-xs text-secondary">Start: 98.4 kg (Apr 11, 2026)</span>
+                    <span class="text-xs text-secondary">Target: 78 kg (Jul 19)</span>
                 </div>
             </div>
 
@@ -2848,6 +3080,66 @@
                 </div>
             </div>
 
+            <!-- 100-Day Milestones Timeline -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
+                    <h3>100-Day Milestones</h3>
+                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.1);color:var(--color-race);border:1px solid rgba(255,45,85,0.2);" id="milestone-phase-pill">Day 1 of 100</span>
+                </div>
+                <div style="position:relative;padding-left:24px;" id="milestones-timeline">
+                    <!-- Vertical line -->
+                    <div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.08);"></div>
+
+                    <div class="milestone-item" data-date="2026-04-11" style="position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-running);border:2px solid var(--bg-primary);z-index:1;"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Apr 11</span><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">DAY 1</span></div>
+                        <p class="text-sm text-secondary">START — 98.4 kg. Moderate Cut begins. InBody baseline.</p>
+                    </div>
+
+                    <div class="milestone-item" data-date="2026-04-26" style="position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-race);border:2px solid var(--bg-primary);z-index:1;" id="ms-dot-16"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Apr 26</span><span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);font-size:0.6rem;">DAY 16</span></div>
+                        <p class="text-sm text-secondary">10K RACE — Bangalore TCSW. Target: ~95 kg.</p>
+                    </div>
+
+                    <div class="milestone-item" data-date="2026-04-27" style="position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-strength);border:2px solid var(--bg-primary);z-index:1;" id="ms-dot-17"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Apr 27</span><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">DAY 17</span></div>
+                        <p class="text-sm text-secondary">PSMF Sprint 1 begins — 900 kcal, 200g protein. Target: ~94.5 kg.</p>
+                    </div>
+
+                    <div class="milestone-item" data-date="2026-05-10" style="position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-strength);border:2px solid var(--bg-primary);z-index:1;" id="ms-dot-30"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">May 10</span><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">DAY 30</span></div>
+                        <p class="text-sm text-secondary">End PSMF 1 → InBody retest. Target: ~90 kg. First 8 kg gone.</p>
+                    </div>
+
+                    <div class="milestone-item" data-date="2026-06-07" style="position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-running);border:2px solid var(--bg-primary);z-index:1;" id="ms-dot-58"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Jun 7</span><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">DAY 58</span></div>
+                        <p class="text-sm text-secondary">End Structured Cut 2 → retest FBS + HbA1c. Target: ~85–86 kg.</p>
+                    </div>
+
+                    <div class="milestone-item" data-date="2026-06-21" style="position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-strength);border:2px solid var(--bg-primary);z-index:1;" id="ms-dot-72"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Jun 21</span><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">DAY 72</span></div>
+                        <p class="text-sm text-secondary">End PSMF 2 → InBody retest. Target: ~82 kg. Visible transformation.</p>
+                    </div>
+
+                    <div class="milestone-item" data-date="2026-07-19" style="position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:-20px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--color-race);border:2px solid var(--bg-primary);z-index:1;box-shadow:0 0 8px rgba(255,45,85,0.4);" id="ms-dot-100"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold" style="color:var(--color-race);">Jul 19</span><span class="pill pill-sm" style="background:var(--color-race);color:#fff;font-size:0.6rem;">DAY 100</span></div>
+                        <p class="text-sm text-secondary">END — Final InBody + full blood panel. Target: ~78 kg, BF ~18%. 20 kg total lost.</p>
+                    </div>
+
+                    <div class="milestone-item" data-date="2026-07-26" style="position:relative;">
+                        <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-hyrox);border:2px solid var(--bg-primary);z-index:1;"></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Jul 26</span><span class="pill pill-sm pill-hyrox" style="font-size:0.6rem;">HYROX DELHI</span></div>
+                        <p class="text-sm text-secondary">HYROX Delhi — Men's Singles. First Hyrox at ~78 kg. Conservative pacing, learn the format.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Workout Completion -->
             <div class="card" style="margin-bottom: 24px;">
                 <h3 style="margin-bottom: 16px;">Weekly Completion</h3>
@@ -2885,6 +3177,430 @@
                     <li><strong>Trust the process.</strong> Consistency over months creates transformation.</li>
                 </ol>
             </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         DHARMA TAB
+         ======================================== -->
+    <section class="tab-panel" id="panel-dharma" style="display:none" role="tabpanel" aria-label="Dharma">
+        <div class="container">
+
+            <!-- Tab Header -->
+            <div style="padding: 24px 0 20px;">
+                <div class="section-header">
+                    <span class="section-title">DHARMA &middot; THE WARRIOR'S PATH</span>
+                    <div class="flex items-center gap-sm">
+                        <span class="pill pill-sm pill-dharma" id="dharma-streak-pill">0-Day Streak</span>
+                        <span class="pill pill-sm pill-dharma" id="dharma-date-pill"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Quote Card -->
+            <div class="card-glass animate-in" style="margin-bottom: 28px; text-align: center; padding: 32px 24px; border-top: 2px solid var(--color-dharma); background: linear-gradient(180deg, rgba(245,158,11,0.04) 0%, transparent 60%);">
+                <p style="font-size: 1.125rem; font-weight: 300; color: var(--color-dharma); line-height: 1.8; font-style: italic; max-width: 600px; margin: 0 auto 12px;">
+                    "You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions."
+                </p>
+                <span class="text-xs" style="color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;">Bhagavad Gita 2.47 &middot; Karma Yoga</span>
+                <div class="flex justify-center" style="margin-top: 16px;">
+                    <div class="dharma-progress-ring" id="dharma-day-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+                            <circle id="dharma-ring-progress" cx="50" cy="50" r="42" fill="none" stroke="var(--color-dharma)" stroke-width="6" stroke-linecap="round"
+                                stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+                        </svg>
+                        <div class="dharma-progress-label">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--color-dharma);" id="dharma-pct">0%</span>
+                            <span class="text-xs" style="color: var(--text-tertiary);">today</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 1: MORNING RITUAL (Brahma Muhurta) ===== -->
+            <div class="section-header animate-in delay-1">
+                <span class="section-title">Pratah Kriya &middot; Morning Ritual</span>
+                <span class="dharma-time-badge">4:45 &ndash; 6:30 AM</span>
+            </div>
+            <div class="card animate-in delay-2" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-morning-card">
+                <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Brahma Muhurta (approx. 96 min before sunrise) is the Vedic hour of creation. The mind is sattvic, cortisol is naturally rising, and the world is still. Arjuna rose before the camp. So do you.</p>
+
+                <div class="dharma-check-item" data-key="wake">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Wake at 4:45 AM (Brahma Muhurta)</div>
+                        <div class="dharma-check-sub">No snooze. Feet on floor. Look at your hands &mdash; "Karaagre vasate Lakshmi." Your hands hold your destiny today.</div>
+                    </div>
+                    <span class="dharma-time-badge">4:45</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="water">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Ushapan &mdash; Drink 500ml warm water with lemon</div>
+                        <div class="dharma-check-sub">Ayurvedic morning cleanse. Activates digestion, helps fasting glucose. Add a pinch of Himalayan salt for electrolytes (critical during PSMF phases).</div>
+                    </div>
+                    <span class="dharma-time-badge">4:50</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="breath">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Pranayama &mdash; 10 minutes breathwork</div>
+                        <div class="dharma-check-sub">5 min Nadi Shodhana (alternate nostril &mdash; calms nervous system). 3 min Kapalabhati (40 strokes/min &mdash; activates agni). 2 min Bhramari (humming &mdash; reduces cortisol). Patanjali Yoga Sutra 2.49.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:00</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="surya">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Surya Namaskar &mdash; 12 rounds</div>
+                        <div class="dharma-check-sub">The warrior's salute to the sun. 12 rounds = 288 asanas. Takes ~15 min. Warms the body, mobilizes spine, builds heat (tapas). On run days, this replaces warm-up stretching.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:10</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="dhyana">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Dhyana &mdash; 10 minutes seated meditation</div>
+                        <div class="dharma-check-sub">Sit still. Watch the breath. When the mind wanders, return. This IS the training. Gita 6.35: "The mind is restless, but it is restrained by practice (abhyasa) and detachment (vairagya)."</div>
+                    </div>
+                    <span class="dharma-time-badge">5:30</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="sankalpa">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Sankalpa &mdash; Set today's intention</div>
+                        <div class="dharma-check-sub">One sentence. Speak it aloud. "Today I train with full focus. Today I eat only what serves my body." This is your arrow &mdash; nock it before you draw the bow.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:40</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="journal">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Warrior's Journal &mdash; 3 lines</div>
+                        <div class="dharma-check-sub">1) What is my dharma (duty) today? 2) What obstacle will I face? 3) How would Arjuna handle it? Write by hand. The Mahabharata was dictated &mdash; words spoken become real.</div>
+                    </div>
+                    <span class="dharma-time-badge">5:45</span>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 2: DAILY DISCIPLINES (Niyamas) ===== -->
+            <div class="section-header animate-in delay-2">
+                <span class="section-title">Niyamas &middot; Daily Disciplines</span>
+                <span class="text-xs text-secondary font-medium" id="dharma-niyama-count">0 / 10</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-2" style="margin-bottom: 16px;">Patanjali's Niyamas mapped to your 100-day transformation. These are not habits &mdash; they are non-negotiable vows (vratas). Arjuna did not "try" to practice archery. He practiced.</p>
+
+            <div class="grid-2 animate-in delay-3" style="margin-bottom: 28px;">
+                <!-- Left column: Body disciplines -->
+                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                    <h4 style="color: var(--color-dharma); margin-bottom: 12px;">Tapas (Austerity of Body)</h4>
+
+                    <div class="dharma-check-item" data-key="training">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Complete today's training session</div>
+                            <div class="dharma-check-sub">Run, strength, or cricket &mdash; whatever the plan says. No skipping. No half-reps. Gita 18.48: "Every endeavor is covered by some fault, as fire by smoke."</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="diet">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Hit protein target (180g+)</div>
+                            <div class="dharma-check-sub">Sattvic fuel for the warrior's body. Whey + eggs + soy chunks. No excuses, no shortcuts.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="calories">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Stay within calorie target</div>
+                            <div class="dharma-check-sub">The body is the chariot (Katha Upanishad). Feed it precisely. Not more, not less.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="walk">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Post-meal walk (10 min after lunch &amp; dinner)</div>
+                            <div class="dharma-check-sub">Blood sugar management. Your HbA1c drops with every step. Walk after every meal without exception.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="steps">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">10,000 steps minimum</div>
+                            <div class="dharma-check-sub">NEAT expenditure. The Pandavas walked 13 years in exile. You can walk 10,000 steps.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column: Mind disciplines -->
+                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                    <h4 style="color: var(--color-dharma); margin-bottom: 12px;">Svadhyaya (Self-Study)</h4>
+
+                    <div class="dharma-check-item" data-key="nosugar">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Zero refined sugar</div>
+                            <div class="dharma-check-sub">Sugar is your Duryodhana &mdash; seductive, destructive, always near. HbA1c 6.0% is the battlefield. Win it daily.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="supplements">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Full supplement stack taken</div>
+                            <div class="dharma-check-sub">Omega-3, D3+K2, Magnesium, Ashwagandha, Curcumin, NAC. The warrior sharpens every weapon.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="sleep">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Lights off by 10:00 PM</div>
+                            <div class="dharma-check-sub">7 hours minimum. No screens after 9:30. Recovery is where the body transforms. Juhu HM on 3 hrs sleep &mdash; never again.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="noalcohol">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">No alcohol</div>
+                            <div class="dharma-check-sub">100 days. Not one drop. Alcohol raises CRP, disrupts sleep, spikes glucose. The Pandavas abstained during their vow. So do you.</div>
+                        </div>
+                    </div>
+
+                    <div class="dharma-check-item" data-key="grateful">
+                        <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                        <div class="dharma-check-text">
+                            <div class="dharma-check-title">Santosha &mdash; 3 things you are grateful for</div>
+                            <div class="dharma-check-sub">Patanjali's second Niyama. Contentment is not complacency &mdash; it is fuel. Speak them aloud at dinner.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 3: ARJUNA'S 7 QUALITIES ===== -->
+            <div class="section-header animate-in delay-3">
+                <span class="section-title">Arjuna's Seven Qualities</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-3" style="margin-bottom: 16px;">Each quality of the Mahabharata's greatest warrior maps directly to your transformation. You are not "becoming like" Arjuna. You are building these same qualities through the same method: daily practice under pressure.</p>
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 28px;" class="animate-in delay-4">
+                <div class="card quality-card">
+                    <div class="quality-num">1</div>
+                    <div class="quality-sanskrit">Ekagrata</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Single-Pointed Focus</h4>
+                    <p class="text-xs text-secondary">Arjuna saw only the bird's eye. You see only the next rep, the next km, the next meal. No multitasking. No half-presence.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Training + Meditation</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">2</div>
+                    <div class="quality-sanskrit">Abhyasa</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Relentless Practice</h4>
+                    <p class="text-xs text-secondary">10,000 arrows before breakfast. Your equivalent: 100 days without a break. The body transforms through repetition, not inspiration.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">100-Day Streak</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">3</div>
+                    <div class="quality-sanskrit">Viveka</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Discrimination</h4>
+                    <p class="text-xs text-secondary">Knowing what serves you and what destroys you. Sugar vs. protein. Sleep vs. scrolling. This run vs. this excuse. Choose correctly 100 times.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Diet Discipline</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">4</div>
+                    <div class="quality-sanskrit">Dhairya</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Courage &amp; Patience</h4>
+                    <p class="text-xs text-secondary">Arjuna faced Karna knowing he might die. You face PSMF at 900 kcal knowing it will hurt. Courage is not absence of suffering &mdash; it is action despite it.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">PSMF + Race Day</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">5</div>
+                    <div class="quality-sanskrit">Vinaya</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Humility</h4>
+                    <p class="text-xs text-secondary">Arjuna bowed to every guru. You ran a 2:41 HM. You blew up at 5K. You have pre-diabetes at 28. Start from truth, not ego.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Blood Work Reality</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">6</div>
+                    <div class="quality-sanskrit">Sthitaprajna</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Steady Wisdom</h4>
+                    <p class="text-xs text-secondary">Equanimity in victory and defeat. The scale goes up one day &mdash; you stay the course. A race goes badly &mdash; you analyze, not despair. Gita 2.56: "Unshaken by adversity."</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Mental Fortitude</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">7</div>
+                    <div class="quality-sanskrit">Nishkama Karma</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Action Without Attachment</h4>
+                    <p class="text-xs text-secondary">Train because it is your dharma, not because you want to look good. The process IS the reward. Sub-4:15 marathon is a byproduct of being the person who trains every day.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">The Core Philosophy</span>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 4: EVENING RITUAL (Sandhya) ===== -->
+            <div class="section-header animate-in delay-3">
+                <span class="section-title">Sandhya Kriya &middot; Evening Ritual</span>
+                <span class="dharma-time-badge">9:00 &ndash; 10:00 PM</span>
+            </div>
+            <div class="card animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-evening-card">
+                <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Sandhya means "junction" &mdash; the transition between day and night. The warrior cleans his weapons, reviews the battle, and prepares for tomorrow.</p>
+
+                <div class="dharma-check-item" data-key="review">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Daily Review &mdash; Did I follow my dharma?</div>
+                        <div class="dharma-check-sub">2 minutes. Open this tab. Look at your checkboxes. Where did you succeed? Where did you falter? No judgment &mdash; only observation. Svadhyaya.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:00</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="stretch">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">5 min stretching + foam roll</div>
+                        <div class="dharma-check-sub">Hip flexors, hamstrings, calves, thoracic spine. Your body at 97 kg takes more damage than you think. Recovery is dharma too.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:10</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="magnesium">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Magnesium Glycinate 400mg + screen off</div>
+                        <div class="dharma-check-sub">Magnesium at 9:30. Phone in another room by 9:45. The battlefield of insomnia is won before you lie down.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:30</span>
+                </div>
+
+                <div class="dharma-check-item" data-key="shavasana">
+                    <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
+                    <div class="dharma-check-text">
+                        <div class="dharma-check-title">Shavasana or body scan &mdash; 5 min in bed</div>
+                        <div class="dharma-check-sub">Lie flat, scan from toes to crown. Release each muscle group. This is yogic sleep preparation (Yoga Nidra lite). Fall asleep with a clear mind.</div>
+                    </div>
+                    <span class="dharma-time-badge">9:50</span>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 5: WEEKLY SADHANA SCHEDULE ===== -->
+            <div class="section-header animate-in delay-4">
+                <span class="section-title">Weekly Sadhana &middot; Spiritual Practice Schedule</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Sadhana means sustained spiritual practice. This schedule layers onto your existing training plan. The body and the spirit are trained in parallel.</p>
+
+            <div style="overflow-x:auto;margin-bottom:28px;" class="animate-in delay-4">
+                <table class="splits-table">
+                    <thead>
+                        <tr><th>Day</th><th>Morning Focus</th><th>Training Link</th><th>Evening Focus</th><th>Gita Chapter</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Monday</strong></td><td>Standard Pratah Kriya + Sankalpa for the week</td><td style="color:var(--color-running);">Easy Run &mdash; moving meditation, Zone 2</td><td>Extended meditation (15 min)</td><td style="color:var(--color-dharma);">Ch. 2 &mdash; Sankhya Yoga</td></tr>
+                        <tr><td><strong>Tuesday</strong></td><td>12 Surya Namaskar + extra hip mobility</td><td style="color:var(--color-strength);">Strength &mdash; Tapas through heavy lifting</td><td>Gratitude practice (3 things)</td><td style="color:var(--color-dharma);">Ch. 3 &mdash; Karma Yoga</td></tr>
+                        <tr><td><strong>Wednesday</strong></td><td>Pranayama focus: 15 min (extended Kapalabhati)</td><td style="color:var(--color-running);">Intervals &mdash; Arjuna's arrow: explosive, precise</td><td>Read 5 pages of the Gita</td><td style="color:var(--color-dharma);">Ch. 6 &mdash; Dhyana Yoga</td></tr>
+                        <tr><td><strong>Thursday</strong></td><td>Standard Pratah Kriya</td><td style="color:var(--color-strength);">Strength &mdash; posterior chain power</td><td>5 min body scan (deep recovery)</td><td style="color:var(--color-dharma);">Ch. 11 &mdash; Vishvarupa</td></tr>
+                        <tr><td><strong>Friday</strong></td><td>24 Surya Namaskar (double &mdash; end of week tapas)</td><td style="color:var(--color-running);">Tempo Run &mdash; sustained discipline</td><td>Warrior's journal: weekly reflection</td><td style="color:var(--color-dharma);">Ch. 12 &mdash; Bhakti Yoga</td></tr>
+                        <tr><td><strong>Saturday</strong></td><td>Standard Pratah Kriya + cold water finish</td><td style="color:var(--color-hyrox);">Long Run or HYROX sim &mdash; endurance as tapas</td><td>Extended meditation (20 min)</td><td style="color:var(--color-dharma);">Ch. 18 &mdash; Moksha Sannyasa</td></tr>
+                        <tr><td><strong>Sunday</strong></td><td>Extended meditation (20 min) + pranayama (15 min)</td><td style="color:var(--color-rest);">REST &mdash; Vishram. Even Arjuna rested between battles.</td><td>Plan next week's sankalpa</td><td style="color:var(--color-dharma);">Re-read any chapter</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ===== SECTION 6: KEY SHLOKAS ===== -->
+            <div class="section-header animate-in delay-4">
+                <span class="section-title">Shlokas for the Warrior's Path</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Seven verses from the Bhagavad Gita, each chosen for a specific moment in your 100-day journey. Memorize one per week. Let them become your inner voice when the body wants to quit.</p>
+
+            <div class="animate-in delay-4" style="margin-bottom: 28px;">
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">karmanye vadhikaraste ma phaleshu kadachana</div>
+                    <div class="shloka-translation">"You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions."</div>
+                    <div class="shloka-reference">Gita 2.47 &mdash; THE foundational verse. Train because it is your duty. Not for the Instagram photo at 78 kg. The action itself is the reward.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">yogasthah kuru karmani sangam tyaktva dhananjaya</div>
+                    <div class="shloka-translation">"Perform your duty with equanimity, abandoning attachment to success and failure."</div>
+                    <div class="shloka-reference">Gita 2.48 &mdash; The scale shows +0.5 kg after a perfect day. You do not react. You analyze, adjust, continue. Equanimity is the warrior's superpower.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">uddhared atmanatmanam natmanam avasadayet</div>
+                    <div class="shloka-translation">"Elevate yourself through the power of your own mind. Do not degrade yourself."</div>
+                    <div class="shloka-reference">Gita 6.5 &mdash; No one is coming to save you from pre-diabetes. You are both the problem and the solution. The self is the friend of the self, and the self is the enemy of the self.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">nainam chindanti shastrani nainam dahati pavakah</div>
+                    <div class="shloka-translation">"Weapons cannot cut it, fire cannot burn it, water cannot wet it, wind cannot dry it."</div>
+                    <div class="shloka-reference">Gita 2.23 &mdash; Your willpower, once forged, is indestructible. PSMF hunger cannot cut it. Mumbai heat cannot burn it. Build it daily and nothing can break it.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">abhyasa-yogena tato mam icchaptum dhananjaya</div>
+                    <div class="shloka-translation">"Through constant practice, O Arjuna, you can know Me."</div>
+                    <div class="shloka-reference">Gita 12.9 &mdash; Mastery of anything &mdash; running form, diet discipline, blood sugar control &mdash; comes only through abhyasa. There are no shortcuts in the Gita. There are none in transformation either.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">shanaih shanair uparamed buddhya dhriti-grhitaya</div>
+                    <div class="shloka-translation">"Gradually, step by step, with full conviction, one should become situated in trance by means of intelligence."</div>
+                    <div class="shloka-reference">Gita 6.25 &mdash; 98.4 to 78 kg is not one leap. It is 100 days of 200g losses. Each run a little faster. Each meal more precise. Shanai shanai &mdash; gradually, gradually.</div>
+                </div>
+                <div class="shloka-card">
+                    <div class="shloka-sanskrit">yada yada hi dharmasya glanir bhavati bharata</div>
+                    <div class="shloka-translation">"Whenever there is a decline of righteousness and rise of unrighteousness, I manifest Myself."</div>
+                    <div class="shloka-reference">Gita 4.7 &mdash; Your body declined. HbA1c 6.3 to 6.0. Weight 98.4. CRP elevated. Apr 11, 2026 is the day you manifested your own restoration. You ARE the intervention.</div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 7: THE CHARIOT METAPHOR ===== -->
+            <div class="card-glass animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 28px; background: linear-gradient(135deg, rgba(245,158,11,0.04) 0%, transparent 100%);">
+                <h4 style="color: var(--color-dharma); margin-bottom: 12px;">The Chariot of the Self &mdash; Katha Upanishad</h4>
+                <p class="text-sm text-secondary" style="margin-bottom: 16px;">The Katha Upanishad describes the self as a chariot. Map this to your transformation:</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Atman (The Self)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">The real you &mdash; beyond the 97 kg body, beyond pre-diabetes, beyond the 2:41 HM. The consciousness that decides to change.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Buddhi (The Charioteer)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your intellect &mdash; the part that reads blood work, follows the plan, counts macros. Krishna's role. Train this through meditation and study.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Manas (The Reins)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your mind &mdash; which wants to skip the run, eat the biryani, sleep in. The reins must be held firmly. Pranayama and meditation tighten them.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Indriyas (The Horses)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your senses &mdash; taste (craving sugar), comfort (craving sleep), laziness (craving rest). Powerful horses. Untrained, they run wild. Trained, they win wars.</div>
+                    </div>
+                    <div style="padding:10px 14px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);grid-column:1/-1;">
+                        <span class="text-xs font-bold" style="color:var(--color-dharma);">Sharira (The Chariot)</span>
+                        <div class="text-sm text-secondary" style="margin-top:4px;">Your body &mdash; 97.25 kg today, 78 kg by Day 100. The chariot must be strong, light, and well-maintained. Training, nutrition, sleep, supplements are chariot maintenance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 8: 100-DAY VOW ===== -->
+            <div class="card animate-in delay-4" style="border: 1px solid var(--color-dharma); margin-bottom: 20px; background: rgba(245, 158, 11, 0.03); text-align: center; padding: 28px;">
+                <h3 style="color: var(--color-dharma); margin-bottom: 12px;">The 100-Day Vow (Vrata)</h3>
+                <p class="text-sm text-secondary" style="max-width: 560px; margin: 0 auto 16px; line-height: 1.7;">
+                    In the Mahabharata, every great undertaking begins with a vow. Bhishma's vow of celibacy. Arjuna's vow to kill Jayadratha before sunset. A vow is not a goal &mdash; it is a binding contract with your own dharma.
+                </p>
+                <div style="padding: 16px 20px; border-radius: 12px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); max-width: 500px; margin: 0 auto;">
+                    <p style="font-size: 0.9375rem; font-weight: 600; color: var(--color-dharma); line-height: 1.6; font-style: italic;">
+                        "I, Kash, vow to follow this dharma for 100 days &mdash; Apr 11 to Jul 19, 2026. I will train every scheduled day. I will eat within my plan. I will rise before the sun. I will face every discomfort without retreat. This is my Kurukshetra. This body is my battlefield. I will not fail myself."
+                    </p>
+                </div>
+                <p class="text-xs" style="color: var(--text-tertiary); margin-top: 12px;">Day <span id="dharma-vow-day">1</span> of 100 &middot; <span id="dharma-vow-remaining">99</span> days remaining</p>
+            </div>
+
         </div>
     </section>
 
@@ -3190,47 +3906,47 @@ const TRAINING_DATA = {
       ]
     },
     {
-      id: 3, name: "Aerobic Base + Weight Loss", dates: "Apr 27 – Jun 28", weeks: 9, startWeek: 10,
-      focus: "No races — pure development. Build aerobic base, increase long run, drive weight loss. Mumbai heat: run early AM only.",
-      keyResult: "Build long run from 12→18 km. Drop from ~92 kg to ~89 kg. Establish 30–40 km weeks.",
-      runsPerWeek: 3, strengthPerWeek: "2",
+      id: 3, name: "100-Day Transformation", dates: "Apr 27 – Jul 19", weeks: 12, startWeek: 10,
+      focus: "100-day body recomp. PSMF sprints (900 kcal) alternating with structured cuts (1,400-1,500 kcal). 3-4 runs + 3-4 strength/week. Upper Push/Pull/Lower/Full Body split. Target: 98.4→78 kg.",
+      keyResult: "Day 30: ~90 kg | Day 58: ~85 kg | Day 72: ~82 kg | Day 100: ~78 kg. Preserve 35.7 kg muscle mass.",
+      runsPerWeek: "3–4", strengthPerWeek: "3–4",
       schedule: [
-        { num:10, dates:"Apr 27–May 3", km:10, notes:"Recovery from Bangalore 10k. Easy volume only.",
-          days:["Walk (post-race recovery)","REST","Easy Run 5 km","Strength B 45 min","Walk 45 min","Easy 5 km + strides","Strength C 45 min"]},
-        { num:11, dates:"May 4–10", km:23, notes:"Maintain consistency. Long run + tempo + easy run.",
-          days:["Long Run 10 km (easy)","REST","Easy Run 6 km","Strength B 45 min","Tempo: 10 min easy, 20 min tempo, 10 min easy","REST","Strength C 45 min"]},
-        { num:12, dates:"May 11–17", km:27, notes:"Long run at Mahalaxmi if possible.",
-          days:["Long Run 12 km (easy)","REST","Easy 7 km + strides","Strength B 45 min","Speed: 5x3 min @ interval/2 min walk","REST","Strength C 45 min"]},
-        { num:13, dates:"May 18–24", km:28, notes:"Introduce steady finish in long run. Hydrate well.",
-          days:["Long Run 14 km (10 easy + 4 steady)","REST","Easy Run 6 km","Strength B 45 min","Tempo: 2 km easy, 4 km tempo, 2 km easy","REST","Strength C 45 min"]},
-        { num:14, dates:"May 25–31", km:20, notes:"RECOVERY WEEK. Reassess shin status.",
-          days:["Long Run 10 km (easy)","REST","Easy 5 km + strides","Strength B 30 min","Easy Run 5 km","REST","REST"]},
-        { num:15, dates:"Jun 1–7", km:30, notes:"Pushing long run up. Run early AM as heat builds.",
-          days:["Long Run 15 km (easy)","REST","Speed: 6x3 min @ interval/2 min walk","Strength B 45 min","Easy Run 7 km","REST","Strength C 45 min"]},
-        { num:16, dates:"Jun 8–14", km:32, notes:"Monsoon may start. Treadmill backup. Steady finish on long run.",
-          days:["Long Run 16 km (12 easy + 4 steady)","REST","Tempo: 2 km easy, 5 km tempo, 2 km easy","Strength B 45 min","Easy 7 km + strides","REST","Strength C 45 min"]},
-        { num:17, dates:"Jun 15–21", km:34, notes:"Peak base building week. Highest long run before Hyrox.",
-          days:["Long Run 18 km (easy)","REST","Speed: 8x2 min @ interval/2 min walk","Strength B 50 min","Easy Run 7 km","REST","Strength C 50 min"]},
-        { num:18, dates:"Jun 22–28", km:23, notes:"RECOVERY WEEK. Transition to Hyrox block. Target ~89–90 kg.",
-          days:["Long Run 12 km (easy)","REST","Easy 6 km + strides","Strength B 30 min","Easy Run 5 km","REST","REST"]}
+        { num:10, dates:"Apr 27–May 3", km:15, notes:"PSMF SPRINT 1 starts (900 kcal). Easy/LISS only. No consecutive run days. Post-race recovery.",
+          days:["Run: Easy 5-6K + 20min LISS","Strength: Lower Body","Run: Easy 5K (Zone 2)","Strength: Upper Pull + 20min LISS","Rest","Run: Easy 5K + Cricket Drills","Active Recovery: Walk 30-45 min"]},
+        { num:11, dates:"May 4–10", km:18, notes:"PSMF SPRINT 1 continues. Cap mileage. InBody retest May 10. Target ~90 kg.",
+          days:["Run: Easy 5-8K + 20min LISS","Strength: Lower Body","Run: Intervals 5-7K","Strength: Upper Pull + Core","Run: Easy 5K + Cricket","REST","Active Recovery: Walk/Yoga"]},
+        { num:12, dates:"May 11–17", km:22, notes:"STRUCTURED CUT (1,500 kcal) starts. Build mileage ~10%/week. Eat-out day May 14.",
+          days:["Run: Easy/Tempo 5-8K + 20min LISS","Strength: Lower Body","Run: Intervals 5-7K + Core/Mobility","Strength: Upper Pull + 20min LISS","Run: Easy 5K + Cricket","Strength: Full Body OR Long Run 8-10K","Active Recovery: Walk 30-45 min"]},
+        { num:13, dates:"May 18–24", km:25, notes:"Structured Cut continues. Build volume. Cap at 30-35 km/week.",
+          days:["Run: Easy/Tempo 5-8K + 20min LISS","Strength: Lower Body","Run: Intervals 5-7K + Core/Mobility","Strength: Upper Pull + 20min LISS","Run: Easy 5-6K + Cricket","Strength: Full Body OR Long Run 10K","Active Recovery: Walk 30-45 min"]},
+        { num:14, dates:"May 25–31", km:28, notes:"Structured Cut. Long run building. 1 easy, 1 tempo, 1 intervals, 1 long.",
+          days:["Run: Easy/Tempo 5-8K + 20min LISS","Strength: Lower Body","Run: Intervals 5-7K + Core/Mobility","Strength: Upper Pull + 20min LISS","Run: Easy 5-6K + Cricket","Long Run 8-12K + Strength: Full Body","Active Recovery: Walk 30-45 min"]},
+        { num:15, dates:"Jun 1–7", km:25, notes:"RECOVERY WEEK. Deload before PSMF 2. Test FBS + HbA1c at Day 58.",
+          days:["Run: Easy 5K + 20min LISS","Strength: Lower Body (lighter)","Run: Easy 5K (Zone 2)","Strength: Upper Pull (lighter)","Run: Easy 4-5K + Cricket","REST","Active Recovery: Walk/Yoga"]},
+        { num:16, dates:"Jun 8–14", km:15, notes:"PSMF SPRINT 2 starts (900 kcal). Reduce strength volume 40%. All runs easy/LISS. No consecutive run days.",
+          days:["Run: Easy 5-6K + 20min LISS","Strength: Lower Body (reduced)","Run: Easy 5K (Zone 2)","Strength: Upper Pull (reduced) + 20min LISS","REST","Run: Easy 5K + Cricket","Active Recovery: Walk 30-45 min"]},
+        { num:17, dates:"Jun 15–21", km:15, notes:"PSMF SPRINT 2 continues. InBody retest Jun 21. Target ~82 kg.",
+          days:["Run: Easy 5-6K + 20min LISS","Strength: Lower Body (reduced)","Run: Easy 5K (Zone 2)","Strength: Upper Pull (reduced)","REST","Run: Easy 5K + Cricket","Active Recovery: Walk 30-45 min"]},
+        { num:18, dates:"Jun 22–28", km:22, notes:"HYROX PREP (1,600 kcal). Carbs return. Introduce 8x1km intervals. Performance focus.",
+          days:["Run: 8x1km intervals @ 5:00-5:30/km + 20min LISS","Strength: Full Body + 20min LISS","Run: Continuous 8K steady","Strength: Upper Pull + Core","Run: Easy 5-6K + Cricket","Long Run 8K OR HYROX Sim (partial)","Active Recovery: Walk/Yoga"]},
+        { num:19, dates:"Jun 29–Jul 5", km:25, notes:"HYROX PREP continues. HYROX simulation + station practice. Build carb tolerance.",
+          days:["Run: 8x1km intervals + station work","Strength: Full Body + 20min LISS","Run: Continuous 8K steady","Strength: Upper Pull + Core","Run: Easy 5-6K + Cricket","HYROX Sim: 1km+station+1km+station (build up)","Active Recovery: Walk 30-45 min"]},
+        { num:20, dates:"Jul 6–12", km:25, notes:"HYROX PREP peak week. Full simulation practice. Farmer's walks, sled substitutes.",
+          days:["Run: 8x1km intervals + station work","Strength: Full Body + HYROX stations","Run: Continuous 8K steady","Strength: Upper Pull + Core","Run: Easy 5-6K + Cricket","HYROX Full Sim attempt","Active Recovery: Walk/Yoga"]},
+        { num:21, dates:"Jul 13–19", km:18, notes:"DAY 100 WEEK. Final InBody + full blood panel Jul 19. Target: 78 kg, BF ~18%. HYROX Delhi prep.",
+          days:["Run: Easy 5K + 20min LISS","Strength: Full Body (maintenance)","Run: 4x1km @ race pace","Strength: Upper Pull (light)","Run: Easy 4K + strides","REST","REST / InBody + Blood Panel"]}
       ]
     },
     {
-      id: 4, name: "Hyrox Preparation", dates: "Jun 29 – Sep 7", weeks: 10, startWeek: 19,
-      focus: "First Hyrox. 8 stations + 8x1km runs. Maintain running base while building functional fitness. Gym-heavy for monsoon.",
-      keyResult: "Build to full Hyrox simulations. Partial sims from Week 21, full sim by Week 25.",
+      id: 4, name: "Hyrox Preparation", dates: "Jul 20 – Sep 7", weeks: 7, startWeek: 22,
+      focus: "Two Hyrox races: Delhi (Jul 26, Men's Singles) then Mumbai (Sep 7). Delhi is the debut — learn pacing and stations. Use Delhi experience to refine strategy for Mumbai Sub-1:30 push.",
+      keyResult: "HYROX Delhi: finish strong, learn format. HYROX Mumbai: Sub-1:30. Full sims by Week 25.",
       runsPerWeek: "2–3", strengthPerWeek: "2 (Hyrox)",
       schedule: [
-        { num:19, dates:"Jun 29–Jul 5", km:22, notes:"Introduction to Hyrox-specific training.",
-          days:["Long Run 10 km (easy)","REST","Hyrox Intervals: 4x1 km @ race pace","Hyrox Strength D 45 min","REST","Easy Run 6 km","Hyrox Strength D 45 min"]},
-        { num:20, dates:"Jul 6–12", km:26, notes:"Building Hyrox running volume.",
-          days:["Long Run 12 km (easy)","REST","Hyrox Intervals: 6x1 km @ race pace","Hyrox Strength D 50 min","REST","Easy 6 km + strides","Hyrox Strength D 50 min"]},
-        { num:21, dates:"Jul 13–19", km:17, notes:"First partial Hyrox simulation. Focus on transitions.",
-          days:["Hyrox Sim (Partial): 4 rounds","REST","Easy Run 7 km","Hyrox Strength D 50 min","REST","Tempo Run 6 km","Hyrox Strength D 50 min"]},
-        { num:22, dates:"Jul 20–26", km:20, notes:"RECOVERY WEEK. Lighter Hyrox work.",
-          days:["Long Run 10 km (easy)","REST","Easy 5 km + strides","Hyrox Strength D 30 min","REST","Easy Run 5 km","REST"]},
-        { num:23, dates:"Jul 27–Aug 2", km:21, notes:"6-round simulation. Practice pacing.",
-          days:["Hyrox Sim (Partial): 6 rounds","REST","Hyrox Intervals: 8x1 km @ race pace","Hyrox Strength D 50 min","REST","Easy Run 7 km","Hyrox Strength D 50 min"]},
+        { num:22, dates:"Jul 20–26", km:12, notes:"HYROX DELHI RACE WEEK. Taper from 100-day plan. Race day Sat Jul 26. Men's Singles.",
+          days:["Easy Run 5K + light strides","Light Hyrox stations (wall balls, row — low volume)","Easy Run 4K","REST","Easy 3K shakeout + strides","RACE: HYROX Delhi (Men's Singles)","REST / Recovery walk"]},
+        { num:23, dates:"Jul 27–Aug 2", km:18, notes:"Recovery + debrief from HYROX Delhi. Easy week before rebuilding for Mumbai.",
+          days:["Easy Run 5K (recovery)","REST","Easy Run 6K + strides","Hyrox Strength D 40 min (light)","REST","Easy Run 7 km","REST"]},
         { num:24, dates:"Aug 3–9", km:24, notes:"Mixed session: wall balls, burpees between 1 km reps.",
           days:["Long Run 12 km (easy)","REST","Mixed: 8x1 km + functional movements","Hyrox Strength D 50 min","REST","Easy Run 6 km","Hyrox Strength D 50 min"]},
         { num:25, dates:"Aug 10–16", km:19, notes:"FIRST FULL SIMULATION. Note benchmark time.",
@@ -3239,14 +3955,14 @@ const TRAINING_DATA = {
           days:["Long Run 10 km (easy)","REST","Easy 5 km + strides","Hyrox Strength D 30 min","REST","Easy Run 5 km","REST"]},
         { num:27, dates:"Aug 24–30", km:20, notes:"Final full simulation. Race-weight equipment. Rehearse nutrition.",
           days:["FULL Hyrox Sim: Race-weight rehearsal","REST","Hyrox Intervals: 8x1 km @ race pace","Hyrox Strength D 45 min","REST","Easy Run 6 km","Hyrox Strength D 30 min"]},
-        { num:28, dates:"Aug 31–Sep 7", km:16, notes:"HYROX TAPER. Sep 7 = RACE DAY.",
-          days:["Easy Run 8 km","REST","Light Intervals: 4x1 km","Light Hyrox D 20 min","Easy 4 km + strides","REST","REST"]}
+        { num:28, dates:"Aug 31–Sep 7", km:16, notes:"HYROX MUMBAI TAPER. Sep 7 = RACE DAY. Apply Delhi learnings — push for Sub-1:30.",
+          days:["Easy Run 8 km","REST","Light Intervals: 4x1 km","Light Hyrox D 20 min","Easy 4 km + strides","REST","RACE: HYROX Mumbai"]}
       ]
     },
     {
       id: 5, name: "Half Marathon Block", dates: "Sep 8 – Oct 18", weeks: 6, startWeek: 29,
-      focus: "Pivot from Hyrox to HM-specific endurance/speed. Post-monsoon ideal conditions. Weight target: ~86–87 kg.",
-      keyResult: "Delhi HM — A: Sub-2:10 | B: Sub-2:20 | C: Sub-2:41 (PB).",
+      focus: "Pivot from Hyrox to HM-specific endurance/speed. Post-monsoon ideal conditions. At ~78 kg — massive advantage over 95 kg HM PB.",
+      keyResult: "Delhi HM — A: Sub-2:00 | B: Sub-2:10 | C: Sub-2:20. At 78 kg vs 95 kg at Juhu = different runner.",
       runsPerWeek: 3, strengthPerWeek: "1–2",
       schedule: [
         { num:29, dates:"Sep 8–14", km:20, notes:"Recovery from Hyrox. No intensity.",
@@ -3265,8 +3981,8 @@ const TRAINING_DATA = {
     },
     {
       id: 6, name: "Marathon Build", dates: "Oct 19 – Dec 20", weeks: 9, startWeek: 35,
-      focus: "Build long run to 28+ km. Marathon-specific endurance. Kolkata 25K is peak long effort / tune-up race.",
-      keyResult: "Long run peaks at 28 km (Week 42). Weight target ~84–85 kg by January.",
+      focus: "Build long run to 28+ km. Marathon-specific endurance. At ~78 kg, running economy vastly improved. Kolkata 25K is peak effort.",
+      keyResult: "Long run peaks at 28 km (Week 42). Maintain ~78 kg. Sub-4:30 marathon is realistic.",
       runsPerWeek: 3, strengthPerWeek: "1–2",
       schedule: [
         { num:35, dates:"Oct 19–25", km:20, notes:"Recovery from Delhi HM. Very easy.",
@@ -3311,7 +4027,8 @@ const TRAINING_DATA = {
     {id:"5k-wife", date:"2026-03-08", name:"5K (pacing wife)", dist:"5 km", status:"cancelled"},
     {id:"hrx-10k", date:"2026-03-15", name:"HRX 10K", dist:"10 km", status:"cancelled"},
     {id:"bangalore-10k", date:"2026-04-26", name:"Bangalore TCSW 10K", dist:"10 km", status:"upcoming", goal:"A: Sub-1:05 | B: Sub-1:08 | C: Sub-1:10"},
-    {id:"hyrox", date:"2026-09-07", name:"Hyrox Mumbai", dist:"Hyrox", status:"upcoming", goal:"Finish strong"},
+    {id:"hyrox-delhi", date:"2026-07-26", name:"HYROX Delhi", dist:"Hyrox Singles", status:"upcoming", goal:"First Hyrox — finish strong at ~78 kg"},
+    {id:"hyrox", date:"2026-09-07", name:"Hyrox Mumbai", dist:"Hyrox", status:"upcoming", goal:"Sub-1:30 — use Delhi learnings"},
     {id:"delhi-hm", date:"2026-10-18", name:"Delhi Half Marathon", dist:"21.1 km", status:"upcoming", goal:"A: Sub-2:10 | B: Sub-2:20 | C: Sub-2:41"},
     {id:"kolkata-25k", date:"2026-12-20", name:"Kolkata 25K", dist:"25 km", status:"upcoming", goal:"Strong, controlled effort"},
     {id:"mumbai-marathon", date:"2027-01-17", name:"Tata Mumbai Marathon", dist:"42.2 km", status:"upcoming", goal:"A: Sub-4:45 | B: Sub-5:00 | C: Finish"}
@@ -3327,6 +4044,7 @@ const AppState = {
     workouts: [],
     injuries: [],
     meals: [],
+    dharmaChecks: {},
     currentPhase: 2,
     trainingView: 'phase',
     settings: {},
@@ -3405,6 +4123,7 @@ const AppState = {
                 injuries: this.injuries,
                 meals: this.meals,
                 foodLog: this.foodLog || [],
+                dharmaChecks: this.dharmaChecks || {},
                 currentPhase: this.currentPhase,
                 trainingView: this.trainingView,
                 settings: this.settings
@@ -3449,7 +4168,7 @@ const AppState = {
     },
     
     getLatestWeight() {
-        return this.weights.length > 0 ? this.weights[this.weights.length - 1].value : 93.5;
+        return this.weights.length > 0 ? this.weights[this.weights.length - 1].value : 98.4;
     },
     
     getStreak() {
@@ -3967,7 +4686,7 @@ function updateDashboard() {
         weightValEl.innerHTML = `${latestWeight}<span style="font-size:0.875rem;font-weight:500;color:var(--text-secondary)"> kg</span>`;
     }
     // Weight ring progress (94.5 start → 86 target = 8.5 kg range)
-    const startWeight = 93.5, targetWeight = 86;
+    const startWeight = 98.4, targetWeight = 78;
     const weightLost = startWeight - latestWeight;
     const totalToLose = startWeight - targetWeight;
     const weightPct = Math.max(0, Math.min(100, (weightLost / totalToLose) * 100));
@@ -4045,6 +4764,44 @@ function updateDashboard() {
         weekRangeEl.textContent = `${fmt(monday)} – ${fmt(sunday)}`;
     }
 
+    // ── 100-Day Transformation tracker ──
+    const transformStart = new Date('2026-04-11');
+    const transformEnd = new Date('2026-07-19');
+    const transformNow = new Date();
+    const transformDay = Math.max(1, Math.min(100, Math.ceil((transformNow - transformStart) / (1000*60*60*24)) + 1));
+    const transformDaysLeft = Math.max(0, Math.ceil((transformEnd - transformNow) / (1000*60*60*24)));
+    const transformPct = Math.min(100, Math.round(((transformDay - 1) / 100) * 100));
+
+    const tdEl = document.getElementById('transform-day');
+    const tcEl = document.getElementById('transform-countdown');
+    const tpEl = document.getElementById('transform-pct');
+    const tbEl = document.getElementById('transform-progress-bar');
+    const tppEl = document.getElementById('transform-phase-pill');
+    const tcwEl = document.getElementById('transform-current-weight');
+    const tlEl = document.getElementById('transform-lost');
+    if (tdEl) tdEl.textContent = transformDay;
+    if (tcEl) tcEl.textContent = transformDaysLeft;
+    if (tpEl) tpEl.textContent = transformPct + '% complete';
+    if (tbEl) tbEl.style.width = transformPct + '%';
+
+    // Phase detection
+    const phases100 = [
+        { days: [1,16], label: 'PHASE 1: MODERATE CUT', cal: '1,400 kcal' },
+        { days: [17,30], label: 'PHASE 2: PSMF SPRINT', cal: '900 kcal' },
+        { days: [31,58], label: 'PHASE 3: STRUCTURED CUT', cal: '1,500 kcal' },
+        { days: [59,72], label: 'PHASE 4: PSMF SPRINT 2', cal: '900 kcal' },
+        { days: [73,100], label: 'PHASE 5: HYROX PREP', cal: '1,600 kcal' }
+    ];
+    const currentPhase100 = phases100.find(p => transformDay >= p.days[0] && transformDay <= p.days[1]) || phases100[0];
+    if (tppEl) tppEl.textContent = currentPhase100.label;
+
+    // Current weight in transformation card
+    if (tcwEl) tcwEl.textContent = latestWeight + ' kg';
+    if (tlEl) {
+        const lost = Math.round((98.4 - latestWeight) * 10) / 10;
+        tlEl.textContent = lost > 0 ? lost + ' kg lost' : 'Day 1';
+    }
+
     // ── Render dynamic components ──
     renderTodayWorkout();
     renderWeeklyScheduleGrid();
@@ -4110,7 +4867,15 @@ function updateMacroBars() {
         fat: acc.fat + m.fat
     }), { protein: 0, carbs: 0, fat: 0 });
     
-    const targets = { protein: 160, carbs: 170, fat: 65 };
+    // Dynamic targets based on 100-day phase
+    const dStart = new Date('2026-04-11');
+    const dDay = Math.max(1, Math.min(100, Math.ceil((new Date() - dStart) / (1000*60*60*24)) + 1));
+    let targets;
+    if (dDay <= 16) targets = { protein: 180, carbs: 80, fat: 45 };           // Phase 1: Moderate Cut
+    else if (dDay <= 30) targets = { protein: 200, carbs: 25, fat: 20 };      // Phase 2: PSMF
+    else if (dDay <= 58) targets = { protein: 180, carbs: 100, fat: 50 };     // Phase 3: Structured Cut
+    else if (dDay <= 72) targets = { protein: 200, carbs: 25, fat: 20 };      // Phase 4: PSMF
+    else targets = { protein: 170, carbs: 120, fat: 45 };                     // Phase 5: HYROX Prep
     
     const pBar = document.getElementById('protein-bar');
     const cBar = document.getElementById('carbs-bar');
@@ -4171,14 +4936,43 @@ const AdaptiveEngine = {
             }
         }
 
+        // 100-Day Transformation context
+        const aeStart = new Date('2026-04-11');
+        const aeDay = Math.max(1, Math.min(100, Math.ceil((new Date() - aeStart) / (1000*60*60*24)) + 1));
+        const latestW = AppState.getLatestWeight();
+
+        // Phase-specific advice
+        if (aeDay >= 17 && aeDay <= 30 || aeDay >= 59 && aeDay <= 72) {
+            recs.push({ type: 'error', text: `PSMF PHASE (Day ${aeDay}): Only 900 kcal. All runs easy/LISS. No consecutive run days. Reduce strength volume 40%. Electrolytes critical. If dizzy or nauseous → switch to structured cut.` });
+        } else if (aeDay <= 16) {
+            recs.push({ type: 'warning', text: `Moderate Cut (Day ${aeDay}): ~1,400 kcal. 10K race Apr 26 — no PSMF before race. Hit 180g protein. Post-meal walks mandatory. Zone 2 cardio 2-3x/week.` });
+        } else if (aeDay >= 73) {
+            recs.push({ type: 'success', text: `HYROX Prep (Day ${aeDay}): 1,600 kcal with carbs for performance. 8x1km intervals 2x/week at 5:00-5:30/km. Station practice. You've earned this phase.` });
+        } else {
+            recs.push({ type: 'info', text: `Structured Cut (Day ${aeDay}): ~1,500 kcal. Build mileage ~10%/week, cap at 30-35 km. 1 easy, 1 tempo, 1 intervals, 1 long per week.` });
+        }
+
+        // Weight tracking against milestones
+        const milestones = [{day:16,kg:95},{day:30,kg:90},{day:58,kg:85.5},{day:72,kg:82},{day:100,kg:78}];
+        const nextMs = milestones.find(m => aeDay <= m.day);
+        if (nextMs && latestW > 50) {
+            const kgToGo = Math.round((latestW - nextMs.kg) * 10) / 10;
+            const daysLeft = nextMs.day - aeDay;
+            if (kgToGo > 0) {
+                recs.push({ type: 'info', text: `Target: ${nextMs.kg} kg by Day ${nextMs.day} (${daysLeft} days). Need to lose ${kgToGo} kg more. Rate: ~${(kgToGo / Math.max(1, daysLeft) * 7).toFixed(1)} kg/week needed.` });
+            } else {
+                recs.push({ type: 'success', text: `Ahead of Day ${nextMs.day} target (${nextMs.kg} kg). Current: ${latestW} kg. Keep it up!` });
+            }
+        }
+
         // Blood sugar management (pre-diabetic: HbA1c 6.0%, Glucose 115)
-        recs.push({ type: 'error', text: 'Pre-diabetic Alert: Prioritize Zone 2 cardio (2x/week) + 10-15 min post-meal walks. Every meal must combine protein + fiber + healthy fat. No fasting after exercise.' });
+        recs.push({ type: 'error', text: 'Pre-diabetic (HbA1c 6.0%): Zone 2 cardio + post-meal walks. Protein + fiber every meal. Weight loss is the #1 treatment — every kg lost improves insulin sensitivity.' });
 
-        // Inflammation monitoring (ESR 14, CRP 4.0)
-        recs.push({ type: 'warning', text: 'Inflammation elevated (CRP 4.0, ESR 14): Daily turmeric + black pepper, ginger tea 2x, omega-3 (flaxseed). Sleep 7-8 hrs. Weight loss is the biggest lever.' });
+        // Inflammation + hemoglobin
+        recs.push({ type: 'warning', text: 'Inflammation (CRP 4.0): Turmeric + pepper daily, omega-3 fish oil 2-3g, ginger tea 2x/day. Sleep 7-8 hrs NON-NEGOTIABLE. Hb declining (14.7→13.7) — spinach + lemon, avoid tea with meals.' });
 
-        // Hemoglobin declining
-        recs.push({ type: 'info', text: 'Hemoglobin trending down (14.7→13.7): Iron-rich foods (spinach + lemon), avoid tea/coffee with meals (1 hr gap). Consider Hb electrophoresis test for thalassemia trait.' });
+        // Blueprint-inspired
+        recs.push({ type: 'info', text: 'Blueprint protocol: Post-meal movement (5-10 min walk after every meal), 10,000 lux light within 30 min of waking, stop fluids 4 hrs before bed, no screens after 8:30 PM.' });
 
         return recs;
     },
@@ -4478,7 +5272,15 @@ function updateCalorieRing() {
     const today = new Date().toISOString().slice(0, 10);
     const todayLog = (AppState.foodLog || []).filter(f => f.date === today);
     const totalCal = todayLog.reduce((sum, f) => sum + (f.cal || 0), 0);
-    const target = 2100;
+    // Dynamic calorie target per 100-day phase
+    const cStart = new Date('2026-04-11');
+    const cDay = Math.max(1, Math.min(100, Math.ceil((new Date() - cStart) / (1000*60*60*24)) + 1));
+    let target;
+    if (cDay <= 16) target = 1400;
+    else if (cDay <= 30) target = 900;
+    else if (cDay <= 58) target = 1500;
+    else if (cDay <= 72) target = 900;
+    else target = 1600;
     const pct = Math.min(1, totalCal / target);
 
     const ring = document.getElementById('calorie-ring');
@@ -4493,6 +5295,8 @@ function updateCalorieRing() {
         else ring.setAttribute('stroke', 'var(--color-running)');
     }
     if (label) label.textContent = totalCal.toLocaleString();
+    const calTargetLabel = document.getElementById('calorie-target-label');
+    if (calTargetLabel) calTargetLabel.textContent = '/ ' + target.toLocaleString() + ' kcal';
 }
 
 // ============================================
@@ -4625,6 +5429,42 @@ function initScrollAnimations() {
                 { scale: 1, opacity: 1, stagger: 0.03, duration: 0.3, ease: 'power2.out', delay: 0.25, overwrite: 'auto' }
             );
         }
+
+        // Dharma quality card numbers spin-in
+        const qualityNums = panel.querySelectorAll('.quality-num');
+        if (qualityNums.length) {
+            gsap.fromTo(qualityNums,
+                { scale: 0, rotation: -180 },
+                { scale: 1, rotation: 0, stagger: 0.08, duration: 0.5, ease: 'back.out(2)', delay: 0.2, overwrite: 'auto' }
+            );
+        }
+
+        // Shloka cards stagger
+        const shlokas = panel.querySelectorAll('.shloka-card');
+        if (shlokas.length) {
+            gsap.fromTo(shlokas,
+                { x: -20, opacity: 0 },
+                { x: 0, opacity: 1, stagger: 0.06, duration: 0.4, ease: 'power2.out', delay: 0.1, overwrite: 'auto' }
+            );
+        }
+
+        // Dharma checkboxes slide-in
+        const dharmaCheckItems = panel.querySelectorAll('.dharma-check-item');
+        if (dharmaCheckItems.length) {
+            gsap.fromTo(dharmaCheckItems,
+                { x: -10, opacity: 0 },
+                { x: 0, opacity: 1, stagger: 0.04, duration: 0.3, ease: 'power1.out', delay: 0.15, overwrite: 'auto' }
+            );
+        }
+
+        // Dharma progress ring entrance
+        const dharmaRing = panel.querySelector('.dharma-progress-ring');
+        if (dharmaRing) {
+            gsap.fromTo(dharmaRing,
+                { scale: 0.7, opacity: 0, rotation: -90 },
+                { scale: 1, opacity: 1, rotation: 0, duration: 0.8, ease: 'back.out(1.5)', overwrite: 'auto' }
+            );
+        }
     };
 
     // Animate dashboard on load
@@ -4675,12 +5515,152 @@ function initScrollAnimations() {
 }
 
 // ============================================
+// DHARMA TAB FUNCTIONS
+// ============================================
+function getTodayDharmaKey() {
+    return new Date().toISOString().slice(0, 10);
+}
+
+function getTodayDharma() {
+    const key = getTodayDharmaKey();
+    if (!AppState.dharmaChecks) AppState.dharmaChecks = {};
+    if (!AppState.dharmaChecks[key]) AppState.dharmaChecks[key] = {};
+    return AppState.dharmaChecks[key];
+}
+
+function toggleDharma(checkboxEl) {
+    const item = checkboxEl.closest('.dharma-check-item');
+    const key = item.dataset.key;
+    const today = getTodayDharma();
+
+    today[key] = !today[key];
+    AppState.save();
+
+    // Update visual
+    checkboxEl.classList.toggle('checked', today[key]);
+    item.classList.toggle('done', today[key]);
+
+    // Update counts and ring
+    updateDharmaProgress();
+
+    // Toast on completion of all items
+    const allKeys = getAllDharmaKeys();
+    const doneCount = allKeys.filter(k => today[k]).length;
+    if (doneCount === allKeys.length) {
+        showToast('All dharma practices complete. Jai Shri Krishna.', 'success');
+    }
+}
+
+function getAllDharmaKeys() {
+    const items = document.querySelectorAll('#panel-dharma .dharma-check-item[data-key]');
+    return Array.from(items).map(el => el.dataset.key);
+}
+
+function updateDharmaProgress() {
+    const today = getTodayDharma();
+    const allKeys = getAllDharmaKeys();
+    const total = allKeys.length;
+    const done = allKeys.filter(k => today[k]).length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    // Update ring
+    const ring = document.getElementById('dharma-ring-progress');
+    if (ring) {
+        const circumference = 2 * Math.PI * 42; // r=42
+        ring.setAttribute('stroke-dashoffset', circumference - (circumference * pct / 100));
+    }
+
+    // Update percentage text
+    const pctEl = document.getElementById('dharma-pct');
+    if (pctEl) pctEl.textContent = pct + '%';
+
+    // Update niyama count (disciplines section only)
+    const niyamaEl = document.getElementById('dharma-niyama-count');
+    const niyamaKeys = ['training','diet','calories','walk','steps','nosugar','supplements','sleep','noalcohol','grateful'];
+    const niyamaDone = niyamaKeys.filter(k => today[k]).length;
+    if (niyamaEl) niyamaEl.textContent = niyamaDone + ' / ' + niyamaKeys.length;
+
+    // Update streak
+    updateDharmaStreak();
+}
+
+function updateDharmaStreak() {
+    if (!AppState.dharmaChecks) return;
+    let streak = 0;
+    const checkDate = new Date();
+    checkDate.setHours(0, 0, 0, 0);
+    const allKeys = getAllDharmaKeys();
+    const threshold = Math.floor(allKeys.length * 0.7); // 70% = counts as a dharma day
+
+    for (let i = 0; i < 120; i++) {
+        const dateStr = checkDate.toISOString().slice(0, 10);
+        const dayData = AppState.dharmaChecks[dateStr];
+        if (dayData) {
+            const done = allKeys.filter(k => dayData[k]).length;
+            if (done >= threshold) {
+                streak++;
+            } else if (i > 0) {
+                break;
+            }
+        } else if (i > 0) {
+            break;
+        }
+        checkDate.setDate(checkDate.getDate() - 1);
+    }
+
+    const streakPill = document.getElementById('dharma-streak-pill');
+    if (streakPill) streakPill.textContent = streak + '-Day Streak';
+}
+
+function initDharmaTab() {
+    const today = getTodayDharma();
+
+    // Set date pill
+    const datePill = document.getElementById('dharma-date-pill');
+    if (datePill) {
+        datePill.textContent = new Date().toLocaleDateString('en-IN', {
+            weekday: 'short', month: 'short', day: 'numeric'
+        });
+    }
+
+    // Restore checkbox states
+    document.querySelectorAll('#panel-dharma .dharma-check-item[data-key]').forEach(item => {
+        const key = item.dataset.key;
+        const checkbox = item.querySelector('.dharma-checkbox');
+        if (today[key]) {
+            checkbox.classList.add('checked');
+            item.classList.add('done');
+        }
+    });
+
+    // Update 100-day vow counter
+    const start = new Date('2026-04-11');
+    const now = new Date();
+    const dayNum = Math.max(1, Math.min(100, Math.ceil((now - start) / (1000 * 60 * 60 * 24)) + 1));
+    const vowDay = document.getElementById('dharma-vow-day');
+    const vowRemain = document.getElementById('dharma-vow-remaining');
+    if (vowDay) vowDay.textContent = dayNum;
+    if (vowRemain) vowRemain.textContent = Math.max(0, 100 - dayNum);
+
+    updateDharmaProgress();
+}
+
+// ============================================
 // INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
     AppState.load();
     // Initialize foodLog if not present (backward compat)
     if (!AppState.foodLog) AppState.foodLog = [];
+
+    // Seed known weight entries if none exist
+    if (!AppState.weights || AppState.weights.length === 0) {
+        AppState.weights = [
+            { date: "2026-04-11", value: 98.4, source: "manual" },
+            { date: "2026-04-13", value: 97.25, source: "manual" }
+        ];
+        AppState.save();
+    }
 
     // Fetch remote data from WhatsApp logger (data.json)
     AppState.loadRemote();
@@ -4691,6 +5671,25 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFoodLog();
     updateCalorieRing();
     AdaptiveEngine.renderRecommendations();
+    initDharmaTab();
+
+    // Highlight completed milestones
+    document.querySelectorAll('.milestone-item').forEach(item => {
+        const d = item.dataset.date;
+        if (d && new Date(d) <= new Date()) {
+            item.style.opacity = '1';
+            const dot = item.querySelector('div[style*="border-radius:50%"]');
+            if (dot) dot.style.boxShadow = '0 0 6px rgba(57,255,20,0.3)';
+        } else if (d) {
+            item.style.opacity = '0.5';
+        }
+    });
+    const msPill = document.getElementById('milestone-phase-pill');
+    if (msPill) {
+        const msStart = new Date('2026-04-11');
+        const msDay = Math.max(1, Math.min(100, Math.ceil((new Date() - msStart) / (1000*60*60*24)) + 1));
+        msPill.textContent = 'Day ' + msDay + ' of 100';
+    }
 
     // Refresh dashboard every minute for countdown accuracy
     setInterval(() => updateDashboard(), 60000);
