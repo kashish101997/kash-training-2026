@@ -1877,40 +1877,10 @@
             if (overlay) overlay.remove();
         }
 
-        function submitModal(type) {
-            const input = document.getElementById('modal-input');
-            if (!input || !input.value.trim()) return;
-
-            const value = input.value.trim();
-            closeModal();
-            showToast(`${type === 'weight' ? 'Weight' : type === 'workout' ? 'Workout' : 'Injury'} logged successfully!`, 'success');
-
-            // Add to activity feed
-            const feed = document.getElementById('activity-feed');
-            const empty = feed.querySelector('.feed-empty');
-            if (empty) empty.remove();
-
-            const colors = { weight: 'var(--color-running)', workout: 'var(--color-strength)', injury: 'var(--color-race)' };
-            const icons = {
-                weight: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13l3-3m0 0l2-6 2 6m-4 0h4"/></svg>',
-                workout: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M5 6v4M11 5v6M3 7v2M13 7v2"/></svg>',
-                injury: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M8 2v3M8 9v1"/></svg>'
-            };
-
-            const item = document.createElement('div');
-            item.className = 'feed-item';
-            item.style.animation = 'fadeSlideUp 0.4s var(--ease-out-expo)';
-            const now = new Date();
-            const time = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-            item.innerHTML = `
-                <div class="feed-icon" style="background: ${colors[type]}22; color: ${colors[type]};">${icons[type]}</div>
-                <div class="feed-content">
-                    <div class="feed-title">${type === 'weight' ? value + ' kg logged' : type === 'workout' ? value : 'Injury: ' + value}</div>
-                    <div class="feed-meta">Today at ${time}</div>
-                </div>
-            `;
-            feed.insertBefore(item, feed.firstChild);
-        }
+        // NOTE: submitModal() defined below at line ~5253 (unified implementation
+        // that persists to AppState + refreshes chart/dashboard). The earlier
+        // toast-only version was removed — it was overriding the real handler
+        // and causing weight logs to silently drop.
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -4373,10 +4343,19 @@ const AppState = {
     },
     
     addWeight(value, bodyFat, muscleMass) {
-        const entry = { date: new Date().toISOString().slice(0,10), value: parseFloat(value) };
+        const today = new Date().toISOString().slice(0,10);
+        const entry = { date: today, value: parseFloat(value), source: "manual" };
         if (bodyFat !== undefined && bodyFat !== null && !isNaN(bodyFat)) entry.bodyFat = parseFloat(bodyFat);
         if (muscleMass !== undefined && muscleMass !== null && !isNaN(muscleMass)) entry.muscleMass = parseFloat(muscleMass);
-        this.weights.push(entry);
+        // Dedup: if today already has an entry, update it in place. Otherwise append.
+        const existingIdx = this.weights.findIndex(w => w.date === today);
+        if (existingIdx >= 0) {
+            this.weights[existingIdx] = { ...this.weights[existingIdx], ...entry };
+        } else {
+            this.weights.push(entry);
+        }
+        // Keep array sorted so the chart always plots left→right
+        this.weights.sort((a, b) => a.date.localeCompare(b.date));
         this.save();
     },
     
@@ -4772,7 +4751,8 @@ function renderWeightChart() {
     
     ctx.clearRect(0, 0, W, H);
     
-    const data = AppState.weights;
+    // Defensive copy + sort so chart always plots left→right regardless of insertion order
+    const data = [...AppState.weights].sort((a, b) => a.date.localeCompare(b.date));
     if (data.length < 2) {
         ctx.fillStyle = 'rgba(255,255,255,0.3)';
         ctx.font = '12px Inter, sans-serif';
@@ -5896,11 +5876,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ensure known baseline weights always exist (merge, don't overwrite)
     const baselineWeights = [
-        { date: "2026-04-11", value: 98.4, source: "manual" },
-        { date: "2026-04-12", value: 97.8, source: "manual" },
+        { date: "2026-04-11", value: 98.4,  source: "manual" },
+        { date: "2026-04-12", value: 97.8,  source: "manual" },
         { date: "2026-04-13", value: 97.25, source: "manual" },
-        { date: "2026-04-14", value: 97.0, source: "manual" },
-        { date: "2026-04-15", value: 97.0, source: "manual" }
+        { date: "2026-04-14", value: 97.0,  source: "manual" },
+        { date: "2026-04-15", value: 97.0,  source: "manual" },
+        { date: "2026-04-16", value: 95.95, source: "manual" },
+        { date: "2026-04-17", value: 95.75, source: "manual" },
+        { date: "2026-04-18", value: 96.35, source: "manual" }
     ];
     if (!AppState.weights) AppState.weights = [];
     // Remove any stale entries before Apr 11 (pre-plan data)
