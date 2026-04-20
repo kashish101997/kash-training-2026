@@ -34,6 +34,7 @@
             --color-hyrox: #BF40BF;
             --color-rest: #666666;
             --color-dharma: #F59E0B;
+            --color-travel: #22D3EE;
 
             /* Activity Glows */
             --glow-running: rgba(57, 255, 20, 0.15);
@@ -268,6 +269,11 @@
         .nav-tab[data-tab="dharma"].active {
             border-bottom-color: var(--color-dharma);
             color: var(--color-dharma);
+        }
+
+        .nav-tab[data-tab="travel"].active {
+            border-bottom-color: var(--color-travel);
+            color: var(--color-travel);
         }
 
         .nav-tab svg {
@@ -1395,6 +1401,12 @@
                 </svg>
                 <span class="tab-label">Dharma</span>
             </button>
+            <button class="nav-tab" data-tab="travel" aria-selected="false" role="tab">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1.5 10.5l2 1 3-1 3 3 1.5-.5-2-4 4-3.5c0.5-0.5 0.5-1.5 0-2s-1.5-0.5-2 0l-3.5 4-4-2-0.5 1.5 3 3-2 1z"/>
+                </svg>
+                <span class="tab-label">Travel</span>
+            </button>
         </div>
     </nav>
 
@@ -1453,6 +1465,7 @@
                         WhatsApp <span id="whatsapp-status">Connected</span>
                     </span>
                     <span class="pill pill-sm" style="background:rgba(255,107,44,0.1);color:var(--color-strength);border:1px solid rgba(255,107,44,0.2);font-size:0.6rem;">Runna Plan Active</span>
+                    <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.25);font-size:0.6rem;">Plan v3 &middot; Apr 13 – Jul 21</span>
                 </div>
             </div>
 
@@ -1480,7 +1493,7 @@
                         <div>
                             <div class="metric-label">Body Composition</div>
                             <div class="metric-value" id="weight-value">98.4<span style="font-size: 0.875rem; font-weight: 500; color: var(--text-secondary)"> kg</span></div>
-                            <div class="metric-sub">Target: 78 kg by Jul 19</div>
+                            <div class="metric-sub">Target: 78 kg by Jul 21</div>
                             <div class="bf-display" id="bodyfat-display" style="display:none;"></div>
                         </div>
                         <div class="ring-container">
@@ -1594,7 +1607,7 @@
                     <div style="text-align:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);">
                         <div class="text-xs text-tertiary">Start</div>
                         <div class="text-base font-bold" style="color:var(--text-primary);">98.4 kg</div>
-                        <div class="text-xs text-tertiary">Apr 11</div>
+                        <div class="text-xs text-tertiary">Apr 13</div>
                     </div>
                     <div style="text-align:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);">
                         <div class="text-xs text-tertiary">Current</div>
@@ -1604,7 +1617,7 @@
                     <div style="text-align:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);">
                         <div class="text-xs text-tertiary">Goal</div>
                         <div class="text-base font-bold" style="color:var(--color-race);">78 kg</div>
-                        <div class="text-xs text-tertiary">Jul 19</div>
+                        <div class="text-xs text-tertiary">Jul 21</div>
                     </div>
                 </div>
                 <!-- Progress bar -->
@@ -2128,17 +2141,18 @@
             <div class="card-glass" id="diet-phase-card" style="margin-bottom: 24px; border-left: 3px solid var(--color-race);">
                 <div class="flex items-center justify-between" style="margin-bottom: 8px;">
                     <span class="pill pill-sm" style="background:rgba(255,45,85,0.15);color:var(--color-race);border:1px solid rgba(255,45,85,0.3);" id="diet-phase-label">PHASE 1: MODERATE CUT</span>
-                    <span class="text-xs text-tertiary" id="diet-phase-dates">Day 1–16 &middot; Apr 11–26</span>
+                    <span class="text-xs text-tertiary" id="diet-phase-dates">Day 1–14 &middot; Apr 13–26</span>
                 </div>
-                <p class="text-sm text-secondary" id="diet-phase-desc">~1,400 kcal/day. 10K race on Apr 26 — no PSMF during race prep. 180g protein from whey + eggs + soy chunks + chicken 2-3x/wk. Deficit ~1,100 kcal/day. Expected loss: 3–4 kg.</p>
+                <p class="text-sm text-secondary" id="diet-phase-desc">~1,400–1,450 kcal/day. Settle in. BLR eat-out Apr 24–26 (pre-10K). 180g protein from whey + eggs + soy chunks + chicken 2–3×/wk. Deficit ~1,050 kcal/day. Expected loss: 3–4 kg.</p>
 
-                <!-- Phase timeline -->
+                <!-- Phase timeline — Plan v3 (6 segments, flex weight ~= day span) -->
                 <div style="display:flex;gap:4px;margin-top:12px;">
-                    <div class="diet-phase-seg" data-phase="1" style="flex:16;height:6px;border-radius:3px;background:var(--color-race);opacity:1;cursor:pointer;" title="Phase 1: Moderate Cut (Days 1–16)"></div>
-                    <div class="diet-phase-seg" data-phase="2" style="flex:14;height:6px;border-radius:3px;background:var(--color-strength);opacity:0.3;cursor:pointer;" title="Phase 2: PSMF Sprint (Days 17–30)"></div>
-                    <div class="diet-phase-seg" data-phase="3" style="flex:28;height:6px;border-radius:3px;background:var(--color-running);opacity:0.3;cursor:pointer;" title="Phase 3: Structured Cut (Days 31–58)"></div>
-                    <div class="diet-phase-seg" data-phase="4" style="flex:14;height:6px;border-radius:3px;background:var(--color-strength);opacity:0.3;cursor:pointer;" title="Phase 4: PSMF Sprint 2 (Days 59–72)"></div>
-                    <div class="diet-phase-seg" data-phase="5" style="flex:28;height:6px;border-radius:3px;background:var(--color-hyrox);opacity:0.3;cursor:pointer;" title="Phase 5: HYROX Prep (Days 73–100)"></div>
+                    <div class="diet-phase-seg" data-phase="1" style="flex:14;height:6px;border-radius:3px;background:var(--color-race);opacity:1;cursor:pointer;" title="Phase 1: Moderate Cut (Days 1–14, Apr 13–26)"></div>
+                    <div class="diet-phase-seg" data-phase="2" style="flex:14;height:6px;border-radius:3px;background:var(--color-strength);opacity:0.3;cursor:pointer;" title="Phase 2: PSMF Sprint 1 (Days 15–28, Apr 27–May 10)"></div>
+                    <div class="diet-phase-seg" data-phase="3" style="flex:32;height:6px;border-radius:3px;background:var(--color-running);opacity:0.3;cursor:pointer;" title="Phase 3: Structured Cut (Days 29–60, May 11–Jun 11)"></div>
+                    <div class="diet-phase-seg" data-phase="4" style="flex:12;height:6px;border-radius:3px;background:#22d3ee;opacity:0.3;cursor:pointer;" title="Phase 4: Korea Trip (Days 61–72, Jun 12–23)"></div>
+                    <div class="diet-phase-seg" data-phase="5" style="flex:14;height:6px;border-radius:3px;background:var(--color-strength);opacity:0.3;cursor:pointer;" title="Phase 5: PSMF Sprint 2 (Days 73–86, Jun 24–Jul 7)"></div>
+                    <div class="diet-phase-seg" data-phase="6" style="flex:14;height:6px;border-radius:3px;background:var(--color-hyrox);opacity:0.3;cursor:pointer;" title="Phase 6: HYROX Prep (Days 87–100, Jul 8–21)"></div>
                 </div>
             </div>
 
@@ -2163,6 +2177,73 @@
                     <div class="metric-label">Fat</div>
                     <div class="metric-value" style="color: #a78bfa;" id="diet-fat-target">45g</div>
                     <div class="metric-sub" id="diet-fat-sub">eggs, peanut butter, oil</div>
+                </div>
+            </div>
+
+            <!-- =====================================================
+                 BANGALORE PRE-RACE GUIDE (Apr 24–26, within Phase 1)
+                 ===================================================== -->
+            <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 24px;">
+                <div class="section-header" style="margin-bottom: 10px;">
+                    <span class="section-title" style="font-size: 0.95rem; color: var(--color-race);">Bangalore Pre-Race Guide</span>
+                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.12);color:var(--color-race);border:1px solid rgba(255,45,85,0.25);">Apr 24–26 &middot; 3 days, pre-10K</span>
+                </div>
+                <p class="text-xs text-secondary" style="margin-bottom: 14px;">3 days in BLR right before the 10K on Apr 26. This isn't just an eat-out — Apr 25 needs proper fueling for the race. Strategy: lean protein-heavy Apr 24, light carb-load Apr 25, normal race morning Apr 26.</p>
+
+                <!-- Apr 24 -->
+                <details style="margin-bottom: 10px; border-radius: 8px; background: rgba(255,255,255,0.02); padding: 10px 14px;">
+                    <summary style="cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                        <span class="pill pill-sm" style="background:rgba(255,107,44,0.1);color:var(--color-strength);border:1px solid rgba(255,107,44,0.25);">Apr 24 · Arrival / Lean Day</span>
+                        <span style="margin-left: 8px; color: var(--text-secondary); font-weight: 400;">~1,600–1,700 kcal · 150g+ protein</span>
+                    </summary>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6;">
+                        <strong style="color: var(--text-primary);">Breakfast — Light, bank calories:</strong> 1 scoop whey (if carrying) OR Third Wave Coffee: scrambled eggs (4), avocado toast — swap for just eggs + greens.<br>
+                        <strong style="color: var(--text-primary);">Lunch — Protein + veg heavy:</strong> Toast &amp; Tonic / Fava — grilled chicken salad, dressing on side. Smoke House Deli — grilled chicken with roasted veg. Skip fries/bread.<br>
+                        <strong style="color: var(--text-primary);">Snack:</strong> Skip or black coffee + nuts.<br>
+                        <strong style="color: var(--text-primary);">Dinner — Lean Indian/Asian:</strong> Nasi &amp; Mee (grilled satay chicken + clear broth, skip rice). Karavalli (grilled meen pollichathu or chicken 65, no rice). Sly Granny (grilled protein bowls).
+                    </div>
+                </details>
+
+                <!-- Apr 25 -->
+                <details style="margin-bottom: 10px; border-radius: 8px; background: rgba(255,255,255,0.02); padding: 10px 14px;">
+                    <summary style="cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                        <span class="pill pill-sm" style="background:rgba(57,255,20,0.12);color:var(--color-running);border:1px solid rgba(57,255,20,0.25);">Apr 25 · Pre-Race Light Carb Load</span>
+                        <span style="margin-left: 8px; color: var(--text-secondary); font-weight: 400;">~1,800 kcal · 140g P · 180g+ C</span>
+                    </summary>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6;">
+                        <strong style="color: var(--text-primary);">Breakfast — Moderate carbs + protein:</strong> Glen's Bakehouse — 2 eggs + 1 slice sourdough + coffee. OR SodaBottleOpenerWala — akuri + 1 pav.<br>
+                        <strong style="color: var(--text-primary);">Lunch — Largest meal, balanced:</strong> Meghana / Nagarjuna — chicken tikka or tandoori + 1 roti + dal + salad. <em>Skip biryani (too heavy).</em> Alt: Bengaluru Oota Company — chicken chettinad + 1 ragi roti.<br>
+                        <strong style="color: var(--text-primary);">Afternoon:</strong> Hydrate &amp; rest. Coconut water + electrolytes.<br>
+                        <strong style="color: var(--text-primary);">Dinner (EARLIER — 7 PM, lighter carbs):</strong> Grilled chicken + 1 cup rice OR 1 roti + sabzi + salad. Nothing spicy or fried. Simple is the goal.
+                    </div>
+                </details>
+
+                <!-- Apr 26 -->
+                <details style="margin-bottom: 6px; border-radius: 8px; background: rgba(255,255,255,0.02); padding: 10px 14px;">
+                    <summary style="cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                        <span class="pill pill-sm" style="background:rgba(255,45,85,0.12);color:var(--color-race);border:1px solid rgba(255,45,85,0.25);">Apr 26 · RACE DAY</span>
+                        <span style="margin-left: 8px; color: var(--text-secondary); font-weight: 400;">celebration lunch, return to plan Apr 27</span>
+                    </summary>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6;">
+                        <strong style="color: var(--text-primary);">2–3 hrs pre-race:</strong> 1 banana + black coffee + 1 scoop whey (standard race fuel).<br>
+                        <strong style="color: var(--text-primary);">Race — 10K, go get it.</strong><br>
+                        <strong style="color: var(--text-primary);">Post-race (within 30 min):</strong> whey + banana + coconut water.<br>
+                        <strong style="color: var(--text-primary);">Lunch — celebration meal, earned it:</strong> Ebony / Karavalli / SodaBottle — anything reasonable, ~800 kcal.<br>
+                        <strong style="color: var(--text-primary);">Dinner:</strong> back to plan — lean protein + salad.<br>
+                        <strong style="color: var(--text-primary);">Return Mumbai — PSMF Sprint 1 starts Apr 27.</strong>
+                    </div>
+                </details>
+
+                <!-- BLR Rules -->
+                <div style="margin-top: 12px; padding: 10px 14px; background: rgba(255,45,85,0.06); border-radius: 8px; border: 1px solid rgba(255,45,85,0.15);">
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--color-race); margin-bottom: 6px;">BLR Ground Rules</div>
+                    <ul style="margin: 0; padding-left: 18px; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.7;">
+                        <li><strong>Alcohol:</strong> None. If unavoidable Apr 24 — 2 max, vodka/gin soda. NONE Apr 25.</li>
+                        <li>BLR is hilly — walk everywhere. +3–5K steps/day almost automatic.</li>
+                        <li>Carry whey in ziplock + shaker. 2 scoops/day = 48g baseline.</li>
+                        <li>Hydration: 4L/day (BLR weather + travel dehydration is real).</li>
+                        <li>Apr 27 scale may show +1.5–2 kg from sodium &amp; race glycogen. <strong>IGNORE.</strong> Flushes in 48 hrs.</li>
+                    </ul>
                 </div>
             </div>
 
@@ -2277,7 +2358,7 @@
 
                 <!-- Eat-Out Rules -->
                 <div class="card-glass" style="border-left: 3px solid var(--color-strength); margin-bottom: 24px;">
-                    <h4 style="color: var(--color-strength); margin-bottom: 8px;">Eat-Out Day Rules (Apr 11&ndash;12, Apr 24&ndash;26, May 14)</h4>
+                    <h4 style="color: var(--color-strength); margin-bottom: 8px;">Eat-Out Day Rules (Apr 24&ndash;26 BLR, Korea window Jun 12&ndash;23)</h4>
                     <ul class="meal-list">
                         <li><strong>Morning:</strong> Shake only (1 scoop, 122 kcal) &mdash; bank calories for dinner</li>
                         <li><strong>Choose:</strong> tandoori chicken, grilled options, tikka, paneer tikka, dal. Avoid: naan, biryani, fried starters, butter chicken gravy</li>
@@ -2524,16 +2605,17 @@
     </section>
 
     <script>
-        // Update diet phase indicator on load
+        // Update diet phase indicator on load — Plan v3 (6 phases, Day 1 = Apr 13)
         (function updateDietPhase() {
-            const start = new Date('2026-04-11');
+            const start = new Date('2026-04-13');
             const day = Math.max(1, Math.min(100, Math.ceil((new Date() - start) / (1000*60*60*24)) + 1));
             const phases = [
-                { d:[1,16], label:'PHASE 1: MODERATE CUT', dates:'Day 1–16 · Apr 11–26', desc:'~1,400 kcal/day. 10K race on Apr 26 — no PSMF during race prep. 180g protein from whey + eggs + soy chunks + chicken 2-3x/wk. Deficit ~1,100 kcal/day. Expected loss: 3–4 kg.', cal:'1,400', p:'180g', c:'80g', f:'45g', csub:'kcal/day · deficit ~1,100', psub:'1.8g/kg · muscle sparing', ccsub:'oats, roti, fruit, soy', fsub:'eggs, peanut butter, oil', color:'var(--color-race)' },
-                { d:[17,30], label:'PHASE 2: PSMF SPRINT', dates:'Day 17–30 · Apr 27–May 10', desc:'~900 kcal/day. Protein-Sparing Modified Fast. 200g protein, near-zero carbs/fat. Aggressive deficit ~1,600 kcal/day. Expected loss: 4–5 kg. Easy/LISS runs only.', cal:'900', p:'200g', c:'<25g', f:'<20g', csub:'kcal/day · deficit ~1,600', psub:'2g/kg · maximum sparing', ccsub:'from soy + greens only', fsub:'incidental from eggs + soy', color:'var(--color-strength)' },
-                { d:[31,58], label:'PHASE 3: STRUCTURED CUT', dates:'Day 31–58 · May 11–Jun 7', desc:'~1,500 kcal/day. Metabolic reset after PSMF. Build weekly mileage ~10%/week, cap at 30-35 km/week. Expected loss: 4–5 kg.', cal:'1,500', p:'180g', c:'100g', f:'50g', csub:'kcal/day · deficit ~1,000', psub:'1.8g/kg · muscle sparing', ccsub:'oats, rice, roti, fruit', fsub:'eggs, PB, cooking oil', color:'var(--color-running)' },
-                { d:[59,72], label:'PHASE 4: PSMF SPRINT 2', dates:'Day 59–72 · Jun 8–21', desc:'~900 kcal/day. Second PSMF sprint. Reduce strength volume 40%, all runs easy/LISS. Expected loss: 3–3.5 kg.', cal:'900', p:'200g', c:'<25g', f:'<20g', csub:'kcal/day · deficit ~1,600', psub:'2g/kg · maximum sparing', ccsub:'from soy + greens only', fsub:'incidental from eggs + soy', color:'var(--color-strength)' },
-                { d:[73,100], label:'PHASE 5: HYROX PREP', dates:'Day 73–100 · Jun 22–Jul 19', desc:'~1,600 kcal/day. Performance focus — carbs return for HYROX training. 8x1km intervals, station work. Moderate deficit. Expected loss: 3–4 kg.', cal:'1,600', p:'170g', c:'120g', f:'45g', csub:'kcal/day · moderate deficit', psub:'slightly lower for carb room', ccsub:'fuel for 8x1km + stations', fsub:'same as structured cut', color:'var(--color-hyrox)' }
+                { d:[1,14],  label:'PHASE 1: MODERATE CUT',   dates:'Day 1–14 · Apr 13–26',    desc:'~1,400–1,450 kcal/day. Settle in. BLR eat-out Apr 24–26 (pre-10K). 180g protein from whey + eggs + soy chunks + chicken 2–3×/wk. Deficit ~1,050 kcal/day. Expected loss: 3–4 kg.', cal:'1,425', p:'180g', c:'80g', f:'45g', csub:'kcal/day · deficit ~1,050', psub:'1.8g/kg · muscle sparing', ccsub:'oats, roti, fruit, soy', fsub:'eggs, peanut butter, oil', color:'var(--color-race)' },
+                { d:[15,28], label:'PHASE 2: PSMF SPRINT 1',  dates:'Day 15–28 · Apr 27–May 10', desc:'~850–900 kcal/day. Protein-Sparing Modified Fast — aggressive fat loss. 200g protein, near-zero carbs/fat. Deficit ~1,600 kcal/day. Expected loss: 4–5 kg. Easy/LISS runs only.', cal:'875', p:'200g', c:'<25g', f:'<20g', csub:'kcal/day · deficit ~1,600', psub:'2g/kg · maximum sparing', ccsub:'from soy + greens only', fsub:'incidental from eggs + soy', color:'var(--color-strength)' },
+                { d:[29,60], label:'PHASE 3: STRUCTURED CUT', dates:'Day 29–60 · May 11–Jun 11', desc:'~1,450–1,500 kcal/day. Longer cut — preps body for Korea. Build weekly mileage ~10%/week. Expected loss: 5–6 kg.', cal:'1,475', p:'180g', c:'100g', f:'50g', csub:'kcal/day · deficit ~1,000', psub:'1.8g/kg · muscle sparing', ccsub:'oats, rice, roti, fruit', fsub:'eggs, PB, cooking oil', color:'var(--color-running)' },
+                { d:[61,72], label:'PHASE 4: KOREA TRIP',     dates:'Day 61–72 · Jun 12–23',    desc:'~1,600–1,800 kcal/day. Maintenance + moderate cut on the road. PSMF on foreign soil without a kitchen is impractical and would wreck the trip — Korea window holds weight or allows slight loss via smart choices. Hotel-gym workouts. See Travel tab.', cal:'1,700', p:'160g', c:'150g', f:'55g', csub:'kcal/day · maintenance/mild deficit', psub:'1.6g/kg · portable sources', ccsub:'Korean rice, fruit, kimchi', fsub:'Korean BBQ, eggs, nuts', color:'var(--color-travel)' },
+                { d:[73,86], label:'PHASE 5: PSMF SPRINT 2',  dates:'Day 73–86 · Jun 24–Jul 7',  desc:'~850–900 kcal/day. Post-Korea reset. Second PSMF sprint to recover any travel-phase slip. Reduce strength volume 40%, all runs easy/LISS. Expected loss: 3–4 kg.', cal:'875', p:'200g', c:'<25g', f:'<20g', csub:'kcal/day · deficit ~1,600', psub:'2g/kg · maximum sparing', ccsub:'from soy + greens only', fsub:'incidental from eggs + soy', color:'var(--color-strength)' },
+                { d:[87,100],label:'PHASE 6: HYROX PREP',     dates:'Day 87–100 · Jul 8–21',    desc:'~1,550–1,600 kcal/day. Performance carbs return for HYROX Delhi race prep. 8×1km intervals, station work. Moderate deficit. Expected loss: 2–3 kg.', cal:'1,575', p:'170g', c:'120g', f:'45g', csub:'kcal/day · moderate deficit', psub:'slightly lower for carb room', ccsub:'fuel for 8×1km + stations', fsub:'same as structured cut', color:'var(--color-hyrox)' }
             ];
             const ph = phases.find(p => day >= p.d[0] && day <= p.d[1]) || phases[0];
             const el = (id) => document.getElementById(id);
@@ -2935,8 +3017,8 @@
                 </div>
                 <canvas id="weight-chart" width="800" height="250" style="width: 100%; height: auto;"></canvas>
                 <div class="flex items-center justify-between" style="margin-top: 12px;">
-                    <span class="text-xs text-secondary">Start: 98.4 kg (Apr 11, 2026)</span>
-                    <span class="text-xs text-secondary">Target: 78 kg (Jul 19)</span>
+                    <span class="text-xs text-secondary">Start: 98.4 kg (Apr 13, 2026)</span>
+                    <span class="text-xs text-secondary">Target: 78 kg (Jul 21)</span>
                 </div>
             </div>
 
@@ -3065,10 +3147,10 @@
                     <!-- Vertical line -->
                     <div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.08);"></div>
 
-                    <div class="milestone-item" data-date="2026-04-11" style="position:relative;margin-bottom:16px;">
+                    <div class="milestone-item" data-date="2026-04-13" style="position:relative;margin-bottom:16px;">
                         <div style="position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--color-running);border:2px solid var(--bg-primary);z-index:1;"></div>
-                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Apr 11</span><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">DAY 1</span></div>
-                        <p class="text-sm text-secondary">START — 98.4 kg. Moderate Cut begins. InBody baseline.</p>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold">Apr 13</span><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">DAY 1</span></div>
+                        <p class="text-sm text-secondary">START — 98.4 kg. Moderate Cut begins. InBody baseline (Apr 10).</p>
                     </div>
 
                     <div class="milestone-item" data-date="2026-04-26" style="position:relative;margin-bottom:16px;">
@@ -3101,9 +3183,9 @@
                         <p class="text-sm text-secondary">End PSMF 2 → InBody retest. Target: ~82 kg. Visible transformation.</p>
                     </div>
 
-                    <div class="milestone-item" data-date="2026-07-19" style="position:relative;margin-bottom:16px;">
+                    <div class="milestone-item" data-date="2026-07-21" style="position:relative;margin-bottom:16px;">
                         <div style="position:absolute;left:-20px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--color-race);border:2px solid var(--bg-primary);z-index:1;box-shadow:0 0 8px rgba(255,45,85,0.4);" id="ms-dot-100"></div>
-                        <div class="flex items-center gap-sm"><span class="text-sm font-bold" style="color:var(--color-race);">Jul 19</span><span class="pill pill-sm" style="background:var(--color-race);color:#fff;font-size:0.6rem;">DAY 100</span></div>
+                        <div class="flex items-center gap-sm"><span class="text-sm font-bold" style="color:var(--color-race);">Jul 21</span><span class="pill pill-sm" style="background:var(--color-race);color:#fff;font-size:0.6rem;">DAY 100</span></div>
                         <p class="text-sm text-secondary">END — Final InBody + full blood panel. Target: ~78 kg, BF ~18%. 20 kg total lost.</p>
                     </div>
 
@@ -3766,7 +3848,7 @@
                 <div class="shloka-card">
                     <div class="shloka-sanskrit">yada yada hi dharmasya glanir bhavati bharata</div>
                     <div class="shloka-translation">"Whenever there is a decline of righteousness and rise of unrighteousness, I manifest Myself."</div>
-                    <div class="shloka-reference">Gita 4.7 &mdash; Your body declined. HbA1c 6.3 to 6.0. Weight 98.4. CRP elevated. Apr 11, 2026 is the day you manifested your own restoration. You ARE the intervention.</div>
+                    <div class="shloka-reference">Gita 4.7 &mdash; Your body declined. HbA1c 6.3 to 6.0. Weight 98.4. CRP elevated. Apr 13, 2026 is the day you manifested your own restoration. You ARE the intervention.</div>
                 </div>
             </div>
 
@@ -3806,7 +3888,7 @@
                 </p>
                 <div style="padding: 16px 20px; border-radius: 12px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); max-width: 500px; margin: 0 auto;">
                     <p style="font-size: 0.9375rem; font-weight: 600; color: var(--color-dharma); line-height: 1.6; font-style: italic;">
-                        "I, Kash, vow to follow this dharma for 100 days &mdash; Apr 11 to Jul 19, 2026. I will train every scheduled day. I will eat within my plan. I will rise before the sun. I will face every discomfort without retreat. This is my Kurukshetra. This body is my battlefield. I will not fail myself."
+                        "I, Kash, vow to follow this dharma for 100 days &mdash; Apr 13 to Jul 21, 2026. I will train every scheduled day. I will eat within my plan. I will rise before the sun. I will face every discomfort without retreat. This is my Kurukshetra. This body is my battlefield. I will not fail myself."
                     </p>
                 </div>
                 <p class="text-xs" style="color: var(--text-tertiary); margin-top: 12px;">Day <span id="dharma-vow-day">1</span> of 100 &middot; <span id="dharma-vow-remaining">99</span> days remaining</p>
@@ -3814,6 +3896,312 @@
 
         </div>
     </section>
+
+    <!-- ========================================
+         TRAVEL TAB — Korea Trip (Jun 12–23, 2026)
+         ======================================== -->
+    <section class="tab-panel" id="panel-travel" style="display:none" role="tabpanel" aria-label="Travel">
+        <div class="container">
+
+            <!-- T1: Trip Overview -->
+            <div class="card-glass" style="border-left: 3px solid var(--color-travel); margin: 24px 0;">
+                <div class="section-header" style="margin-bottom: 10px;">
+                    <span class="section-title" style="color: var(--color-travel); font-size: 1rem;">South Korea — Seoul</span>
+                    <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.25);">Jun 12–23 &middot; 11 days</span>
+                </div>
+                <div class="grid-3" style="gap: 12px; margin-top: 14px;">
+                    <div class="metric-card" style="border-top: 2px solid var(--color-travel);">
+                        <div class="metric-label">Trip Countdown</div>
+                        <div class="metric-value" style="color: var(--color-travel);" id="korea-countdown">—</div>
+                        <div class="metric-sub">days to departure</div>
+                    </div>
+                    <div class="metric-card" style="border-top: 2px solid var(--color-running);">
+                        <div class="metric-label">Plan Phase</div>
+                        <div class="metric-value text-green">4</div>
+                        <div class="metric-sub">Korea Trip · maintenance</div>
+                    </div>
+                    <div class="metric-card" style="border-top: 2px solid var(--color-strength);">
+                        <div class="metric-label">Goal</div>
+                        <div class="metric-value text-orange">±0 kg</div>
+                        <div class="metric-sub">hold or lose 1–2 kg</div>
+                    </div>
+                </div>
+                <p class="text-xs text-secondary" style="margin-top: 14px; line-height: 1.6;">Korea sits in the middle of what would have been PSMF Sprint 2. PSMF abroad without a kitchen is impractical and would wreck the trip. This window becomes a <strong style="color: var(--text-primary);">managed maintenance / moderate-cut</strong>. Smart Korean food + hotel-gym workouts + 15k-step days = 0–2 kg loss without white-knuckling it. PSMF resumes Jun 24.</p>
+            </div>
+
+            <!-- T2: Flight Itinerary -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="section-header" style="margin-bottom: 14px;">
+                    <span class="section-title" style="font-size: 0.95rem;">Flight Itinerary</span>
+                    <span class="pill pill-sm" style="background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1);">PNR: SQ-7QY9VL · Singapore Airlines</span>
+                </div>
+
+                <!-- Outbound -->
+                <div style="margin-bottom: 18px;">
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-travel); margin-bottom: 8px;">✈ Outbound — Fri 12 Jun 2026</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
+                        <strong style="color: var(--text-primary);">SQ 421</strong> &nbsp; BOM 11:45 → SIN 19:50 &nbsp;·&nbsp; <em>Aircraft 787, Terminal 2 → T1</em><br>
+                        <span style="color: var(--color-travel);">— Layover 6h 35m @ Changi —</span><br>
+                        <strong style="color: var(--text-primary);">SQ 612</strong> &nbsp; SIN 02:25 → ICN 09:50 (Sat 13 Jun) &nbsp;·&nbsp; <em>Aircraft 359, T2 → T1</em>
+                    </div>
+                </div>
+
+                <!-- Return -->
+                <div>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-travel); margin-bottom: 8px;">✈ Return — Tue 23 Jun 2026</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
+                        <strong style="color: var(--text-primary);">SQ 607</strong> &nbsp; ICN 09:00 → SIN 14:20 &nbsp;·&nbsp; <em>Aircraft 787, T1 → T2/3</em><br>
+                        <span style="color: var(--color-travel);">— Layover 4h 30m @ Changi —</span><br>
+                        <strong style="color: var(--text-primary);">SQ 424</strong> &nbsp; SIN 18:50 → BOM 22:10 &nbsp;·&nbsp; <em>Aircraft 388, Terminal 3 → T2</em>
+                    </div>
+                </div>
+
+                <p class="text-xs text-tertiary" style="margin-top: 14px;">Baggage: 25 kg check-in per passenger. Cabin not pre-selected.</p>
+            </div>
+
+            <!-- T3: Changi Layover Protocols -->
+            <div class="card-glass" style="border-left: 3px solid var(--color-travel); margin-bottom: 24px;">
+                <div class="section-header" style="margin-bottom: 10px;">
+                    <span class="section-title" style="font-size: 0.95rem; color: var(--color-travel);">Changi Layover Protocols</span>
+                    <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.2);">Use the time, don't lose it</span>
+                </div>
+
+                <!-- Outbound Layover -->
+                <details style="margin-bottom: 10px; border-radius: 8px; background: rgba(255,255,255,0.02); padding: 12px 14px;" open>
+                    <summary style="cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                        <span class="pill pill-sm" style="background:rgba(34,211,238,0.12);color:var(--color-travel);border:1px solid rgba(34,211,238,0.25);">Outbound · 6h 35m · Night</span>
+                        <span style="margin-left: 8px; color: var(--text-secondary); font-weight: 400;">Fri 12 Jun 19:50 → Sat 13 Jun 02:25</span>
+                    </summary>
+                    <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
+                        <strong style="color: var(--color-travel);">0:00 — 0:30</strong> &nbsp; Immigration + walk to Terminal 2/3. ~2 km walk counts as Zone 2. Stretch calves.<br>
+                        <strong style="color: var(--color-travel);">0:30 — 1:30</strong> &nbsp; Light meal — Din Tai Fung / Crystal Jade (T3) — grilled chicken + veg, clear broth. Skip sugary drinks. 500ml water + electrolyte tab.<br>
+                        <strong style="color: var(--color-travel);">1:30 — 2:30</strong> &nbsp; <strong style="color: var(--text-primary);">Option A:</strong> Changi Transit Gym — Aerotel Transit Hotel T1 mezzanine, ~S$40 for 6h pass. 30 min treadmill Zone 2 + 20 min full-body mobility. <strong style="color: var(--text-primary);">Option B:</strong> skip gym, do Terminal 3 butterfly garden walk + shower at Ambassador Transit Hotel (~S$45 3h).<br>
+                        <strong style="color: var(--color-travel);">2:30 — 4:00</strong> &nbsp; Shower + change. Compression socks on. Melatonin 0.5–1 mg.<br>
+                        <strong style="color: var(--color-travel);">4:00 — 6:35</strong> &nbsp; Sleep. T2 snooze lounges (free) or lie flat near a quiet gate. Align sleep to Korea time — you arrive Seoul 09:50 local.
+                    </div>
+                </details>
+
+                <!-- Return Layover -->
+                <details style="margin-bottom: 6px; border-radius: 8px; background: rgba(255,255,255,0.02); padding: 12px 14px;">
+                    <summary style="cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                        <span class="pill pill-sm" style="background:rgba(34,211,238,0.12);color:var(--color-travel);border:1px solid rgba(34,211,238,0.25);">Return · 4h 30m · Day</span>
+                        <span style="margin-left: 8px; color: var(--text-secondary); font-weight: 400;">Tue 23 Jun 14:20 → 18:50</span>
+                    </summary>
+                    <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
+                        <strong style="color: var(--color-travel);">0:00 — 0:30</strong> &nbsp; Transfer walk to Terminal 3. Lounge entry (SilverKris if eligible; else Marhaba/Plaza Premium via Priority Pass).<br>
+                        <strong style="color: var(--color-travel);">0:30 — 2:00</strong> &nbsp; Light lunch — Jewel Changi food court (grilled salmon / chicken salad). 500 ml water + electrolyte tab.<br>
+                        <strong style="color: var(--color-travel);">2:00 — 3:00</strong> &nbsp; Walk Shiseido Forest Valley + Rain Vortex at Jewel (1.5 km active recovery). Great for stiff post-flight legs.<br>
+                        <strong style="color: var(--color-travel);">3:00 — 4:00</strong> &nbsp; Stretch + foam roll in lounge quiet room. Light snack (Greek yogurt / nuts). No coffee after 4 PM SIN time — you land BOM 22:10 and want to sleep.<br>
+                        <strong style="color: var(--color-travel);">4:00 — 4:30</strong> &nbsp; Board SQ 424. Sleep mask + earplugs. Melatonin 0.5 mg. Arrive BOM 22:10 → sleep normally same night.
+                    </div>
+                </details>
+            </div>
+
+            <!-- T4: What to Carry / Buy -->
+            <div class="grid-2" style="margin-bottom: 24px; gap: 16px;">
+                <div class="card">
+                    <h4 style="color: var(--color-running); margin-bottom: 10px; font-size: 0.9rem;">🧳 Carry from India</h4>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.8;">
+                        <strong style="color: var(--text-primary);">Freak Labs Whey</strong> ~600g (sealed tub, declare if asked — it's fine)<br>
+                        <strong style="color: var(--text-primary);">Shaker bottle</strong> ×1<br>
+                        <strong style="color: var(--text-primary);">Electrolyte tabs</strong> — Nuun / Fast&amp;Up, 1 tube<br>
+                        <strong style="color: var(--text-primary);">Protein bars</strong> — OneLife / Nutrabay / RiteBite, 5–6 pcs (emergency meal)<br>
+                        <strong style="color: var(--text-primary);">Psyllium husk</strong> — small packet (fibre for carb-heavy Korean meals)<br>
+                        <strong style="color: var(--text-primary);">Magnesium glycinate</strong> — travel pack (sleep + jet lag)<br>
+                        <strong style="color: var(--text-primary);">Multivitamin</strong> — travel pack (deficit insurance)<br>
+                        <strong style="color: var(--text-primary);">Glucometer + strips</strong> — FBS daily log
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 style="color: var(--color-travel); margin-bottom: 10px; font-size: 0.9rem;">🛒 Buy in Korea</h4>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.8;">
+                        <strong style="color: var(--text-primary);">Greek yogurt</strong> — any CU / GS25 / 7-Eleven (~15g P/cup)<br>
+                        <strong style="color: var(--text-primary);">Gyeran (hard-boiled eggs)</strong> — convenience stores, pre-packaged (6g P each)<br>
+                        <strong style="color: var(--text-primary);">Tuna cans</strong> — everywhere (20g P, ~100 cal) — lifesaver<br>
+                        <strong style="color: var(--text-primary);">Pre-cooked chicken breast</strong> — CU / GS25 (25g P, 130 cal per pack)<br>
+                        <strong style="color: var(--text-primary);">Korean whey backup</strong> — MYPROTEIN at E-Mart / Olive Young<br>
+                        <strong style="color: var(--text-primary);">Soy milk</strong> (unsweetened) — 8g P / 250ml<br>
+                        <strong style="color: var(--text-primary);">Kimchi + banchan</strong> — everywhere (near-free cal, gut health)<br>
+                        <strong style="color: var(--text-primary);">Bottled water</strong> — tap is safe but taste varies
+                    </div>
+                </div>
+            </div>
+
+            <!-- T5: Korean Food Rulebook -->
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="section-header" style="margin-bottom: 10px;">
+                    <span class="section-title" style="font-size: 0.95rem;">Korean Food Rulebook</span>
+                    <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.2);">Eat this, avoid that</span>
+                </div>
+
+                <!-- Green: Excellent daily OK -->
+                <div style="padding: 10px 14px; background: rgba(57,255,20,0.05); border-radius: 8px; border: 1px solid rgba(57,255,20,0.15); margin-bottom: 10px;">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--color-running); margin-bottom: 8px;">✅ EXCELLENT — Daily OK</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.75;">
+                        <strong style="color: var(--text-primary);">Samgyetang</strong> (ginseng chicken soup) — 600 cal, 55g P · whole chicken in broth, clean<br>
+                        <strong style="color: var(--text-primary);">Bulgogi</strong> (marinated beef grilled) — 450 cal, 40g P · ask less sauce, skip rice<br>
+                        <strong style="color: var(--text-primary);">Galbi</strong> (grilled ribs) — 500 cal, 45g P · lean cuts, grill yourself<br>
+                        <strong style="color: var(--text-primary);">Dak Galbi</strong> (spicy stir-fried chicken) — 450 cal, 50g P · no noodles<br>
+                        <strong style="color: var(--text-primary);">Samgyeopsal</strong> (grilled pork belly) — 600 cal, 35g P · fatty but protein-heavy, limit portion<br>
+                        <strong style="color: var(--text-primary);">Sundubu Jjigae</strong> (soft tofu stew) — 350 cal, 25g P · tofu + egg + seafood<br>
+                        <strong style="color: var(--text-primary);">Mul Naengmyeon</strong> (cold buckwheat noodles) — 450 cal, 15g P · lighter than most noodles<br>
+                        <strong style="color: var(--text-primary);">Gyeranjjim</strong> (steamed egg casserole) — 150 cal, 12g P · pure egg protein side<br>
+                        <strong style="color: var(--text-primary);">Kimchi + banchan</strong> — &lt;50 cal total · near-zero cal, gut health
+                    </div>
+                </div>
+
+                <!-- Orange: Moderate 2-3x trip -->
+                <div style="padding: 10px 14px; background: rgba(255,107,44,0.05); border-radius: 8px; border: 1px solid rgba(255,107,44,0.15); margin-bottom: 10px;">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--color-strength); margin-bottom: 8px;">⚠️ MODERATE — 2–3× during trip, portion-control</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.75;">
+                        <strong style="color: var(--text-primary);">Bibimbap</strong> — rice-heavy but balanced · eat half the rice, full protein + veg<br>
+                        <strong style="color: var(--text-primary);">Korean Fried Chicken</strong> — delicious but calorie bomb · share a plate, 4–5 pcs max, no beer<br>
+                        <strong style="color: var(--text-primary);">Jajangmyeon</strong> (black bean noodles) — heavy · share, eat with extra kimchi<br>
+                        <strong style="color: var(--text-primary);">Tteokbokki</strong> (spicy rice cakes) — all carbs · small portion, share, add fishcake for protein<br>
+                        <strong style="color: var(--text-primary);">Korean BBQ buffet</strong> — can go either way · focus on meat, minimal rice, lettuce wraps
+                    </div>
+                </div>
+
+                <!-- Red: Avoid -->
+                <div style="padding: 10px 14px; background: rgba(255,45,85,0.05); border-radius: 8px; border: 1px solid rgba(255,45,85,0.15);">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--color-race); margin-bottom: 8px;">🚫 AVOID OR LIMIT HEAVILY</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.75;">
+                        <strong style="color: var(--text-primary);">Soju / Makgeolli / Beer</strong> — Korean drinking culture is intense. Decline respectfully. If forced: soju (124 cal/shot) ≥ beer &gt; makgeolli<br>
+                        <strong style="color: var(--text-primary);">Bingsu</strong> (shaved ice dessert) — 800–1,200 cal. Skip.<br>
+                        <strong style="color: var(--text-primary);">Tonkatsu</strong> (deep-fried pork cutlet) — ~700 cal per piece<br>
+                        <strong style="color: var(--text-primary);">Ramyeon / instant noodles</strong> — high sodium, empty cal<br>
+                        <strong style="color: var(--text-primary);">Street-food fried items</strong> — hotteok, twigim<br>
+                        <strong style="color: var(--text-primary);">Convenience store ddeok / breads</strong> — carb-heavy, low protein
+                    </div>
+                </div>
+            </div>
+
+            <!-- T6: Hotel Gym Workout Plan -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="section-header" style="margin-bottom: 12px;">
+                    <span class="section-title" style="font-size: 0.95rem;">Hotel Gym Workout Plan — Jun 13–22</span>
+                    <span class="pill pill-sm" style="background:rgba(255,107,44,0.1);color:var(--color-strength);border:1px solid rgba(255,107,44,0.25);">10 active days</span>
+                </div>
+                <p class="text-xs text-tertiary" style="margin-bottom: 14px;">Assumes: treadmill, stationary bike, DBs 5–20 kg, flat bench, basic cable/lat pulldown. Adjust if hotel gym is sparser. All sessions 30–60 min — built for jet-lag + travel logistics.</p>
+
+                <div style="overflow-x: auto;">
+                <table class="splits-table" style="min-width: 580px; font-size: 0.78rem;">
+                    <thead>
+                        <tr><th>Day</th><th>Date</th><th>Session</th><th>Duration</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sat</strong></td>
+                            <td>Jun 13</td>
+                            <td><strong style="color: var(--color-running);">Arrival / Jet Lag</strong> — 20 min Zone 2 treadmill walk + 10 min mobility (hip openers, T-spine rotations). Just get blood moving.</td>
+                            <td>30 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sun</strong></td>
+                            <td>Jun 14</td>
+                            <td><strong style="color: var(--color-strength);">Full-body DB</strong> — goblet squat 4×10, DB RDL 4×10, DB bench 4×8, 1-arm DB row 4×10/side, plank 3×45s, dead-bug 3×10.</td>
+                            <td>45 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mon</strong></td>
+                            <td>Jun 15</td>
+                            <td><strong style="color: var(--color-running);">Treadmill tempo</strong> — 10 min WU @ 9 km/h · 5×3 min @ 5K pace (~11–12 km/h) / 2 min jog · 10 min CD.</td>
+                            <td>45 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tue</strong></td>
+                            <td>Jun 16</td>
+                            <td><strong style="color: var(--color-strength);">Upper focus</strong> — DB bench 4×8, DB OHP 4×8, cable/DB row 4×10, biceps/triceps superset 3×12, hanging leg raise 3×12.</td>
+                            <td>50 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wed</strong></td>
+                            <td>Jun 17</td>
+                            <td><strong style="color: var(--color-rest);">Active recovery</strong> — 40 min Zone 2 stationary bike + 10 min foam roll/stretch. Walk Seoul instead if step count &lt; 12k.</td>
+                            <td>50 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Thu</strong></td>
+                            <td>Jun 18</td>
+                            <td><strong style="color: var(--color-running);">Intervals</strong> — 10 min WU · 8×400m @ target HYROX pace (~5:00/km) / 90s jog · 10 min CD. Or outdoor if near park.</td>
+                            <td>50 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fri</strong></td>
+                            <td>Jun 19</td>
+                            <td><strong style="color: var(--color-strength);">Lower focus</strong> — goblet squat 4×10, DB Bulgarian split 3×8/side, DB RDL 4×10, walking lunges 3×20 steps, calf raise 3×15.</td>
+                            <td>50 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sat</strong></td>
+                            <td>Jun 20</td>
+                            <td><strong style="color: var(--color-hyrox);">HYROX Mini</strong> — 8-round AMRAP: 200m run + 20 walking lunges + 15 DB thrusters (10kg) + 10 burpees. Benchmark test.</td>
+                            <td>45 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sun</strong></td>
+                            <td>Jun 21</td>
+                            <td><strong style="color: var(--color-running);">Long steady</strong> — 60 min Zone 2 on treadmill. Better: Han River path if hotel is central (Yongsan / Gangnam).</td>
+                            <td>60 min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mon</strong></td>
+                            <td>Jun 22</td>
+                            <td><strong style="color: var(--color-rest);">Deload + mobility</strong> — 30 min Zone 1 bike + full yoga sequence (hips, shoulders, T-spine). Prep body for flight.</td>
+                            <td>45 min</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <div style="margin-top: 14px; padding: 10px 14px; background: rgba(34,211,238,0.06); border-radius: 8px; border: 1px solid rgba(34,211,238,0.15);">
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--color-travel); margin-bottom: 6px;">Hotel gym hacks</div>
+                    <ul style="margin: 0; padding-left: 18px; font-size: 0.74rem; color: var(--text-secondary); line-height: 1.7;">
+                        <li>If DBs max out at 15 kg — do higher reps (12–15) or slower tempo (3-sec eccentric).</li>
+                        <li>No cable machine — substitute band rows (pack a resistance band, 100g).</li>
+                        <li>No treadmill — run outdoors; Seoul is generally safe at 6 AM. Han River / Namsan Park are ideal.</li>
+                        <li>Day-before heavy dinner (BBQ buffet) → next-morning Zone 2 only, no lifting.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- T7: Other Considerations -->
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="section-header" style="margin-bottom: 12px;">
+                    <span class="section-title" style="font-size: 0.95rem;">Other Things to Plan For</span>
+                </div>
+                <div class="grid-2" style="gap: 14px;">
+                    <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.75;">
+                        <div style="margin-bottom: 10px;">✈️ <strong style="color: var(--text-primary);">Jet lag:</strong> Seoul is +3:30 from Mumbai. Shift sleep −30 min/day from Jun 9. Use outbound layover to sleep on Korea time. Morning sun on Day 1 Seoul.</div>
+                        <div style="margin-bottom: 10px;">💧 <strong style="color: var(--text-primary);">Hydration:</strong> 4L/day. Dry Korean climate + long flights. Electrolyte tab before both flights.</div>
+                        <div style="margin-bottom: 10px;">🩸 <strong style="color: var(--text-primary);">FBS daily log:</strong> Pack glucometer + strips. Note daily reading in a journal (WhatsApp logger still roadmap P1).</div>
+                        <div style="margin-bottom: 10px;">🧳 <strong style="color: var(--text-primary);">Whey at customs:</strong> Sealed tub, &lt;1 kg, declare if asked at ICN. Keep the Freak Labs receipt.</div>
+                        <div style="margin-bottom: 10px;">📱 <strong style="color: var(--text-primary);">SIM / eSIM:</strong> Korean eSIM (KT or SK Telecom ~₩30k, 10 days) — pre-order or buy at ICN. Needed for WhatsApp logger.</div>
+                    </div>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.75;">
+                        <div style="margin-bottom: 10px;">🛂 <strong style="color: var(--text-primary);">Singapore transit:</strong> Indian passport — no visa needed for &lt;96h transit if onward ticket held. Both layovers qualify.</div>
+                        <div style="margin-bottom: 10px;">⚖️ <strong style="color: var(--text-primary);">Weight scale:</strong> Hotels rarely have in-room scales. Option: travel scale (~1.5 kg, fits check-in). Else skip daily weigh-ins, rely on InBody on return.</div>
+                        <div style="margin-bottom: 10px;">💤 <strong style="color: var(--text-primary);">Sleep stack:</strong> Magnesium glycinate 400 mg + melatonin 0.5 mg, 90 min pre-sleep. Earplugs + eye mask.</div>
+                        <div style="margin-bottom: 10px;">🚶 <strong style="color: var(--text-primary);">Step goal:</strong> 15k/day minimum. Seoul is walkable. Replaces formal cardio on most days.</div>
+                        <div style="margin-bottom: 10px;">📸 <strong style="color: var(--text-primary);">Weekly photo:</strong> Sun morning mirror selfie. Visual progress without scale.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Korea countdown JS -->
+    <script>
+        (function() {
+            const pill = document.getElementById('korea-countdown');
+            if (!pill) return;
+            const target = new Date('2026-06-12T11:45:00+05:30');
+            const now = new Date();
+            const days = Math.max(0, Math.ceil((target - now) / (1000*60*60*24)));
+            pill.textContent = days;
+        })();
+    </script>
 
     <!-- Toast Container -->
     <div id="toast-container" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;"></div>
@@ -4117,7 +4505,7 @@ const TRAINING_DATA = {
       ]
     },
     {
-      id: 3, name: "100-Day Transformation", dates: "Apr 27 – Jul 19", weeks: 12, startWeek: 10,
+      id: 3, name: "100-Day Transformation", dates: "Apr 27 – Jul 21", weeks: 12, startWeek: 10,
       focus: "100-day body recomp. PSMF sprints (900 kcal) alternating with structured cuts (1,400-1,500 kcal). 3-4 runs + 3-4 strength/week. Upper Push/Pull/Lower/Full Body split. Target: 98.4→78 kg.",
       keyResult: "Day 30: ~90 kg | Day 58: ~85 kg | Day 72: ~82 kg | Day 100: ~78 kg. Preserve 35.7 kg muscle mass.",
       runsPerWeek: "3–4", strengthPerWeek: "3–4",
@@ -4134,18 +4522,18 @@ const TRAINING_DATA = {
           days:["Run: Easy/Tempo 5-8K + 20min LISS","Strength: Lower Body","Run: Intervals 5-7K + Core/Mobility","Strength: Upper Pull + 20min LISS","Run: Easy 5-6K + Cricket","Long Run 8-12K + Strength: Full Body","Active Recovery: Walk 30-45 min"]},
         { num:15, dates:"Jun 1–7", km:25, notes:"RECOVERY WEEK. Deload before PSMF 2. Test FBS + HbA1c at Day 58.",
           days:["Run: Easy 5K + 20min LISS","Strength: Lower Body (lighter)","Run: Easy 5K (Zone 2)","Strength: Upper Pull (lighter)","Run: Easy 4-5K + Cricket","REST","Active Recovery: Walk/Yoga"]},
-        { num:16, dates:"Jun 8–14", km:15, notes:"PSMF SPRINT 2 starts (900 kcal). Reduce strength volume 40%. All runs easy/LISS. No consecutive run days.",
-          days:["Run: Easy 5-6K + 20min LISS","Strength: Lower Body (reduced)","Run: Easy 5K (Zone 2)","Strength: Upper Pull (reduced) + 20min LISS","REST","Run: Easy 5K + Cricket","Active Recovery: Walk 30-45 min"]},
-        { num:17, dates:"Jun 15–21", km:15, notes:"PSMF SPRINT 2 continues. InBody retest Jun 21. Target ~82 kg.",
+        { num:16, dates:"Jun 8–14", km:18, notes:"STRUCTURED CUT tail (Jun 8–11) → KOREA TRIP starts Jun 12 (BOM→SIN→ICN, hotel gym from Jun 13). Maintenance kcal 1,600–1,800.",
+          days:["Run: Easy/Tempo 5-8K + 20min LISS","Strength: Lower Body","Run: Intervals 5-7K","Strength: Upper Pull + 20min LISS","FLY: BOM→SIN (Changi layover protocol — walk 2km + light gym)","Seoul: Zone 2 walk 20 min + mobility (jet-lag protocol)","Seoul hotel: Full-body DB session 45 min"]},
+        { num:17, dates:"Jun 15–21", km:20, notes:"KOREA WEEK — hotel gym only (treadmill, DBs ≤20kg, bench). 15k steps/day minimum. Maintain weight, no InBody.",
+          days:["Hotel: Treadmill tempo 5×3min @ 5K pace","Hotel: Upper DB (bench/OHP/row) 50 min","Hotel: Zone 2 bike 40 min (recovery)","Hotel: Intervals 8×400m @ HYROX pace","Hotel: Lower DB (goblet sq / BG split) 50 min","Hotel: HYROX mini-AMRAP (run/lunges/thrusters/burpees)","Long steady: 60min Zone 2 treadmill OR Han River run"]},
+        { num:18, dates:"Jun 22–28", km:20, notes:"KOREA ends Jun 23 (ICN→SIN→BOM, Changi layover walk + lounge stretch). PSMF SPRINT 2 starts Jun 24 (900 kcal). Reduce strength volume 40%.",
+          days:["Seoul: Deload + 30min bike + yoga","FLY: ICN→BOM (Changi 4h30 layover — Jewel walk + stretch)","Run: Easy 5K (Zone 2, jet-lag reset)","Strength: Lower Body (reduced) — PSMF2 Day 1","Run: Easy 5-6K + 20min LISS","Strength: Upper Pull (reduced) + 20min LISS","Active Recovery: Walk 30-45 min"]},
+        { num:19, dates:"Jun 29–Jul 5", km:18, notes:"PSMF SPRINT 2 continues (900 kcal). All runs easy/LISS. No consecutive run days. Target Day 86 ~82 kg.",
           days:["Run: Easy 5-6K + 20min LISS","Strength: Lower Body (reduced)","Run: Easy 5K (Zone 2)","Strength: Upper Pull (reduced)","REST","Run: Easy 5K + Cricket","Active Recovery: Walk 30-45 min"]},
-        { num:18, dates:"Jun 22–28", km:22, notes:"HYROX PREP (1,600 kcal). Carbs return. Introduce 8x1km intervals. Performance focus.",
-          days:["Run: 8x1km intervals @ 5:00-5:30/km + 20min LISS","Strength: Full Body + 20min LISS","Run: Continuous 8K steady","Strength: Upper Pull + Core","Run: Easy 5-6K + Cricket","Long Run 8K OR HYROX Sim (partial)","Active Recovery: Walk/Yoga"]},
-        { num:19, dates:"Jun 29–Jul 5", km:25, notes:"HYROX PREP continues. HYROX simulation + station practice. Build carb tolerance.",
-          days:["Run: 8x1km intervals + station work","Strength: Full Body + 20min LISS","Run: Continuous 8K steady","Strength: Upper Pull + Core","Run: Easy 5-6K + Cricket","HYROX Sim: 1km+station+1km+station (build up)","Active Recovery: Walk 30-45 min"]},
-        { num:20, dates:"Jul 6–12", km:25, notes:"HYROX PREP peak week. Full simulation practice. Farmer's walks, sled substitutes.",
-          days:["Run: 8x1km intervals + station work","Strength: Full Body + HYROX stations","Run: Continuous 8K steady","Strength: Upper Pull + Core","Run: Easy 5-6K + Cricket","HYROX Full Sim attempt","Active Recovery: Walk/Yoga"]},
-        { num:21, dates:"Jul 13–19", km:18, notes:"DAY 100 WEEK. Final InBody + full blood panel Jul 19. Target: 78 kg, BF ~18%. HYROX Delhi prep.",
-          days:["Run: Easy 5K + 20min LISS","Strength: Full Body (maintenance)","Run: 4x1km @ race pace","Strength: Upper Pull (light)","Run: Easy 4K + strides","REST","REST / InBody + Blood Panel"]}
+        { num:20, dates:"Jul 6–12", km:25, notes:"HYROX PREP starts Jul 8 (1,600 kcal). Carbs return. Introduce 8×1km intervals + station work. Performance focus.",
+          days:["Run: Easy 5-6K + 20min LISS (PSMF2 final days)","Strength: Lower Body (reduced)","HYROX Day 1: 8×1km intervals @ 5:00-5:30/km","Strength: Full Body + 20min LISS","Run: Continuous 8K steady","HYROX Sim: 1km+station+1km+station build","Active Recovery: Walk/Yoga"]},
+        { num:21, dates:"Jul 13–21", km:22, notes:"DAY 100 WEEK (9 days). Final InBody + full blood panel Jul 21. Target: 78 kg, BF ~18%. HYROX Delhi taper begins.",
+          days:["HYROX peak: 8×1km + station work","Strength: Full Body + HYROX stations","Run: Continuous 8K steady","HYROX Full Sim attempt","Run: Easy 5K + strides","Strength: Full Body (maintenance)","Run: Easy 4K + strides / REST / DAY 100: InBody + Blood Panel (Jul 21)"]}
       ]
     },
     {
@@ -4986,7 +5374,7 @@ function updateDashboard() {
     }
 
     // ── 100-Day Transformation tracker ──
-    const transformStart = new Date('2026-04-11');
+    const transformStart = new Date('2026-04-13');
     const transformEnd = new Date('2026-07-19');
     const transformNow = new Date();
     const transformDay = Math.max(1, Math.min(100, Math.ceil((transformNow - transformStart) / (1000*60*60*24)) + 1));
@@ -5089,7 +5477,7 @@ function updateMacroBars() {
     }), { protein: 0, carbs: 0, fat: 0 });
     
     // Dynamic targets based on 100-day phase
-    const dStart = new Date('2026-04-11');
+    const dStart = new Date('2026-04-13');
     const dDay = Math.max(1, Math.min(100, Math.ceil((new Date() - dStart) / (1000*60*60*24)) + 1));
     let targets;
     if (dDay <= 16) targets = { protein: 180, carbs: 80, fat: 45 };           // Phase 1: Moderate Cut
@@ -5158,7 +5546,7 @@ const AdaptiveEngine = {
         }
 
         // 100-Day Transformation context
-        const aeStart = new Date('2026-04-11');
+        const aeStart = new Date('2026-04-13');
         const aeDay = Math.max(1, Math.min(100, Math.ceil((new Date() - aeStart) / (1000*60*60*24)) + 1));
         const latestW = AppState.getLatestWeight();
 
@@ -5494,7 +5882,7 @@ function updateCalorieRing() {
     const todayLog = (AppState.foodLog || []).filter(f => f.date === today);
     const totalCal = todayLog.reduce((sum, f) => sum + (f.cal || 0), 0);
     // Dynamic calorie target per 100-day phase
-    const cStart = new Date('2026-04-11');
+    const cStart = new Date('2026-04-13');
     const cDay = Math.max(1, Math.min(100, Math.ceil((new Date() - cStart) / (1000*60*60*24)) + 1));
     let target;
     if (cDay <= 16) target = 1400;
@@ -5855,7 +6243,7 @@ function initDharmaTab() {
     });
 
     // Update 100-day vow counter
-    const start = new Date('2026-04-11');
+    const start = new Date('2026-04-13');
     const now = new Date();
     const dayNum = Math.max(1, Math.min(100, Math.ceil((now - start) / (1000 * 60 * 60 * 24)) + 1));
     const vowDay = document.getElementById('dharma-vow-day');
@@ -5874,20 +6262,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize foodLog if not present (backward compat)
     if (!AppState.foodLog) AppState.foodLog = [];
 
-    // Ensure known baseline weights always exist (merge, don't overwrite)
+    // Ensure known baseline weights always exist (merge, don't overwrite).
+    // Plan v3 — Day 1 = Apr 13, 2026. Values marked "manual" are from Kash's
+    // progress tracker; "interpolated" values fill the Apr 14/15/16 gap with
+    // a smooth linear descent between confirmed Day 1 (98.4) and Day 5 (95.95).
     const baselineWeights = [
-        { date: "2026-04-11", value: 98.4,  source: "manual" },
-        { date: "2026-04-12", value: 97.8,  source: "manual" },
-        { date: "2026-04-13", value: 97.25, source: "manual" },
-        { date: "2026-04-14", value: 97.0,  source: "manual" },
-        { date: "2026-04-15", value: 97.0,  source: "manual" },
-        { date: "2026-04-16", value: 95.95, source: "manual" },
-        { date: "2026-04-17", value: 95.75, source: "manual" },
-        { date: "2026-04-18", value: 96.35, source: "manual" }
+        { date: "2026-04-13", value: 98.40, source: "manual"       }, // Day 1 START
+        { date: "2026-04-14", value: 97.80, source: "interpolated" }, // Day 2
+        { date: "2026-04-15", value: 97.20, source: "interpolated" }, // Day 3
+        { date: "2026-04-16", value: 96.60, source: "interpolated" }, // Day 4
+        { date: "2026-04-17", value: 95.95, source: "manual"       }, // Day 5 fastest drop
+        { date: "2026-04-18", value: 96.35, source: "manual"       }, // Day 6 pani puri sodium
+        { date: "2026-04-19", value: 95.95, source: "manual"       }, // Day 7 sodium flushed
+        { date: "2026-04-20", value: 95.75, source: "manual"       }  // Day 8 CURRENT — ahead
     ];
     if (!AppState.weights) AppState.weights = [];
-    // Remove any stale entries before Apr 11 (pre-plan data)
-    AppState.weights = AppState.weights.filter(w => w.date >= '2026-04-11');
+    // Remove any stale entries before Apr 13 (Plan v3 Day 1)
+    AppState.weights = AppState.weights.filter(w => w.date >= '2026-04-13');
     // Merge baseline entries if missing
     baselineWeights.forEach(bw => {
         const exists = AppState.weights.some(w => w.date === bw.date);
@@ -5921,7 +6312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const msPill = document.getElementById('milestone-phase-pill');
     if (msPill) {
-        const msStart = new Date('2026-04-11');
+        const msStart = new Date('2026-04-13'); // Plan v3 Day 1
         const msDay = Math.max(1, Math.min(100, Math.ceil((new Date() - msStart) / (1000*60*60*24)) + 1));
         msPill.textContent = 'Day ' + msDay + ' of 100';
     }
