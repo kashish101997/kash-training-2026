@@ -1901,6 +1901,18 @@
                     <div class="metric-value" style="color: var(--color-hyrox);" id="weekly-load">0</div>
                     <div class="metric-sub" id="weekly-load-trend">Log workouts to track</div>
                 </div>
+
+                <!-- Fasting Blood Sugar -->
+                <div class="metric-card" style="border-top: 2px solid #ff6b35; cursor:pointer;" onclick="openModal('fbs')" title="Log FBS (morning, fasted)">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="metric-label">Fasting Blood Sugar</div>
+                            <div class="metric-value" id="fbs-value" style="color:#ff6b35;">— <span style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary)">mg/dL</span></div>
+                            <div class="metric-sub" id="fbs-trend">Tap to log &middot; target &lt;100</div>
+                        </div>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.7;"><path d="M12 2v6m0 0a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="12" cy="12" r="10"/></svg>
+                    </div>
+                </div>
             </div>
 
             <!-- This Week's Schedule -->
@@ -2105,46 +2117,155 @@
 
     <!-- Modal & Feedback Script -->
     <script>
-        function openModal(type) {
+        function openModal(type, arg) {
             // Redirect workout to enhanced feedback modal
             if (type === 'workout') { openWorkoutFeedbackModal(); return; }
 
             let existing = document.getElementById('modal-overlay');
             if (existing) existing.remove();
 
-            const titles = { weight: 'Log Body Composition', injury: 'Flag Injury' };
+            const titles = {
+                weight: 'Log Body Composition',
+                injury: 'Flag Injury',
+                fbs: 'Log Fasting Blood Sugar',
+                'race-result': 'Log Race Result',
+                'hyrox-session': 'Log HYROX Splits',
+                'gateway-session': 'Log Gateway Session'
+            };
 
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay active';
             overlay.id = 'modal-overlay';
 
             let bodyHTML = '';
+            let modalWidth = '';
+            let submitArg = '';
             if (type === 'weight') {
                 bodyHTML = `
                     <input class="modal-input" type="number" placeholder="Weight in kg (e.g. 98.4)" id="modal-input" autocomplete="off" step="0.1">
-                    <input class="modal-input" type="number" style="margin-top:10px" placeholder="Body fat % (optional, e.g. 22.5)" id="modal-bodyfat" autocomplete="off" step="0.1">
-                    <input class="modal-input" type="number" style="margin-top:10px" placeholder="Muscle mass kg (optional)" id="modal-musclemass" autocomplete="off" step="0.1">
+                    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:0.8125rem;color:var(--text-secondary);cursor:pointer;">
+                        <input type="checkbox" id="modal-inbody" style="accent-color:var(--color-running);">
+                        This is an InBody scan (fills in extra fields below)
+                    </label>
+                    <div class="feedback-grid" style="margin-top:10px;">
+                        <input class="modal-input" type="number" placeholder="Body fat % (e.g. 35.4)" id="modal-bodyfat" autocomplete="off" step="0.1">
+                        <input class="modal-input" type="number" placeholder="Muscle mass kg (e.g. 35.7)" id="modal-musclemass" autocomplete="off" step="0.1">
+                    </div>
+                    <div class="feedback-grid" style="margin-top:10px;">
+                        <input class="modal-input" type="number" placeholder="Visceral fat level" id="modal-vfl" autocomplete="off" step="1">
+                        <input class="modal-input" type="number" placeholder="BMR kcal" id="modal-bmr" autocomplete="off" step="1">
+                    </div>
                 `;
+                modalWidth = 'max-width:520px;';
             } else if (type === 'injury') {
                 bodyHTML = `
                     <input class="modal-input" type="text" placeholder="Describe the issue" id="modal-input" autocomplete="off">
                     <select class="modal-input" style="margin-top:10px" id="modal-severity"><option value="low">Low severity</option><option value="medium">Medium severity</option><option value="high">High severity</option></select>
                 `;
+            } else if (type === 'fbs') {
+                bodyHTML = `
+                    <input class="modal-input" type="number" placeholder="FBS in mg/dL (e.g. 98)" id="modal-input" autocomplete="off" step="1" min="40" max="400">
+                    <div style="display:flex;gap:6px;margin-top:8px;font-size:0.6875rem;">
+                        <span style="color:#39ff14;">&lt;100 Healthy</span>
+                        <span style="color:var(--text-secondary);">&middot;</span>
+                        <span style="color:#ffd23f;">100–125 Pre-diabetic</span>
+                        <span style="color:var(--text-secondary);">&middot;</span>
+                        <span style="color:#ff453a;">&ge;126 Diabetic</span>
+                    </div>
+                    <input class="modal-input" type="text" style="margin-top:10px" placeholder="Notes (optional — fasted? water?)" id="modal-notes" autocomplete="off">
+                `;
+            } else if (type === 'race-result') {
+                submitArg = arg || '';
+                const raceName = (typeof getRaceNameById === 'function' && arg) ? getRaceNameById(arg) : (arg || 'Race');
+                bodyHTML = `
+                    <div style="font-size:0.8125rem;color:var(--text-secondary);margin-bottom:10px;">Race: <strong style="color:var(--text-primary);">${raceName}</strong></div>
+                    <input class="modal-input" type="text" placeholder="Finish time (e.g. 1:14:30 or 45:20)" id="modal-input" autocomplete="off">
+                    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:0.8125rem;color:var(--text-secondary);cursor:pointer;">
+                        <input type="checkbox" id="modal-goalmet" style="accent-color:var(--color-running);">
+                        Goal met
+                    </label>
+                    <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="3" placeholder="Notes (conditions, fueling, pacing, takeaways)" id="modal-notes"></textarea>
+                `;
+                modalWidth = 'max-width:520px;';
+            } else if (type === 'hyrox-session') {
+                submitArg = arg || '';
+                bodyHTML = `
+                    <input class="modal-input" type="text" placeholder="Total time (e.g. 1:23:45)" id="modal-input" autocomplete="off">
+                    <div style="font-size:0.6875rem;color:var(--text-secondary);margin-top:8px;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Station times (mm:ss)</div>
+                    <div class="feedback-grid">
+                        <input class="modal-input" type="text" placeholder="Ski Erg" id="hy-skierg">
+                        <input class="modal-input" type="text" placeholder="Sled Push" id="hy-sledpush">
+                    </div>
+                    <div class="feedback-grid" style="margin-top:8px;">
+                        <input class="modal-input" type="text" placeholder="Sled Pull" id="hy-sledpull">
+                        <input class="modal-input" type="text" placeholder="Burpee BJ" id="hy-burpeebj">
+                    </div>
+                    <div class="feedback-grid" style="margin-top:8px;">
+                        <input class="modal-input" type="text" placeholder="Row" id="hy-row">
+                        <input class="modal-input" type="text" placeholder="Farmers Carry" id="hy-farmers">
+                    </div>
+                    <div class="feedback-grid" style="margin-top:8px;">
+                        <input class="modal-input" type="text" placeholder="Sandbag Lunges" id="hy-lunges">
+                        <input class="modal-input" type="text" placeholder="Wall Balls" id="hy-wallballs">
+                    </div>
+                    <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="2" placeholder="Notes (optional)" id="modal-notes"></textarea>
+                `;
+                modalWidth = 'max-width:560px;';
+            } else if (type === 'gateway-session') {
+                bodyHTML = `
+                    <div class="feedback-grid">
+                        <input class="modal-input" type="number" placeholder="Duration (min)" id="modal-input" autocomplete="off" min="1" max="120">
+                        <select class="modal-input" id="gw-focus">
+                            <option value="10">Focus 10</option>
+                            <option value="12">Focus 12</option>
+                            <option value="15">Focus 15</option>
+                            <option value="21">Focus 21</option>
+                        </select>
+                    </div>
+                    <select class="modal-input" style="margin-top:10px;" id="gw-depth">
+                        <option value="C-1">C-1 Surface</option>
+                        <option value="C-10">C-10 Mind Awake / Body Asleep</option>
+                        <option value="C-12">C-12 Expanded Awareness</option>
+                        <option value="C-15">C-15 No Time</option>
+                        <option value="C-21">C-21 Bridge</option>
+                    </select>
+                    <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="2" placeholder="Notes / imagery" id="modal-notes"></textarea>
+                    <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="2" placeholder="Pattern change / insight (optional)" id="gw-pattern"></textarea>
+                `;
+                modalWidth = 'max-width:520px;';
             }
 
+            const submitCall = submitArg
+                ? `submitModal('${type}', '${submitArg}')`
+                : `submitModal('${type}')`;
+
             overlay.innerHTML = `
-                <div class="modal">
+                <div class="modal" style="${modalWidth}">
                     <h3>${titles[type] || type}</h3>
                     ${bodyHTML}
                     <div class="modal-actions">
                         <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
-                        <button class="btn btn-primary btn-sm" onclick="submitModal('${type}')">Save</button>
+                        <button class="btn btn-primary btn-sm" onclick="${submitCall}">Save</button>
                     </div>
                 </div>
             `;
             overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
             document.body.appendChild(overlay);
-            setTimeout(() => document.getElementById('modal-input').focus(), 100);
+            setTimeout(() => { const el = document.getElementById('modal-input'); if (el) el.focus(); }, 100);
+        }
+
+        // Helper: map raceId → human-readable name (used by race-result modal)
+        function getRaceNameById(id) {
+            const map = {
+                'juhu-half': 'Juhu Half Marathon',
+                'bangalore-tcsw-10k': 'Bangalore TCSW 10K',
+                'hyrox-delhi': 'HYROX Delhi',
+                'hyrox-mumbai': 'HYROX Mumbai',
+                'delhi-hm': 'Delhi Half Marathon',
+                'kolkata-25k': 'Kolkata 25K',
+                'mumbai-marathon': 'Tata Mumbai Marathon'
+            };
+            return map[id] || id;
         }
 
         function openWorkoutFeedbackModal(prefilledName) {
@@ -3226,11 +3347,13 @@
             </div>
 
             <!-- Bangalore 10K -->
-            <div class="card" style="border-left: 3px solid var(--color-race); margin-bottom: 20px;">
+            <div class="card race-card" data-race-id="bangalore-tcsw-10k" style="border-left: 3px solid var(--color-race); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-race">NEXT RACE</span>
+                    <span class="pill pill-sm pill-race race-status-pill">NEXT RACE</span>
                     <span class="text-xs text-secondary">Apr 26, 2026</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'bangalore-tcsw-10k')">+ Log Result</button>
                 </div>
+                <div class="race-result-notes" style="display:none;"></div>
                 <h3>Bangalore TCSW 10K</h3>
                 <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-1:12 (7:12/km) | B: Sub-1:15 (7:30/km) | C: Finish with negative split</p>
                 <p class="text-sm text-secondary" style="margin-bottom: 12px;">Revised after 5K test (35:40, Apr 1). Pre-diabetic blood sugar = early fatigue risk. Negative split is the real goal. Bangalore altitude ~920m.</p>
@@ -3268,11 +3391,16 @@
             </div>
 
             <!-- HYROX Delhi -->
-            <div class="card" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
-                <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-hyrox">UPCOMING</span>
+            <div class="card race-card" data-race-id="hyrox-delhi" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
+                <div class="flex items-center gap-sm flex-wrap" style="margin-bottom: 8px;">
+                    <span class="pill pill-sm pill-hyrox race-status-pill">UPCOMING</span>
                     <span class="text-xs text-secondary">Jul 26, 2026</span>
+                    <div style="margin-left:auto; display:flex; gap:6px;">
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('hyrox-session', 'hyrox-delhi')">+ Log Splits</button>
+                        <button class="btn btn-ghost btn-sm race-log-btn" onclick="openModal('race-result', 'hyrox-delhi')">+ Log Result</button>
+                    </div>
                 </div>
+                <div class="race-result-notes" style="display:none;"></div>
                 <h3>HYROX Delhi — Men's Singles</h3>
                 <p class="text-sm text-secondary" style="margin-top: 6px;">First Hyrox ever. Goal: finish strong, learn pacing and transitions. At ~78 kg post-100-day transformation. Conservative station approach — bank energy for running segments. Don't blow up on SkiErg or Rowing.</p>
                 <details style="margin-top: 12px;">
@@ -3294,11 +3422,16 @@
             </div>
 
             <!-- Hyrox Mumbai -->
-            <div class="card" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
-                <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-hyrox">UPCOMING</span>
+            <div class="card race-card" data-race-id="hyrox-mumbai" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
+                <div class="flex items-center gap-sm flex-wrap" style="margin-bottom: 8px;">
+                    <span class="pill pill-sm pill-hyrox race-status-pill">UPCOMING</span>
                     <span class="text-xs text-secondary">Sep 7, 2026</span>
+                    <div style="margin-left:auto; display:flex; gap:6px;">
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('hyrox-session', 'hyrox-mumbai')">+ Log Splits</button>
+                        <button class="btn btn-ghost btn-sm race-log-btn" onclick="openModal('race-result', 'hyrox-mumbai')">+ Log Result</button>
+                    </div>
                 </div>
+                <div class="race-result-notes" style="display:none;"></div>
                 <h3>Hyrox Mumbai — Goal: Sub-1:30</h3>
                 <p class="text-sm text-secondary" style="margin-top: 6px;">Second Hyrox — use Delhi learnings to push for Sub-1:30. 8x1km runs + 8 stations. At ~78 kg, running pace: 5:15–5:30/km. Refine station pacing based on Delhi splits.</p>
                 <details style="margin-top: 12px;">
@@ -3320,32 +3453,38 @@
             </div>
 
             <!-- Delhi HM -->
-            <div class="card" style="border-left: 3px solid var(--color-running); margin-bottom: 20px;">
+            <div class="card race-card" data-race-id="delhi-hm" style="border-left: 3px solid var(--color-running); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-running">UPCOMING</span>
+                    <span class="pill pill-sm pill-running race-status-pill">UPCOMING</span>
                     <span class="text-xs text-secondary">Oct 18, 2026</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'delhi-hm')">+ Log Result</button>
                 </div>
+                <div class="race-result-notes" style="display:none;"></div>
                 <h3>Delhi Half Marathon</h3>
                 <p class="text-sm" style="color: var(--color-running); margin: 6px 0;">A: Sub-2:00 (5:41/km) | B: Sub-2:10 (6:10/km) | C: Sub-2:20 (6:37/km)</p>
                 <p class="text-sm text-secondary">At ~78 kg (vs 95 kg at Juhu 2:41) — 17 kg lighter = ~30-40 min faster potential. Delhi October weather ideal (~22–28°C). Gel at km 8 and km 15. Blueprint: post-race walk 10 min, collagen + whey within 30 min.</p>
             </div>
 
             <!-- Kolkata 25K -->
-            <div class="card" style="border-left: 3px solid var(--color-strength); margin-bottom: 20px;">
+            <div class="card race-card" data-race-id="kolkata-25k" style="border-left: 3px solid var(--color-strength); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-strength">UPCOMING</span>
+                    <span class="pill pill-sm pill-strength race-status-pill">UPCOMING</span>
                     <span class="text-xs text-secondary">Dec 20, 2026</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'kolkata-25k')">+ Log Result</button>
                 </div>
+                <div class="race-result-notes" style="display:none;"></div>
                 <h3>Kolkata 25K — Marathon Tune-Up</h3>
                 <p class="text-sm text-secondary" style="margin-top: 6px;">Run hard but DON'T destroy yourself — marathon is 28 days away. Start at MP (6:30–6:45/km), push last 5 km to HM pace if feeling good. Gel at km 8, 16, 22.</p>
             </div>
 
             <!-- Mumbai Marathon -->
-            <div class="card" style="border: 1px solid var(--color-race); margin-bottom: 20px; background: rgba(255, 45, 85, 0.05);">
+            <div class="card race-card" data-race-id="mumbai-marathon" style="border: 1px solid var(--color-race); margin-bottom: 20px; background: rgba(255, 45, 85, 0.05);">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-race" style="font-weight: 800;">★ A-RACE</span>
+                    <span class="pill pill-sm pill-race race-status-pill" style="font-weight: 800;">★ A-RACE</span>
                     <span class="text-xs text-secondary">Jan 17, 2027</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'mumbai-marathon')">+ Log Result</button>
                 </div>
+                <div class="race-result-notes" style="display:none;"></div>
                 <h3>Tata Mumbai Marathon — 42.2 km</h3>
                 <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-4:15 (6:02/km) | B: Sub-4:30 (6:24/km) | C: Sub-4:45 (6:45/km)</p>
                 <p class="text-sm text-secondary">At ~78 kg, running economy is a different world. Run first 10 km at EXACTLY target pace. Walk 30 sec at every 5 km water station. Gel every 45 min from km 8. Pedder Road climb at km 20 — maintain effort, not pace.</p>
@@ -3368,12 +3507,52 @@
             <div class="card" style="margin-bottom: 24px;">
                 <div class="flex items-center justify-between" style="margin-bottom: 16px;">
                     <h3>Weight Trend</h3>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('weight')">+ Log Weight</button>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('weight')" title="InBody scans use the checkbox inside the modal">+ Log Weight</button>
+                    </div>
                 </div>
                 <canvas id="weight-chart" width="800" height="250" style="width: 100%; height: auto;"></canvas>
                 <div class="flex items-center justify-between" style="margin-top: 12px;">
-                    <span class="text-xs text-secondary">Start: 98.4 kg (Apr 13, 2026)</span>
+                    <span class="text-xs text-secondary">Start: 98.4 kg (Apr 13, 2026) &middot; Yellow dots + markers = InBody scans</span>
                     <span class="text-xs text-secondary">Target: 78 kg (Jul 21)</span>
+                </div>
+            </div>
+
+            <!-- FBS Chart -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
+                    <h3>Fasting Blood Sugar</h3>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('fbs')">+ Log FBS</button>
+                </div>
+                <canvas id="fbs-chart" width="800" height="220" style="width: 100%; height: auto;"></canvas>
+                <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-top: 12px;">
+                    <span class="text-xs text-secondary">Target zones &middot; <span style="color:#39ff14;">Healthy &lt;100</span> &middot; <span style="color:#ffd23f;">Pre-diabetic 100–125</span> &middot; <span style="color:#ff453a;">Diabetic ≥126</span></span>
+                    <span class="text-xs text-secondary">Baseline Apr 10: 115 mg/dL</span>
+                </div>
+            </div>
+
+            <!-- Body Composition Chart (InBody) -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
+                    <h3>Body Composition (InBody)</h3>
+                    <span class="pill pill-sm" style="background:rgba(255,210,63,0.12);color:#ffd23f;border:1px solid rgba(255,210,63,0.25);font-size:0.625rem;">Scheduled: May 10 · Jun 21 · Jul 21</span>
+                </div>
+                <canvas id="body-comp-chart" width="800" height="220" style="width: 100%; height: auto;"></canvas>
+                <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-top: 12px;">
+                    <span class="text-xs text-secondary">Green line = Weight (left axis) &middot; Orange line = Body Fat % (right axis)</span>
+                    <span class="text-xs text-secondary">Log scans via Weight modal → tick "InBody scan"</span>
+                </div>
+            </div>
+
+            <!-- Race History -->
+            <div class="card" id="race-history-card" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
+                    <h3>Race History</h3>
+                    <span class="text-xs text-secondary" id="race-history-count">0 races logged</span>
+                </div>
+                <div id="race-history-list">
+                    <!-- Populated dynamically by renderRaceHistory() -->
+                    <p class="text-sm text-tertiary" style="text-align:center;padding:24px 12px;">No race results logged yet. Log your first result from the Race Strategy tab.</p>
                 </div>
             </div>
 
@@ -3381,7 +3560,7 @@
             <div class="card" style="margin-bottom: 24px;">
                 <div class="flex items-center justify-between" style="margin-bottom: 16px;">
                     <h3>Blood Work Tracker</h3>
-                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.1);color:var(--color-race);border:1px solid rgba(255,45,85,0.2);">Latest: Apr 1, 2026</span>
+                    <span class="pill pill-sm" style="background:rgba(255,45,85,0.1);color:var(--color-race);border:1px solid rgba(255,45,85,0.2);">Latest: Apr 10, 2026 · v3 baseline</span>
                 </div>
                 <div style="overflow-x:auto;">
                     <table class="splits-table" style="min-width:600px;">
@@ -3390,7 +3569,7 @@
                                 <th>Marker</th>
                                 <th>Oct 2025</th>
                                 <th>Jan 2026</th>
-                                <th>Apr 2026</th>
+                                <th>Apr 10, 2026</th>
                                 <th>Range</th>
                                 <th>Status</th>
                             </tr>
@@ -3483,6 +3662,14 @@
                                 <td style="color:var(--color-running);font-weight:700;">1.67</td>
                                 <td>0.35–4.94</td>
                                 <td><span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);font-size:0.6rem;">NORMAL</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>MCV (RBC size)</strong></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td style="color:var(--color-strength);font-weight:700;">81.8</td>
+                                <td>83–101 fL</td>
+                                <td><span class="pill pill-sm" style="background:rgba(255,107,44,0.15);color:var(--color-strength);font-size:0.6rem;">LOW-NORMAL</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -4998,6 +5185,10 @@ const AppState = {
     workouts: [],
     injuries: [],
     meals: [],
+    bloodSugar: [],
+    raceResults: [],
+    gatewaySessions: [],
+    hyroxSessions: [],
     dharmaChecks: {},
     currentPhase: 2,
     trainingView: 'phase',
@@ -5054,6 +5245,12 @@ const AppState = {
                 const exists = this.injuries.some(i => i.date === ri.date && i.area === ri.area);
                 if (!exists) { ri.source = ri.source || 'whatsapp'; this.injuries.push(ri); merged = true; }
             });
+            // Merge bloodSugar (FBS readings from WhatsApp, once backend is live)
+            if (!this.bloodSugar) this.bloodSugar = [];
+            (remote.bloodSugar || []).forEach(rb => {
+                const exists = this.bloodSugar.some(b => b.date === rb.date && Math.abs(b.value - rb.value) < 0.5);
+                if (!exists) { rb.source = rb.source || 'whatsapp'; this.bloodSugar.push(rb); merged = true; }
+            });
             if (merged) {
                 this.save();
                 console.log('WhatsApp data merged successfully');
@@ -5077,6 +5274,10 @@ const AppState = {
                 injuries: this.injuries,
                 meals: this.meals,
                 foodLog: this.foodLog || [],
+                bloodSugar: this.bloodSugar || [],
+                raceResults: this.raceResults || [],
+                gatewaySessions: this.gatewaySessions || [],
+                hyroxSessions: this.hyroxSessions || [],
                 dharmaChecks: this.dharmaChecks || {},
                 currentPhase: this.currentPhase,
                 trainingView: this.trainingView,
@@ -5085,11 +5286,17 @@ const AppState = {
         } catch(e) { console.warn('State save failed:', e); }
     },
     
-    addWeight(value, bodyFat, muscleMass) {
+    addWeight(value, bodyFat, muscleMass, extras) {
         const today = new Date().toISOString().slice(0,10);
         const entry = { date: today, value: parseFloat(value), source: "manual" };
         if (bodyFat !== undefined && bodyFat !== null && !isNaN(bodyFat)) entry.bodyFat = parseFloat(bodyFat);
         if (muscleMass !== undefined && muscleMass !== null && !isNaN(muscleMass)) entry.muscleMass = parseFloat(muscleMass);
+        if (extras && typeof extras === 'object') {
+            if (extras.visceralFat !== undefined && extras.visceralFat !== null && !isNaN(extras.visceralFat)) entry.visceralFat = parseFloat(extras.visceralFat);
+            if (extras.bmr !== undefined && extras.bmr !== null && !isNaN(extras.bmr)) entry.bmr = parseFloat(extras.bmr);
+            if (extras.inBody === true) entry.inBody = true;
+            if (extras.notes) entry.notes = String(extras.notes);
+        }
         // Dedup: if today already has an entry, update it in place. Otherwise append.
         const existingIdx = this.weights.findIndex(w => w.date === today);
         if (existingIdx >= 0) {
@@ -5101,20 +5308,129 @@ const AppState = {
         this.weights.sort((a, b) => a.date.localeCompare(b.date));
         this.save();
     },
-    
+
     addWorkout(name, duration) {
         this.workouts.push({ date: new Date().toISOString().slice(0,10), name, duration, completed: true });
         this.save();
     },
-    
+
     addInjury(area, severity) {
         this.injuries.push({ date: new Date().toISOString().slice(0,10), area, severity, active: true });
         this.save();
     },
-    
+
     addMeal(protein, carbs, fat) {
         this.meals.push({ date: new Date().toISOString().slice(0,10), protein: parseFloat(protein), carbs: parseFloat(carbs), fat: parseFloat(fat) });
         this.save();
+    },
+
+    addBloodSugar(value, notes) {
+        const today = new Date().toISOString().slice(0,10);
+        const v = parseFloat(value);
+        if (isNaN(v) || v < 40 || v > 400) return false;
+        const entry = { date: today, value: v, unit: 'mg/dL', source: 'manual' };
+        if (notes) entry.notes = String(notes);
+        if (!this.bloodSugar) this.bloodSugar = [];
+        const existingIdx = this.bloodSugar.findIndex(b => b.date === today);
+        if (existingIdx >= 0) {
+            this.bloodSugar[existingIdx] = { ...this.bloodSugar[existingIdx], ...entry };
+        } else {
+            this.bloodSugar.push(entry);
+        }
+        this.bloodSugar.sort((a, b) => a.date.localeCompare(b.date));
+        this.save();
+        return true;
+    },
+
+    getLatestFBS() {
+        if (!this.bloodSugar || this.bloodSugar.length === 0) return null;
+        return this.bloodSugar[this.bloodSugar.length - 1];
+    },
+
+    getFBS7dAvg() {
+        if (!this.bloodSugar || this.bloodSugar.length === 0) return null;
+        const now = new Date();
+        const cutoff = new Date(now);
+        cutoff.setDate(now.getDate() - 7);
+        const recent = this.bloodSugar.filter(b => new Date(b.date) >= cutoff);
+        if (recent.length === 0) return null;
+        return recent.reduce((s, b) => s + b.value, 0) / recent.length;
+    },
+
+    addRaceResult(raceId, time, notes, goalMet) {
+        if (!raceId || !time) return false;
+        const today = new Date().toISOString().slice(0,10);
+        if (!this.raceResults) this.raceResults = [];
+        const entry = { raceId, date: today, time: String(time), goalMet: !!goalMet };
+        if (notes) entry.notes = String(notes);
+        // Dedup by raceId — one result per race
+        const existingIdx = this.raceResults.findIndex(r => r.raceId === raceId);
+        if (existingIdx >= 0) {
+            this.raceResults[existingIdx] = { ...this.raceResults[existingIdx], ...entry };
+        } else {
+            this.raceResults.push(entry);
+        }
+        this.raceResults.sort((a, b) => a.date.localeCompare(b.date));
+        this.save();
+        return true;
+    },
+
+    getRaceResult(raceId) {
+        if (!this.raceResults) return null;
+        return this.raceResults.find(r => r.raceId === raceId) || null;
+    },
+
+    addHyroxSession(payload) {
+        if (!payload || typeof payload !== 'object') return false;
+        if (!this.hyroxSessions) this.hyroxSessions = [];
+        const today = new Date().toISOString().slice(0,10);
+        const entry = {
+            date: payload.date || today,
+            raceId: payload.raceId || null,
+            totalTime: payload.totalTime || '',
+            stations: payload.stations || {},
+            notes: payload.notes || ''
+        };
+        this.hyroxSessions.push(entry);
+        this.hyroxSessions.sort((a, b) => a.date.localeCompare(b.date));
+        this.save();
+        return true;
+    },
+
+    addGatewaySession(payload) {
+        if (!payload || typeof payload !== 'object') return false;
+        if (!this.gatewaySessions) this.gatewaySessions = [];
+        const today = new Date().toISOString().slice(0,10);
+        const entry = {
+            date: payload.date || today,
+            duration: parseFloat(payload.duration) || 0,
+            focus: payload.focus || '10',
+            depth: payload.depth || 'C-10',
+            notes: payload.notes || '',
+            patternChange: payload.patternChange || ''
+        };
+        this.gatewaySessions.push(entry);
+        this.gatewaySessions.sort((a, b) => a.date.localeCompare(b.date));
+        this.save();
+        return true;
+    },
+
+    getGatewayStreak() {
+        if (!this.gatewaySessions || this.gatewaySessions.length === 0) return 0;
+        const dates = new Set(this.gatewaySessions.map(s => s.date));
+        let streak = 0;
+        const checkDate = new Date();
+        checkDate.setHours(0,0,0,0);
+        for (let i = 0; i < 365; i++) {
+            const ds = checkDate.toISOString().slice(0,10);
+            if (dates.has(ds)) {
+                streak++;
+            } else if (i > 0) {
+                break;
+            }
+            checkDate.setDate(checkDate.getDate() - 1);
+        }
+        return streak;
     },
     
     getTodayMeals() {
@@ -5569,15 +5885,422 @@ function renderWeightChart() {
     ctx.lineJoin = 'round';
     ctx.stroke();
     
-    // Dots
+    // Dots — InBody scans get a larger halo ring for visual emphasis
     points.forEach((p, i) => {
+        const isInBody = data[i] && data[i].inBody === true;
+        if (isInBody) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(57,255,20,0.6)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = '#39ff14';
+        ctx.arc(p.x, p.y, isInBody ? 4 : 3, 0, Math.PI * 2);
+        ctx.fillStyle = isInBody ? '#ffd23f' : '#39ff14';
         ctx.fill();
         ctx.strokeStyle = 'rgba(0,0,0,0.5)';
         ctx.lineWidth = 1;
         ctx.stroke();
+    });
+
+    // InBody scheduled date markers (vertical dashed lines)
+    if (data.length >= 2) {
+        const firstDate = new Date(data[0].date);
+        const lastDate = new Date(data[data.length-1].date);
+        const totalSpan = lastDate - firstDate;
+        const markers = [
+            { date: '2026-05-10', label: 'InBody' },
+            { date: '2026-06-21', label: 'InBody' },
+            { date: '2026-07-21', label: 'InBody' }
+        ];
+        markers.forEach(m => {
+            const d = new Date(m.date);
+            if (d < firstDate || d > lastDate || totalSpan === 0) return;
+            const x = pad.left + ((d - firstDate) / totalSpan) * plotW;
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,210,63,0.5)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(x, pad.top);
+            ctx.lineTo(x, pad.top + plotH);
+            ctx.stroke();
+            ctx.restore();
+            ctx.fillStyle = 'rgba(255,210,63,0.7)';
+            ctx.font = '9px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(m.label, x, pad.top - 6);
+        });
+    }
+}
+
+// ============================================
+// RENDER: Generic Line Chart Helper
+// ============================================
+// Reusable line chart with optional target zones, markers, and dual-axis support.
+// Used by FBS, body composition, and HYROX progress charts.
+function drawLineChart(canvasId, data, options) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const H = options.height || 200;
+    canvas.width = rect.width * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+
+    const W = rect.width;
+    const pad = { top: 22, right: 20, bottom: 30, left: 48 };
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+    ctx.clearRect(0, 0, W, H);
+
+    if (!data || data.length < 1) {
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(options.emptyMsg || 'No data yet', W/2, H/2);
+        return;
+    }
+
+    const values = data.map(d => d.value);
+    let minV = options.yMin !== undefined ? options.yMin : Math.floor(Math.min(...values) - 2);
+    let maxV = options.yMax !== undefined ? options.yMax : Math.ceil(Math.max(...values) + 2);
+    if (maxV === minV) { maxV = minV + 1; }
+    const range = maxV - minV;
+
+    // Target zone bands (e.g. FBS: green/amber/red)
+    if (options.zones) {
+        options.zones.forEach(z => {
+            const y1 = pad.top + plotH - ((Math.min(z.to, maxV) - minV) / range) * plotH;
+            const y2 = pad.top + plotH - ((Math.max(z.from, minV) - minV) / range) * plotH;
+            ctx.fillStyle = z.color;
+            ctx.fillRect(pad.left, y1, plotW, y2 - y1);
+        });
+    }
+
+    // Grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    const gridSteps = 5;
+    for (let i = 0; i <= gridSteps; i++) {
+        const y = pad.top + (plotH * i / gridSteps);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(W - pad.right, y);
+        ctx.stroke();
+        const label = (maxV - (range * i / gridSteps)).toFixed(options.decimals !== undefined ? options.decimals : 0);
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(label, pad.left - 8, y + 3);
+    }
+
+    // Date labels
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '9px Inter, sans-serif';
+    const labelCount = Math.min(data.length, 6);
+    for (let i = 0; i < labelCount; i++) {
+        const idx = labelCount === 1 ? 0 : Math.floor(i * (data.length - 1) / (labelCount - 1));
+        const x = data.length === 1 ? W/2 : pad.left + (idx / (data.length - 1)) * plotW;
+        ctx.fillText(data[idx].date.slice(5), x, H - 8);
+    }
+
+    // Y-axis label
+    if (options.yLabel) {
+        ctx.save();
+        ctx.translate(12, pad.top + plotH/2);
+        ctx.rotate(-Math.PI/2);
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(options.yLabel, 0, 0);
+        ctx.restore();
+    }
+
+    if (data.length < 2) {
+        // Single-point case: draw the dot only
+        const p = { x: W/2, y: pad.top + plotH - ((values[0] - minV) / range) * plotH };
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+        ctx.fillStyle = options.color || '#39ff14';
+        ctx.fill();
+        return;
+    }
+
+    const points = data.map((d, i) => ({
+        x: pad.left + (i / (data.length - 1)) * plotW,
+        y: pad.top + plotH - ((d.value - minV) / range) * plotH
+    }));
+
+    // Gradient fill
+    const color = options.color || '#39ff14';
+    if (options.fill !== false) {
+        const rgba = options.fillRgba || 'rgba(57,255,20,';
+        const gradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + plotH);
+        gradient.addColorStop(0, rgba + '0.22)');
+        gradient.addColorStop(1, rgba + '0)');
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, pad.top + plotH);
+        points.forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.lineTo(points[points.length-1].x, pad.top + plotH);
+        ctx.closePath();
+        ctx.fillStyle = gradient;
+        ctx.fill();
+    }
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Dots
+    points.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    });
+
+    // Vertical date markers
+    if (options.markers && data.length >= 2) {
+        const firstDate = new Date(data[0].date);
+        const lastDate = new Date(data[data.length-1].date);
+        const totalSpan = lastDate - firstDate;
+        options.markers.forEach(m => {
+            const d = new Date(m.date);
+            if (d < firstDate || d > lastDate || totalSpan === 0) return;
+            const x = pad.left + ((d - firstDate) / totalSpan) * plotW;
+            ctx.save();
+            ctx.strokeStyle = m.color || 'rgba(255,210,63,0.5)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(x, pad.top);
+            ctx.lineTo(x, pad.top + plotH);
+            ctx.stroke();
+            ctx.restore();
+            if (m.label) {
+                ctx.fillStyle = m.color || 'rgba(255,210,63,0.7)';
+                ctx.font = '9px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(m.label, x, pad.top - 6);
+            }
+        });
+    }
+}
+
+// ============================================
+// RENDER: FBS Chart (Fasting Blood Sugar)
+// ============================================
+function renderFBSChart() {
+    const canvas = document.getElementById('fbs-chart');
+    if (!canvas) return;
+    const data = [...(AppState.bloodSugar || [])].sort((a,b) => a.date.localeCompare(b.date));
+    drawLineChart('fbs-chart', data, {
+        color: '#ff6b35',
+        fillRgba: 'rgba(255,107,53,',
+        yLabel: 'FBS (mg/dL)',
+        yMin: 70,
+        yMax: 160,
+        decimals: 0,
+        emptyMsg: 'Log your fasting blood sugar to see the trend',
+        zones: [
+            { from: 70, to: 100,  color: 'rgba(57,255,20,0.06)'  },   // healthy
+            { from: 100, to: 126, color: 'rgba(255,210,63,0.06)' },   // pre-diabetic
+            { from: 126, to: 160, color: 'rgba(255,69,58,0.08)'  }    // diabetic
+        ]
+    });
+}
+
+// ============================================
+// RENDER: Body Composition Chart (weight + BF% dual-axis)
+// ============================================
+function renderBodyCompositionChart() {
+    const canvas = document.getElementById('body-comp-chart');
+    if (!canvas) return;
+    const scans = [...(AppState.weights || [])]
+        .filter(w => w.bodyFat !== undefined && w.bodyFat !== null && !isNaN(w.bodyFat))
+        .sort((a,b) => a.date.localeCompare(b.date));
+
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const H = 220;
+    canvas.width = rect.width * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+    const W = rect.width;
+    const pad = { top: 26, right: 54, bottom: 30, left: 50 };
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+    ctx.clearRect(0, 0, W, H);
+
+    if (scans.length === 0) {
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Log an InBody scan (Weight modal → "InBody scan") to populate this chart', W/2, H/2);
+        return;
+    }
+
+    const weightVals = scans.map(s => s.value);
+    const bfVals = scans.map(s => s.bodyFat);
+    const wMin = Math.floor(Math.min(...weightVals) - 2);
+    const wMax = Math.ceil(Math.max(...weightVals) + 2);
+    const bfMin = Math.floor(Math.min(...bfVals) - 2);
+    const bfMax = Math.ceil(Math.max(...bfVals) + 2);
+    const wRange = wMax - wMin || 1;
+    const bfRange = bfMax - bfMin || 1;
+
+    // Grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    for (let i = 0; i <= 5; i++) {
+        const y = pad.top + (plotH * i / 5);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(W - pad.right, y);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(57,255,20,0.5)';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText((wMax - (wRange * i / 5)).toFixed(1), pad.left - 6, y + 3);
+        ctx.fillStyle = 'rgba(255,107,53,0.55)';
+        ctx.textAlign = 'left';
+        ctx.fillText((bfMax - (bfRange * i / 5)).toFixed(1) + '%', W - pad.right + 6, y + 3);
+    }
+
+    // Date labels
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '9px Inter, sans-serif';
+    scans.forEach((s, i) => {
+        const x = scans.length === 1 ? W/2 : pad.left + (i / (scans.length - 1)) * plotW;
+        ctx.fillText(s.date.slice(5), x, H - 8);
+    });
+
+    // Draw a series helper
+    const drawSeries = (arr, valueKey, color, yMin, yRange) => {
+        const pts = arr.map((d, i) => ({
+            x: arr.length === 1 ? W/2 : pad.left + (i / (arr.length - 1)) * plotW,
+            y: pad.top + plotH - ((d[valueKey] - yMin) / yRange) * plotH
+        }));
+        if (pts.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(pts[0].x, pts[0].y);
+            for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
+        pts.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        });
+    };
+
+    drawSeries(scans, 'value',   '#39ff14', wMin, wRange);
+    drawSeries(scans, 'bodyFat', '#ff6b35', bfMin, bfRange);
+
+    // Legend
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#39ff14';
+    ctx.fillRect(pad.left, 8, 10, 2);
+    ctx.fillText('Weight (kg)', pad.left + 14, 12);
+    ctx.fillStyle = '#ff6b35';
+    ctx.fillRect(pad.left + 100, 8, 10, 2);
+    ctx.fillText('Body Fat %', pad.left + 114, 12);
+}
+
+// ============================================
+// RENDER: Race History (Progress tab)
+// ============================================
+function renderRaceHistory() {
+    const list = document.getElementById('race-history-list');
+    const countEl = document.getElementById('race-history-count');
+    if (!list) return;
+    const results = [...(AppState.raceResults || [])].sort((a,b) => b.date.localeCompare(a.date));
+    if (countEl) countEl.textContent = `${results.length} race${results.length === 1 ? '' : 's'} logged`;
+    if (results.length === 0) {
+        list.innerHTML = `<p class="text-sm text-tertiary" style="text-align:center;padding:24px 12px;">No race results logged yet. Log your first result from the Race Strategy tab.</p>`;
+        return;
+    }
+    const getName = (typeof getRaceNameById === 'function') ? getRaceNameById : (id) => id;
+    list.innerHTML = results.map(r => {
+        const name = getName(r.raceId);
+        const dateStr = new Date(r.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const goalPill = r.goalMet
+            ? `<span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);border:1px solid rgba(57,255,20,0.25);font-size:0.625rem;">✓ Goal met</span>`
+            : `<span class="pill pill-sm" style="background:rgba(255,255,255,0.05);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1);font-size:0.625rem;">Finished</span>`;
+        const notesBlock = r.notes
+            ? `<details style="margin-top:6px;"><summary class="text-xs text-secondary" style="cursor:pointer;">Notes</summary><p class="text-sm text-secondary" style="margin-top:6px;white-space:pre-wrap;">${r.notes.replace(/</g,'&lt;')}</p></details>`
+            : '';
+        return `
+            <div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+                <div class="flex items-center justify-between flex-wrap gap-sm">
+                    <div>
+                        <div class="text-sm font-semibold" style="color:var(--text-primary);">${name}</div>
+                        <div class="text-xs text-tertiary">${dateStr}</div>
+                    </div>
+                    <div class="flex items-center gap-sm">
+                        <span class="font-mono text-sm" style="color:var(--color-running);font-weight:700;">${r.time}</span>
+                        ${goalPill}
+                    </div>
+                </div>
+                ${notesBlock}
+            </div>
+        `;
+    }).join('');
+}
+
+// ============================================
+// RACE CARD: Refresh status pills + notes slot based on logged results
+// ============================================
+function refreshRaceCardPills() {
+    document.querySelectorAll('.race-card').forEach(card => {
+        const raceId = card.getAttribute('data-race-id');
+        if (!raceId) return;
+        const result = AppState.getRaceResult ? AppState.getRaceResult(raceId) : null;
+        const pill = card.querySelector('.race-status-pill');
+        const logBtn = card.querySelector('.race-log-btn');
+        const notesSlot = card.querySelector('.race-result-notes');
+        if (result) {
+            if (pill) {
+                pill.textContent = `✓ COMPLETED · ${result.time}`;
+                pill.style.background = 'var(--color-running)';
+                pill.style.color = '#000';
+                pill.style.fontWeight = '700';
+            }
+            if (logBtn) logBtn.textContent = '✎ Edit Result';
+            if (notesSlot && result.notes) {
+                notesSlot.style.display = 'block';
+                notesSlot.innerHTML = `<details style="margin-bottom:8px;"><summary class="text-xs text-secondary" style="cursor:pointer;">Post-race notes ${result.goalMet ? '· <span style=\"color:var(--color-running);\">goal met ✓</span>' : ''}</summary><p class="text-sm text-secondary" style="margin-top:6px;white-space:pre-wrap;">${result.notes.replace(/</g,'&lt;')}</p></details>`;
+            } else if (notesSlot) {
+                notesSlot.style.display = result.goalMet ? 'block' : 'none';
+                notesSlot.innerHTML = result.goalMet ? `<p class="text-xs" style="color:var(--color-running);margin-bottom:8px;">✓ Goal met.</p>` : '';
+            }
+        }
     });
 }
 
@@ -5714,6 +6437,42 @@ function updateDashboard() {
                 loadTrendEl.textContent = 'Log workouts to track';
             }
         }
+    }
+
+    // ── FBS (Fasting Blood Sugar) ──
+    const fbsValueEl = document.getElementById('fbs-value');
+    const fbsTrendEl = document.getElementById('fbs-trend');
+    if (fbsValueEl) {
+        const latest = AppState.getLatestFBS ? AppState.getLatestFBS() : null;
+        if (latest) {
+            let zoneClr = '#39ff14';
+            let zoneLabel = 'Healthy';
+            if (latest.value >= 126) { zoneClr = '#ff453a'; zoneLabel = 'Diabetic'; }
+            else if (latest.value >= 100) { zoneClr = '#ffd23f'; zoneLabel = 'Pre-diabetic'; }
+            fbsValueEl.innerHTML = `${latest.value}<span style="font-size:0.75rem;font-weight:500;color:var(--text-secondary)"> mg/dL</span>`;
+            fbsValueEl.style.color = zoneClr;
+            if (fbsTrendEl) {
+                const avg = AppState.getFBS7dAvg();
+                let trendBit = '';
+                if (avg !== null) {
+                    const diff = latest.value - avg;
+                    const arrow = diff < -1 ? '↓' : diff > 1 ? '↑' : '→';
+                    const arrowClr = diff < -1 ? 'var(--color-running)' : diff > 1 ? 'var(--color-race)' : 'var(--text-secondary)';
+                    trendBit = ` &middot; <span style="color:${arrowClr}">${arrow} ${Math.abs(diff).toFixed(0)}</span> vs 7d avg`;
+                }
+                fbsTrendEl.innerHTML = `<span style="color:${zoneClr};">${zoneLabel}</span>${trendBit}`;
+            }
+        } else {
+            fbsValueEl.innerHTML = `— <span style="font-size:0.75rem;font-weight:500;color:var(--text-secondary)">mg/dL</span>`;
+            if (fbsTrendEl) fbsTrendEl.textContent = 'Tap to log · target <100';
+        }
+    }
+
+    // ── Gateway streak (if card exists) ──
+    const gwStreakEl = document.getElementById('gateway-streak-value');
+    if (gwStreakEl && AppState.getGatewayStreak) {
+        const s = AppState.getGatewayStreak();
+        gwStreakEl.innerHTML = `${s}<span style="font-size:1rem;font-weight:500;color:var(--text-tertiary)"> day${s===1?'':'s'}</span>`;
     }
 
     // ── Week date range ──
@@ -5973,24 +6732,33 @@ function showToast(message, type = 'success') {
 // ============================================
 // submitModal (improved — overrides earlier definition)
 // ============================================
-function submitModal(type) {
+function submitModal(type, arg) {
     const input1 = document.getElementById('modal-input');
     const input2 = document.getElementById('modal-input-2');
     const severityEl = document.getElementById('modal-severity');
-    
+
     if (!input1) return;
-    
+
     switch(type) {
         case 'weight': {
             const val = parseFloat(input1.value);
             if (isNaN(val) || val < 40 || val > 200) { showToast('Enter a valid weight (40-200 kg)', 'error'); return; }
             const bodyFat = parseFloat(document.getElementById('modal-bodyfat')?.value);
             const muscleMass = parseFloat(document.getElementById('modal-musclemass')?.value);
-            AppState.addWeight(val, isNaN(bodyFat) ? null : bodyFat, isNaN(muscleMass) ? null : muscleMass);
-            let msg = `Weight logged: ${val} kg`;
+            const vfl = parseFloat(document.getElementById('modal-vfl')?.value);
+            const bmr = parseFloat(document.getElementById('modal-bmr')?.value);
+            const inBody = !!document.getElementById('modal-inbody')?.checked;
+            AppState.addWeight(
+                val,
+                isNaN(bodyFat) ? null : bodyFat,
+                isNaN(muscleMass) ? null : muscleMass,
+                { visceralFat: isNaN(vfl) ? null : vfl, bmr: isNaN(bmr) ? null : bmr, inBody }
+            );
+            let msg = inBody ? `InBody scan logged: ${val} kg` : `Weight logged: ${val} kg`;
             if (!isNaN(bodyFat)) msg += ` | BF: ${bodyFat}%`;
             showToast(msg);
             renderWeightChart();
+            if (typeof renderBodyCompositionChart === 'function') renderBodyCompositionChart();
             updateDashboard();
             break;
         }
@@ -6023,8 +6791,66 @@ function submitModal(type) {
             updateMacroBars();
             break;
         }
+        case 'fbs': {
+            const val = parseFloat(input1.value);
+            if (isNaN(val) || val < 40 || val > 400) { showToast('Enter a valid FBS (40-400 mg/dL)', 'error'); return; }
+            const notes = document.getElementById('modal-notes')?.value.trim();
+            const ok = AppState.addBloodSugar(val, notes);
+            if (!ok) { showToast('Could not save FBS', 'error'); return; }
+            let zone = 'Healthy';
+            if (val >= 126) zone = 'Diabetic range';
+            else if (val >= 100) zone = 'Pre-diabetic';
+            showToast(`FBS logged: ${val} mg/dL · ${zone}`, val >= 126 ? 'warning' : 'success');
+            if (typeof renderFBSChart === 'function') renderFBSChart();
+            updateDashboard();
+            break;
+        }
+        case 'race-result': {
+            const time = input1.value.trim();
+            if (!time) { showToast('Enter a finish time', 'error'); return; }
+            const notes = document.getElementById('modal-notes')?.value.trim();
+            const goalMet = !!document.getElementById('modal-goalmet')?.checked;
+            const raceId = arg;
+            if (!raceId) { showToast('Race ID missing', 'error'); return; }
+            AppState.addRaceResult(raceId, time, notes, goalMet);
+            showToast(`Race logged: ${time}${goalMet ? ' · Goal met!' : ''}`);
+            if (typeof renderRaceHistory === 'function') renderRaceHistory();
+            if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
+            break;
+        }
+        case 'hyrox-session': {
+            const totalTime = input1.value.trim();
+            if (!totalTime) { showToast('Enter total time', 'error'); return; }
+            const stations = {
+                skiErg:       document.getElementById('hy-skierg')?.value.trim() || '',
+                sledPush:     document.getElementById('hy-sledpush')?.value.trim() || '',
+                sledPull:     document.getElementById('hy-sledpull')?.value.trim() || '',
+                burpeeBJ:     document.getElementById('hy-burpeebj')?.value.trim() || '',
+                row:          document.getElementById('hy-row')?.value.trim() || '',
+                farmersCarry: document.getElementById('hy-farmers')?.value.trim() || '',
+                lunges:       document.getElementById('hy-lunges')?.value.trim() || '',
+                wallBalls:    document.getElementById('hy-wallballs')?.value.trim() || ''
+            };
+            const notes = document.getElementById('modal-notes')?.value.trim();
+            AppState.addHyroxSession({ raceId: arg || null, totalTime, stations, notes });
+            showToast(`HYROX splits logged: ${totalTime}`);
+            break;
+        }
+        case 'gateway-session': {
+            const duration = parseFloat(input1.value);
+            if (isNaN(duration) || duration <= 0) { showToast('Enter a valid duration (min)', 'error'); return; }
+            const focus = document.getElementById('gw-focus')?.value || '10';
+            const depth = document.getElementById('gw-depth')?.value || 'C-10';
+            const notes = document.getElementById('modal-notes')?.value.trim();
+            const patternChange = document.getElementById('gw-pattern')?.value.trim();
+            AppState.addGatewaySession({ duration, focus, depth, notes, patternChange });
+            showToast(`Gateway session logged: ${duration} min · Focus ${focus}`);
+            if (typeof renderGatewayTimeline === 'function') renderGatewayTimeline();
+            if (typeof renderGatewayStreak === 'function') renderGatewayStreak();
+            break;
+        }
     }
-    
+
     closeModal();
 }
 
@@ -6457,6 +7283,26 @@ function initScrollAnimations() {
             once: true
         });
 
+        // FBS chart
+        if (document.getElementById('fbs-chart')) {
+            ScrollTrigger.create({
+                trigger: '#fbs-chart',
+                start: 'top 85%',
+                onEnter: () => { if (typeof renderFBSChart === 'function') renderFBSChart(); },
+                once: true
+            });
+        }
+
+        // Body composition chart
+        if (document.getElementById('body-comp-chart')) {
+            ScrollTrigger.create({
+                trigger: '#body-comp-chart',
+                start: 'top 85%',
+                onEnter: () => { if (typeof renderBodyCompositionChart === 'function') renderBodyCompositionChart(); },
+                once: true
+            });
+        }
+
         // Completion grid
         ScrollTrigger.create({
             trigger: '#completion-grid',
@@ -6648,6 +7494,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateDashboard();
     renderWeightChart();
+    if (typeof renderFBSChart === 'function') renderFBSChart();
+    if (typeof renderBodyCompositionChart === 'function') renderBodyCompositionChart();
+    if (typeof renderRaceHistory === 'function') renderRaceHistory();
+    if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
     renderCompletionGrid();
     renderFoodLog();
     updateCalorieRing();
@@ -6684,10 +7534,14 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPhaseTraining(currentPhase);
     }
 
-    // Handle window resize for chart
+    // Handle window resize for charts
     window.addEventListener('resize', () => {
         clearTimeout(window._resizeTimer);
-        window._resizeTimer = setTimeout(renderWeightChart, 200);
+        window._resizeTimer = setTimeout(() => {
+            renderWeightChart();
+            if (typeof renderFBSChart === 'function') renderFBSChart();
+            if (typeof renderBodyCompositionChart === 'function') renderBodyCompositionChart();
+        }, 200);
     });
 
     // Init GSAP scroll animations (after a tick to let layout settle)
