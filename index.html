@@ -1997,14 +1997,19 @@
                 </div>
             </div>
 
-            <!-- InBody Scan -->
+            <!-- InBody Scan — Plan v3 baseline (Apr 10, 2026) -->
             <div class="card-glass animate-in delay-4" style="margin-bottom: 20px; border-left: 3px solid #00b4d8;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 10px;">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v14M4 4h8M3 8h10M4 12h8"/></svg>
-                    <span class="text-sm font-bold uppercase" style="letter-spacing: 0.08em; color: #00b4d8;">InBody Scan</span>
-                    <span class="text-xs text-tertiary" style="margin-left:auto;">Apr 10, 2026</span>
+                    <span class="text-sm font-bold uppercase" style="letter-spacing: 0.08em; color: #00b4d8;">InBody Scan &middot; v3 Baseline</span>
+                    <span class="text-xs text-tertiary" style="margin-left:auto;">10 Apr 2026</span>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+                    <div style="padding:10px;border-radius:8px;background:rgba(0,180,216,0.08);border:1px solid rgba(0,180,216,0.2);text-align:center;">
+                        <div class="text-xs text-tertiary">Weight</div>
+                        <div class="text-lg font-bold" style="color:#00b4d8;">98.4 kg</div>
+                        <div class="text-xs text-tertiary">Target: 78 kg</div>
+                    </div>
                     <div style="padding:10px;border-radius:8px;background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.15);text-align:center;">
                         <div class="text-xs text-tertiary">Body Fat</div>
                         <div class="text-lg font-bold" style="color:var(--color-race);">35.4%</div>
@@ -2015,22 +2020,17 @@
                         <div class="text-lg font-bold text-green">35.7 kg</div>
                         <div class="text-xs text-green">PROTECT</div>
                     </div>
-                    <div style="padding:10px;border-radius:8px;background:rgba(255,107,44,0.08);border:1px solid rgba(255,107,44,0.15);text-align:center;">
-                        <div class="text-xs text-tertiary">Visceral Fat</div>
-                        <div class="text-lg font-bold" style="color:var(--color-strength);">15</div>
-                        <div class="text-xs" style="color:var(--color-strength);">Target: &lt;10</div>
-                    </div>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;">
                     <div style="text-align:center;padding:6px;border-radius:6px;background:rgba(255,255,255,0.03);">
                         <div class="text-xs text-tertiary">BMI</div>
                         <div class="text-sm font-bold" style="color:var(--color-race);">30.4</div>
                         <div class="text-xs text-tertiary">Obese I</div>
                     </div>
                     <div style="text-align:center;padding:6px;border-radius:6px;background:rgba(255,255,255,0.03);">
-                        <div class="text-xs text-tertiary">WHR</div>
-                        <div class="text-sm font-bold" style="color:var(--color-strength);">0.98</div>
-                        <div class="text-xs text-tertiary">&lt;0.90</div>
+                        <div class="text-xs text-tertiary">Visceral Fat</div>
+                        <div class="text-sm font-bold" style="color:var(--color-strength);">15</div>
+                        <div class="text-xs text-tertiary">&lt;10</div>
                     </div>
                     <div style="text-align:center;padding:6px;border-radius:6px;background:rgba(255,255,255,0.03);">
                         <div class="text-xs text-tertiary">BMR</div>
@@ -2041,6 +2041,32 @@
                         <div class="text-xs text-tertiary">Fat to Lose</div>
                         <div class="text-sm font-bold" style="color:var(--color-race);">~20 kg</div>
                         <div class="text-xs text-tertiary">to 15% BF</div>
+                    </div>
+                </div>
+                <!-- Blood panel summary (Apr 10, 2026) -->
+                <div style="padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.08);">
+                    <div class="text-xs text-tertiary" style="margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">Blood Panel &middot; Apr 10</div>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+                        <div style="text-align:center;">
+                            <div class="text-xs text-tertiary">FBS</div>
+                            <div class="text-sm font-bold" style="color:var(--color-race);">115</div>
+                            <div class="text-xs text-tertiary">mg/dL</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div class="text-xs text-tertiary">HbA1c</div>
+                            <div class="text-sm font-bold" style="color:var(--color-race);">6.0%</div>
+                            <div class="text-xs text-tertiary">pre-diab</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div class="text-xs text-tertiary">SGPT</div>
+                            <div class="text-sm font-bold" style="color:var(--color-strength);">55</div>
+                            <div class="text-xs text-tertiary">U/L</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div class="text-xs text-tertiary">CRP</div>
+                            <div class="text-sm font-bold" style="color:var(--color-strength);">4.0</div>
+                            <div class="text-xs text-tertiary">mg/L</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4059,11 +4085,12 @@
                 <p class="text-xs text-tertiary" style="margin-top: 14px; font-style: italic;">&mdash; CIA-RDP96-00788R001700210023-7 &middot; Monroe Institute of Applied Sciences, Gateway Intermediate Workbook</p>
             </div>
 
-            <!-- Block B: The Five Astras -->
+            <!-- Block B: The Ten Astras -->
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Pancha Astra &middot; The Five Divine Weapons</span>
+                <span class="section-title">Dasha Astra &middot; The Ten Divine Weapons</span>
+                <span class="pill pill-sm pill-dharma" style="font-size:0.6rem;">Expanded 5 → 10 on Apr 21, 2026</span>
             </div>
-            <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Each Gateway energy tool mapped to one of Arjuna's astras (divine weapons). These are not abstract &mdash; each has a specific moment in your training when you draw it.</p>
+            <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Each Gateway energy tool mapped to one of the divine weapons of the Itihasas. These are not abstract &mdash; each has a specific moment in your training when you draw it.</p>
             <div class="grid-3 animate-in delay-4" style="margin-bottom: 28px;">
                 <div class="card quality-card">
                     <div class="quality-num">1</div>
@@ -4100,6 +4127,159 @@
                     <p class="text-xs text-secondary">In Focus 12, build the pattern you desire with precision. Release it strongly into all areas of expanded awareness. Sanjaya saw Kurukshetra from 100 miles away &mdash; you see your Day 100 self. It forms because you believed it.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Weekly &middot; Day 100: 78 kg, HbA1c 5.7, HYROX finish</span>
                 </div>
+                <div class="card quality-card">
+                    <div class="quality-num">6</div>
+                    <div class="quality-sanskrit">Vajra</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Indra's Thunderbolt &middot; EBT Rapid-Fire</h4>
+                    <p class="text-xs text-secondary">Energy Bar Tool, fired in <strong style="color:#fbbf24;">rapid succession</strong> like Indra's vajra splitting clouds. Three sharp inhales, each charging a bar, release on a long exhale. Pure kinetic ignition before an interval, a sprint, a sled push.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Pre 400s / 1K reps &middot; HYROX transitions</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">7</div>
+                    <div class="quality-sanskrit">Pashupatastra</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Shiva's Weapon &middot; REBAL + Focus 15</h4>
+                    <p class="text-xs text-secondary">Not for enemies &mdash; for the deepest recovery. Build the full REBAL shield, drop into Focus 15 (no time). Nervous system returns to baseline, tissue repairs at depth. Reserve for the hardest weeks &mdash; Week 6 PSMF, post-Korea, post-HYROX Delhi.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Deload Sundays &middot; Post-race Day 1</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">8</div>
+                    <div class="quality-sanskrit">Brahmastra</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Brahma's Weapon &middot; Living Body Map</h4>
+                    <p class="text-xs text-secondary">Full-body scan from toes to crown, feeling every segment, asking <em>"alive?"</em> and awaiting the answer. The weapon of absolute truth &mdash; it doesn't lie about what's injured, what's dormant, what's over-trained. Use before big decisions: push or rest? Train or taper?</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Monday AM &middot; Pre-race week &middot; Injury doubt</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">9</div>
+                    <div class="quality-sanskrit">Sudarshana Chakra</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Vishnu's Disc &middot; Emotional Body Map</h4>
+                    <p class="text-xs text-secondary">The spinning disc severs emotional residue. Scan for <strong style="color:#06b6d4;">anxiety, doubt, anger</strong> lodged in the body &mdash; chest, gut, jaw. Spin the chakra through it, clear it. Pre-race mental clean-up before the A-races so the nervous system arrives unburdened.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Night before Bangalore / HYROX / Mumbai</span>
+                </div>
+                <div class="card quality-card">
+                    <div class="quality-num">10</div>
+                    <div class="quality-sanskrit">Trishul</div>
+                    <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Three-Pronged Spear &middot; Emergency Abort</h4>
+                    <p class="text-xs text-secondary">Three breaths to return from C-12 or C-15 to C-1 when the real world calls. Sharp exhale through three counts &mdash; <em>"1: back-in-body, 2: eyes-open, 3: fully-here."</em> No grogginess, no bleed. The trident that brings you instantly to ground.</p>
+                    <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Mid-session call &middot; Office door knock</span>
+                </div>
+            </div>
+
+            <!-- Gateway Audio — free theta/delta resources -->
+            <div class="section-header animate-in delay-4">
+                <span class="section-title">Hemi-Sync &middot; Gateway Audio</span>
+                <span class="pill pill-sm pill-dharma" style="font-size: 0.6rem;">Free resources</span>
+            </div>
+            <div class="card animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 20px;">
+                <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Binaural beats (delivered via headphones) drive brainwave entrainment.
+                <strong style="color:var(--text-primary);">4&nbsp;Hz delta</strong> drops you toward Focus 10 (mind awake, body asleep).
+                <strong style="color:var(--text-primary);">7&nbsp;Hz theta</strong> holds Focus 12 (expanded awareness).
+                Headphones are non-negotiable &mdash; the left/right frequency difference <em>is</em> the signal.</p>
+                <div class="grid-3" style="gap: 10px;">
+                    <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=Monroe+Institute+Gateway+Focus+10" style="justify-content:flex-start; text-align:left; padding:12px 14px;">
+                        <div>
+                            <div style="font-size:0.75rem;font-weight:700;color:var(--text-primary);">Monroe Institute</div>
+                            <div style="font-size:0.6875rem;color:var(--text-secondary);margin-top:2px;">Official Focus 10 sampler &middot; YouTube &middot; ~30 min</div>
+                        </div>
+                    </a>
+                    <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=Huberman+NSDR+20+minute" style="justify-content:flex-start; text-align:left; padding:12px 14px;">
+                        <div>
+                            <div style="font-size:0.75rem;font-weight:700;color:var(--text-primary);">Huberman NSDR</div>
+                            <div style="font-size:0.6875rem;color:var(--text-secondary);margin-top:2px;">Non-Sleep Deep Rest 20 min &middot; same theta state, secular framing</div>
+                        </div>
+                    </a>
+                    <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://insighttimer.com/meditation-topics/binaural-beats" style="justify-content:flex-start; text-align:left; padding:12px 14px;">
+                        <div>
+                            <div style="font-size:0.75rem;font-weight:700;color:var(--text-primary);">Insight Timer</div>
+                            <div style="font-size:0.6875rem;color:var(--text-secondary);margin-top:2px;">"Gateway Process" + "Binaural Theta" tags &middot; free tier</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);">
+                    <div>
+                        <div class="text-sm font-semibold" style="color: var(--color-dharma);">Gateway Streak</div>
+                        <div class="text-xs text-secondary">Consecutive days with at least one logged session</div>
+                    </div>
+                    <div class="flex items-center gap-sm">
+                        <span class="metric-value" id="gateway-streak-value" style="font-size:1.75rem;color:var(--color-dharma);">0<span style="font-size:0.875rem;font-weight:500;color:var(--text-tertiary);"> days</span></span>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('gateway-session')">+ Log Session</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gateway Session Timeline -->
+            <div class="card animate-in delay-4" style="margin-bottom: 28px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 14px;">
+                    <h3 style="margin:0;">Session Timeline</h3>
+                    <span class="text-xs text-secondary" id="gateway-session-count">0 sessions</span>
+                </div>
+                <div id="gateway-timeline" style="position:relative;padding-left:24px;">
+                    <div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(245,158,11,0.12);"></div>
+                    <p class="text-sm text-tertiary" style="padding:16px 0;">No sessions logged yet. Log your first Gateway session above.</p>
+                </div>
+            </div>
+
+            <!-- iOS Shortcuts — static reference card -->
+            <div class="section-header animate-in delay-4">
+                <span class="section-title">iOS Shortcuts &middot; Automated Reminders</span>
+                <span class="pill pill-sm pill-dharma" style="font-size: 0.6rem;">Client-only, no backend</span>
+            </div>
+            <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Four Shortcuts to build in Apple's Shortcuts app. These are pure iOS automations &mdash; no server, no notifications service worker. Open Shortcuts → + New Shortcut → Automation tab. Takes ~15 min each.</p>
+            <div class="grid-2 animate-in delay-4" style="margin-bottom: 28px;">
+                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                    <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
+                        <span style="font-size:1.25rem;">🕉️</span>
+                        <h4 style="margin:0;font-size:0.875rem;">Brahma Muhurta Alarm</h4>
+                        <span class="dharma-time-badge" style="margin-left:auto;">4:45 AM</span>
+                    </div>
+                    <p class="text-xs text-secondary" style="margin-bottom:8px;">Weekday wake with mantra + direct jump to Dharma tab.</p>
+                    <ol class="text-xs text-tertiary" style="padding-left:18px;line-height:1.7;">
+                        <li>Automation → Time of Day → 4:45 AM, Mon-Fri.</li>
+                        <li>Action: Play Music (your chosen Om / Gayatri track, volume 40%).</li>
+                        <li>Action: Open URL → <code style="background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px;">file path or site#panel-dharma</code>.</li>
+                    </ol>
+                </div>
+                <div class="card" style="border-left: 3px solid var(--color-running);">
+                    <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
+                        <span style="font-size:1.25rem;">🏃</span>
+                        <h4 style="margin:0;font-size:0.875rem;">Pre-Run Red Charge</h4>
+                        <span class="dharma-time-badge" style="margin-left:auto;">-15 min</span>
+                    </div>
+                    <p class="text-xs text-secondary" style="margin-bottom:8px;">Fires 15 min before any calendar event with "Run" in the title.</p>
+                    <ol class="text-xs text-tertiary" style="padding-left:18px;line-height:1.7;">
+                        <li>Automation → Event Starts → Calendar filter "Run" → 15 min before.</li>
+                        <li>Action: Play a 3-min breathing / theta track (Insight Timer link or local file).</li>
+                        <li>Action: Show Notification → "Red energy charge. Visualize the finish."</li>
+                    </ol>
+                </div>
+                <div class="card" style="border-left: 3px solid var(--color-travel);">
+                    <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
+                        <span style="font-size:1.25rem;">🌙</span>
+                        <h4 style="margin:0;font-size:0.875rem;">10 PM Wind-Down</h4>
+                        <span class="dharma-time-badge" style="margin-left:auto;">22:00</span>
+                    </div>
+                    <p class="text-xs text-secondary" style="margin-bottom:8px;">Nightly sleep protocol &mdash; Focus mode + sound + timestamp.</p>
+                    <ol class="text-xs text-tertiary" style="padding-left:18px;line-height:1.7;">
+                        <li>Automation → Time of Day → 10:00 PM, every day.</li>
+                        <li>Action: Set Focus → Sleep (auto-silences notifications, dims screen).</li>
+                        <li>Action: Play background sound (rain / Hz drone). Append a "sleep-intent" line to a Notes file.</li>
+                    </ol>
+                </div>
+                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                    <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
+                        <span style="font-size:1.25rem;">⚔️</span>
+                        <h4 style="margin:0;font-size:0.875rem;">Sunday Kurukshetra Dhyana</h4>
+                        <span class="dharma-time-badge" style="margin-left:auto;">Sun 5 AM</span>
+                    </div>
+                    <p class="text-xs text-secondary" style="margin-bottom:8px;">Weekly full Gateway session reminder. The 45-min weekly practice.</p>
+                    <ol class="text-xs text-tertiary" style="padding-left:18px;line-height:1.7;">
+                        <li>Automation → Time of Day → 5:00 AM, Sundays only.</li>
+                        <li>Action: Show Notification → "Kurukshetra Dhyana. 45 min. Headphones on."</li>
+                        <li>Action: Open the Monroe YouTube link directly (saved in Shortcut as a URL).</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="card-glass animate-in delay-4" style="margin-bottom: 28px;padding:12px 16px;">
+                <p class="text-xs text-tertiary"><strong>Why no push notifications?</strong> iOS Shortcuts run locally, respect Focus modes, and need zero server. For richer WhatsApp-scheduled reminders and bi-directional logging, see roadmap P1 #1 (deferred to v2.0).</p>
             </div>
 
             <!-- Block C: Daily Quick-Tools Panel -->
@@ -6234,6 +6414,49 @@ function renderBodyCompositionChart() {
 }
 
 // ============================================
+// RENDER: Gateway Timeline + Streak (Dharma tab)
+// ============================================
+function renderGatewayStreak() {
+    const el = document.getElementById('gateway-streak-value');
+    if (!el || !AppState.getGatewayStreak) return;
+    const s = AppState.getGatewayStreak();
+    el.innerHTML = `${s}<span style="font-size:0.875rem;font-weight:500;color:var(--text-tertiary);"> day${s===1?'':'s'}</span>`;
+}
+
+function renderGatewayTimeline() {
+    const wrap = document.getElementById('gateway-timeline');
+    const countEl = document.getElementById('gateway-session-count');
+    if (!wrap) return;
+    const sessions = [...(AppState.gatewaySessions || [])].sort((a,b) => b.date.localeCompare(a.date));
+    if (countEl) countEl.textContent = `${sessions.length} session${sessions.length === 1 ? '' : 's'}`;
+    const line = `<div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(245,158,11,0.12);"></div>`;
+    if (sessions.length === 0) {
+        wrap.innerHTML = `${line}<p class="text-sm text-tertiary" style="padding:16px 0;">No sessions logged yet. Log your first Gateway session above.</p>`;
+        return;
+    }
+    const shown = sessions.slice(0, 10);
+    const remaining = sessions.length - shown.length;
+    wrap.innerHTML = line + shown.map(s => {
+        const dateStr = new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const notesPreview = s.notes ? (s.notes.length > 80 ? s.notes.slice(0, 80).replace(/</g,'&lt;') + '…' : s.notes.replace(/</g,'&lt;')) : '';
+        const patternBit = s.patternChange ? `<div class="text-xs" style="margin-top:4px;color:var(--color-dharma);font-style:italic;">Pattern: ${s.patternChange.length > 60 ? s.patternChange.slice(0,60).replace(/</g,'&lt;') + '…' : s.patternChange.replace(/</g,'&lt;')}</div>` : '';
+        return `
+            <div style="position:relative;padding:10px 0 10px 16px;border-bottom:1px solid rgba(255,255,255,0.04);">
+                <div style="position:absolute;left:-20px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--color-dharma);box-shadow:0 0 6px rgba(245,158,11,0.4);"></div>
+                <div class="flex items-center justify-between flex-wrap gap-sm">
+                    <div>
+                        <span class="text-xs font-semibold" style="color:var(--text-primary);">${dateStr}</span>
+                        <span class="text-xs text-tertiary"> &middot; ${s.duration} min &middot; Focus ${s.focus} &middot; ${s.depth}</span>
+                    </div>
+                </div>
+                ${notesPreview ? `<div class="text-xs text-secondary" style="margin-top:4px;">${notesPreview}</div>` : ''}
+                ${patternBit}
+            </div>
+        `;
+    }).join('') + (remaining > 0 ? `<p class="text-xs text-tertiary" style="padding:8px 0 0;">… and ${remaining} more</p>` : '');
+}
+
+// ============================================
 // RENDER: Race History (Progress tab)
 // ============================================
 function renderRaceHistory() {
@@ -7498,6 +7721,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof renderBodyCompositionChart === 'function') renderBodyCompositionChart();
     if (typeof renderRaceHistory === 'function') renderRaceHistory();
     if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
+    if (typeof renderGatewayStreak === 'function') renderGatewayStreak();
+    if (typeof renderGatewayTimeline === 'function') renderGatewayTimeline();
     renderCompletionGrid();
     renderFoodLog();
     updateCalorieRing();
