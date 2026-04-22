@@ -1908,6 +1908,17 @@
             background-clip: text;
             color: transparent;
         }
+        /* A19 hotfix: heroEntrance() splits the wordmark into <span>s for the
+           char-by-char reveal. background-clip:text does not cascade, so each
+           span needs its own clip or it renders as transparent text with no
+           fill. Inherit the parent's gradient via `background: inherit`. */
+        .hero-name > span {
+            background: inherit;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
 
         .hero-sub {
             font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem) !important;
@@ -8405,13 +8416,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const initLucide = () => { try { window.lucide && window.lucide.createIcons(); } catch(e){} };
 
     // Editorial hero entrance — SplitText-style char reveal without the premium plugin
+    // A19 hotfix: re-apply the parent's gradient-text fill to each child span.
+    // The parent uses `background-clip:text; color:transparent` for a gradient
+    // wordmark. The background does NOT cascade to child elements, so naked
+    // spans would render invisibly (transparent text, no fill). We inline the
+    // same clip on each span so the gradient visually appears continuous.
     const heroEntrance = () => {
         const name = document.querySelector('.hero-name');
         if (!name || name.dataset.v3Done) return;
         name.dataset.v3Done = '1';
         // Reduced-motion: skip the animated reveal, leave text intact (A9)
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        // Browser fallback: if background-clip:text isn't supported, skip split
+        // so plain text still renders. (A19)
+        const clipSupported = (typeof CSS !== 'undefined' && CSS.supports) &&
+            (CSS.supports('background-clip', 'text') ||
+             CSS.supports('-webkit-background-clip', 'text'));
+        if (!clipSupported) return;
         const text = name.textContent.trim();
+        // Copy the parent's resolved background so each span can clip its own
+        // copy of the gradient (inherit won't give us the image alone).
+        const parentBg = getComputedStyle(name).backgroundImage;
         name.innerHTML = '';
         const frag = document.createDocumentFragment();
         text.split('').forEach((ch, i) => {
@@ -8422,6 +8447,14 @@ document.addEventListener('DOMContentLoaded', () => {
             span.style.transform = 'translateY(40%) rotateX(-35deg)';
             span.style.transformOrigin = '50% 100%';
             span.style.transition = `opacity 700ms cubic-bezier(0.16,1,0.3,1) ${i*28}ms, transform 900ms cubic-bezier(0.16,1,0.3,1) ${i*28}ms`;
+            // A19: re-apply the gradient fill to each span
+            if (parentBg && parentBg !== 'none') {
+                span.style.backgroundImage = parentBg;
+                span.style.webkitBackgroundClip = 'text';
+                span.style.backgroundClip = 'text';
+                span.style.webkitTextFillColor = 'transparent';
+                span.style.color = 'transparent';
+            }
             frag.appendChild(span);
         });
         name.appendChild(frag);
@@ -8463,6 +8496,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // GSAP-enhanced section reveal (if GSAP present)
+    // A20 hotfix: (a) skip #panel-dashboard — animateTabContent() already owns
+    // those cards and two gsap.from()s on the same element with ScrollTrigger
+    // can race and leave opacity:0. (b) immediateRender:false so a trigger
+    // firing against pre-font layout doesn't snap the element invisible.
     const sectionReveals = () => {
         if (!window.gsap || !window.ScrollTrigger) return;
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -8473,21 +8510,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (t.vars && t.vars.__v3) t.kill();
             });
         } catch(e){}
+        const isDashboard = (el) => !!el.closest('#panel-dashboard');
         gsap.utils.toArray('.section-header').forEach(h => {
-            if (h.dataset.v3Reveal) return;
+            if (h.dataset.v3Reveal || isDashboard(h)) return;
             h.dataset.v3Reveal = '1';
             gsap.from(h, {
                 y: 24, opacity: 0, duration: 0.9, ease: 'expo.out',
                 __v3: true,
+                immediateRender: false,
                 scrollTrigger: { trigger: h, start: 'top 85%', once: true }
             });
         });
         gsap.utils.toArray('.card-glass, .metric-card, .quality-card').forEach((c, i) => {
-            if (c.dataset.v3Reveal) return;
+            if (c.dataset.v3Reveal || isDashboard(c)) return;
             c.dataset.v3Reveal = '1';
             gsap.from(c, {
                 y: 20, opacity: 0, duration: 0.7, ease: 'expo.out', delay: (i % 5) * 0.04,
                 __v3: true,
+                immediateRender: false,
                 scrollTrigger: { trigger: c, start: 'top 90%', once: true }
             });
         });
@@ -8498,14 +8538,27 @@ document.addEventListener('DOMContentLoaded', () => {
         heroEntrance();
         setTimeout(animateCounters, 400);
         setTimeout(sectionReveals, 100);
+        // A20b hotfix: ScrollTrigger.refresh() runs on window.load by default,
+        // which web-fonts can race against. Re-measure after fonts apply so
+        // `once:true` triggers don't fire on pre-font layout positions.
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                if (window.ScrollTrigger) {
+                    try { ScrollTrigger.refresh(); } catch(e){}
+                }
+            });
+        }
     });
 
-    // Re-init after tab switches — new panels come into view
+    // Re-init after tab switches — new panels come into view.
+    // A20d hotfix: dropped sectionReveals() from this wrap. Triggers created
+    // on DCL already cover all panels (ScrollTrigger handles display:none).
+    // Re-running it on every tab switch was a source of opacity flicker.
     const originalSwitch = window.switchTab;
     if (typeof originalSwitch === 'function') {
         window.switchTab = function(tabId) {
             const r = originalSwitch.apply(this, arguments);
-            setTimeout(() => { initLucide(); sectionReveals(); }, 50);
+            setTimeout(() => { initLucide(); }, 50);
             return r;
         };
     }
