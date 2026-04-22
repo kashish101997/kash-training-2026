@@ -2,18 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kash Agarwal - Annual Training Plan 2026">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Kash Agarwal · Annual Training Platform 2026 — running, HYROX, cricket, Dharma, and a 100-day body-composition arc.">
     <meta name="theme-color" content="#0a0a0a">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>KASH | Training Platform 2026</title>
+    <meta name="apple-mobile-web-app-title" content="Kash 2026">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="color-scheme" content="dark">
+    <title>KASH · Training Platform 2026</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="mask-icon" href="icon.svg" color="#39FF14">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Kash · Training Platform 2026">
+    <meta property="og:description" content="28M → 78kg. Running, HYROX, cricket, Dharma. Live training log over the 100-day arc.">
+    <meta property="og:image" content="icon.svg">
+    <meta property="og:url" content="https://kashish101997.github.io/kash-training-2026/">
+    <meta property="og:site_name" content="Kash 2026">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kash · Training Platform 2026">
+    <meta name="twitter:description" content="28M → 78kg. Running, HYROX, cricket, Dharma. Live training log over the 100-day arc.">
+    <meta name="twitter:image" content="icon.svg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font diet: only the weights actually used in the app -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <!-- GSAP + ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Register service worker (non-blocking, failure-tolerant) -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch((e) => {
+                console.warn('[SW] registration failed:', e.message);
+            });
+        });
+    }
+    </script>
     <style>
         /* ========================================
            DESIGN SYSTEM - CSS CUSTOM PROPERTIES
@@ -1046,6 +1081,8 @@
 
         .toast-success { border-left: 3px solid var(--color-running); }
         .toast-error { border-left: 3px solid var(--color-race); }
+        .toast-warn { border-left: 3px solid var(--color-strength); }
+        .toast-info { border-left: 3px solid var(--color-cricket); }
 
         /* ========================================
            ANIMATIONS
@@ -2205,7 +2242,7 @@
          NAVIGATION BAR
          ======================================== -->
     <nav class="nav" role="navigation" aria-label="Main navigation">
-        <div class="nav-inner">
+        <div class="nav-inner" data-nav-scroll>
             <button class="nav-tab active" data-tab="dashboard" aria-selected="true" role="tab">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect width="7" height="7" x="3" y="3" rx="1"/>
@@ -2267,6 +2304,7 @@
                 </svg>
                 <span class="tab-label">Travel</span>
             </button>
+            <span class="nav-scroll-sentinel" aria-hidden="true"></span>
         </div>
     </nav>
 
@@ -2274,19 +2312,27 @@
     <script>
         (function() {
             const tabs = document.querySelectorAll('.nav-tab');
+            // v2.0: cache the node collections — they don't change at runtime
+            const allTabs = Array.from(tabs);
+            const allPanels = Array.from(document.querySelectorAll('.tab-panel'));
+
             const switchTab = (tabId) => {
-                document.querySelectorAll('.nav-tab').forEach(t => {
+                // v2.0: close any open modal before switching tabs (prevents overlay orphans)
+                if (typeof closeModal === 'function' && document.querySelector('.modal-overlay')) {
+                    closeModal();
+                }
+                allTabs.forEach(t => {
                     t.classList.remove('active');
                     t.setAttribute('aria-selected', 'false');
+                    t.setAttribute('tabindex', '-1'); // roving tabindex
                 });
-                document.querySelectorAll('.tab-panel').forEach(p => {
-                    p.style.display = 'none';
-                });
+                allPanels.forEach(p => { p.style.display = 'none'; });
                 const activeTab = document.querySelector(`.nav-tab[data-tab="${tabId}"]`);
                 const activePanel = document.getElementById(`panel-${tabId}`);
                 if (activeTab) {
                     activeTab.classList.add('active');
                     activeTab.setAttribute('aria-selected', 'true');
+                    activeTab.setAttribute('tabindex', '0');
                 }
                 if (activePanel) {
                     activePanel.style.display = 'block';
@@ -2295,9 +2341,25 @@
                     });
                 }
             };
-            tabs.forEach(tab => {
+
+            // v2.0: roving tabindex + ArrowLeft/ArrowRight keyboard navigation (WCAG tab pattern)
+            allTabs.forEach((tab, idx) => {
+                tab.setAttribute('tabindex', tab.classList.contains('active') ? '0' : '-1');
                 tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+                tab.addEventListener('keydown', (e) => {
+                    let target = null;
+                    if (e.key === 'ArrowRight') target = allTabs[(idx + 1) % allTabs.length];
+                    else if (e.key === 'ArrowLeft') target = allTabs[(idx - 1 + allTabs.length) % allTabs.length];
+                    else if (e.key === 'Home') target = allTabs[0];
+                    else if (e.key === 'End') target = allTabs[allTabs.length - 1];
+                    if (target) {
+                        e.preventDefault();
+                        switchTab(target.dataset.tab);
+                        target.focus();
+                    }
+                });
             });
+
             window.switchTab = switchTab;
         })();
     </script>
@@ -2652,8 +2714,11 @@
             // Redirect workout to enhanced feedback modal
             if (type === 'workout') { openWorkoutFeedbackModal(); return; }
 
-            let existing = document.getElementById('modal-overlay');
-            if (existing) existing.remove();
+            // v2.0: remember opener so closeModal() can restore focus for keyboard users
+            document._lastModalOpener = document.activeElement;
+
+            // v2.0: remove ALL stale overlays, not just the one with this id — prevents stacking
+            document.querySelectorAll('.modal-overlay').forEach(o => o.remove());
 
             const titles = {
                 weight: 'Log Body Composition',
@@ -2893,9 +2958,18 @@
         }
 
         function closeModal() {
-            const overlay = document.getElementById('modal-overlay');
-            if (overlay) overlay.remove();
+            // v2.0: remove ALL overlays (defensive — in case stale ones stacked) and restore focus
+            document.querySelectorAll('.modal-overlay').forEach(o => o.remove());
+            const opener = document._lastModalOpener;
+            if (opener && typeof opener.focus === 'function' && document.contains(opener)) {
+                try { opener.focus({ preventScroll: false }); } catch(_) {}
+            }
+            document._lastModalOpener = null;
         }
+        // v2.0: Esc closes any open modal, click outside closes too
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.querySelector('.modal-overlay')) closeModal();
+        });
 
         // NOTE: submitModal() defined below at line ~5253 (unified implementation
         // that persists to AppState + refreshes chart/dashboard). The earlier
@@ -2915,6 +2989,27 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+
+        // v2.0 — XSS-safe HTML escape for user-entered notes / free-text fields.
+        // Escapes &, <, >, ", ', / so the result is safe in both text and attribute contexts.
+        function escHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/\//g, '&#x2F;');
+        }
+        // Truncate with ellipsis, then escape — handy for previews.
+        function escTrunc(str, max) {
+            if (!str) return '';
+            const s = String(str);
+            return escHTML(s.length > max ? s.slice(0, max) + '…' : s);
+        }
+        window.escHTML = escHTML;
+        window.escTrunc = escTrunc;
     </script>
 
 
@@ -5881,7 +5976,8 @@ const AppState = {
     
     load() {
         try {
-            const saved = localStorage.getItem(STORAGE_KEY);
+            // v2.0: try localStorage first, fall back to sessionStorage (private-mode support)
+            const saved = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
             if (saved) {
                 const data = JSON.parse(saved);
                 Object.assign(this, data);
@@ -5896,79 +5992,99 @@ const AppState = {
         } catch(e) { console.warn('State load failed:', e); }
     },
 
+    /* v2.0 — merge guard: while true, save() defers to a pending flush. */
+    _isMerging: false,
+    _pendingSave: false,
+    _quotaWarned: false,
+
     async loadRemote() {
+        // v2.0 hardened: surface status on the WhatsApp pill, skip save during merge race,
+        // tolerate network/CORS/404 gracefully without user-visible errors.
+        const indicator = document.getElementById('whatsapp-status');
+        this._isMerging = true;
         try {
-            const res = await fetch('data.json?t=' + Date.now());
-            if (!res.ok) return;
+            const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
             const remote = await res.json();
-            if (!remote.lastUpdated) return; // empty file, nothing to merge
+            if (!remote || !remote.lastUpdated) { if (indicator) indicator.textContent = 'Standby'; return; }
             let merged = false;
-            // Merge weights
-            (remote.weights || []).forEach(rw => {
-                const exists = this.weights.some(w => w.date === rw.date && Math.abs(w.value - rw.value) < 0.01);
-                if (!exists) { rw.source = rw.source || 'whatsapp'; this.weights.push(rw); merged = true; }
-            });
-            // Merge workouts
-            (remote.workouts || []).forEach(rw => {
-                const exists = this.workouts.some(w => w.date === rw.date && w.name === rw.name);
-                if (!exists) { rw.source = rw.source || 'whatsapp'; this.workouts.push(rw); merged = true; }
-            });
-            // Merge foodLog
+
+            const mergeArr = (srcKey, keyFn, valueGuard) => {
+                (remote[srcKey] || []).forEach(r => {
+                    if (!this[srcKey]) this[srcKey] = [];
+                    const exists = this[srcKey].some(x => keyFn(x, r) && (valueGuard ? valueGuard(x, r) : true));
+                    if (!exists) { r.source = r.source || 'whatsapp'; this[srcKey].push(r); merged = true; }
+                });
+            };
+
+            mergeArr('weights', (a, b) => a.date === b.date, (a, b) => Math.abs(a.value - b.value) < 0.01);
+            mergeArr('workouts', (a, b) => a.date === b.date && a.name === b.name);
             if (!this.foodLog) this.foodLog = [];
             (remote.foodLog || []).forEach(rf => {
                 const exists = this.foodLog.some(f => f.date === rf.date && f.name === rf.name && f.time === rf.time);
                 if (!exists) {
                     rf.source = rf.source || 'whatsapp';
                     this.foodLog.push(rf);
-                    // Also add to meals for macro tracking
                     this.meals.push({ date: rf.date, protein: rf.protein || 0, carbs: rf.carbs || 0, fat: rf.fat || 0 });
                     merged = true;
                 }
             });
-            // Merge injuries
-            (remote.injuries || []).forEach(ri => {
-                const exists = this.injuries.some(i => i.date === ri.date && i.area === ri.area);
-                if (!exists) { ri.source = ri.source || 'whatsapp'; this.injuries.push(ri); merged = true; }
-            });
-            // Merge bloodSugar (FBS readings from WhatsApp, once backend is live)
-            if (!this.bloodSugar) this.bloodSugar = [];
-            (remote.bloodSugar || []).forEach(rb => {
-                const exists = this.bloodSugar.some(b => b.date === rb.date && Math.abs(b.value - rb.value) < 0.5);
-                if (!exists) { rb.source = rb.source || 'whatsapp'; this.bloodSugar.push(rb); merged = true; }
-            });
+            mergeArr('injuries', (a, b) => a.date === b.date && a.area === b.area);
+            mergeArr('bloodSugar', (a, b) => a.date === b.date, (a, b) => Math.abs(a.value - b.value) < 0.5);
+
             if (merged) {
+                this._isMerging = false;
                 this.save();
-                console.log('WhatsApp data merged successfully');
-                // Update UI if dashboard is visible
                 if (typeof updateDashboard === 'function') updateDashboard();
                 if (typeof renderFoodLog === 'function') renderFoodLog();
                 if (typeof updateCalorieRing === 'function') updateCalorieRing();
                 if (typeof updateMacroBars === 'function') updateMacroBars();
-                // Show indicator
-                const indicator = document.getElementById('whatsapp-status');
                 if (indicator) indicator.textContent = 'Synced';
+            } else {
+                if (indicator) indicator.textContent = 'Up to date';
             }
-        } catch(e) { console.log('Remote data fetch skipped:', e.message); }
+        } catch(e) {
+            console.log('[loadRemote] skipped:', e.message);
+            if (indicator) {
+                indicator.textContent = 'Offline';
+                indicator.style.opacity = '0.6';
+            }
+        } finally {
+            this._isMerging = false;
+            if (this._pendingSave) { this._pendingSave = false; this.save(); }
+        }
     },
-    
+
     save() {
+        // v2.0 hardened: queue save during loadRemote merge, catch QuotaExceededError,
+        // fall back to sessionStorage + warn user via toast (once per session).
+        if (this._isMerging) { this._pendingSave = true; return; }
+        const payload = JSON.stringify({
+            weights: this.weights,
+            workouts: this.workouts,
+            injuries: this.injuries,
+            meals: this.meals,
+            foodLog: this.foodLog || [],
+            bloodSugar: this.bloodSugar || [],
+            raceResults: this.raceResults || [],
+            gatewaySessions: this.gatewaySessions || [],
+            hyroxSessions: this.hyroxSessions || [],
+            dharmaChecks: this.dharmaChecks || {},
+            currentPhase: this.currentPhase,
+            trainingView: this.trainingView,
+            settings: this.settings
+        });
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                weights: this.weights,
-                workouts: this.workouts,
-                injuries: this.injuries,
-                meals: this.meals,
-                foodLog: this.foodLog || [],
-                bloodSugar: this.bloodSugar || [],
-                raceResults: this.raceResults || [],
-                gatewaySessions: this.gatewaySessions || [],
-                hyroxSessions: this.hyroxSessions || [],
-                dharmaChecks: this.dharmaChecks || {},
-                currentPhase: this.currentPhase,
-                trainingView: this.trainingView,
-                settings: this.settings
-            }));
-        } catch(e) { console.warn('State save failed:', e); }
+            localStorage.setItem(STORAGE_KEY, payload);
+        } catch(e) {
+            const isQuota = e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(e.message || ''));
+            console.warn('[save] localStorage failed:', e.message, '— falling back to sessionStorage');
+            try { sessionStorage.setItem(STORAGE_KEY, payload); } catch(_) {}
+            if (isQuota && !this._quotaWarned && typeof showToast === 'function') {
+                this._quotaWarned = true;
+                showToast('Storage full — export your data from the footer (Data → Export CSV) to free space.', 'warn');
+            }
+        }
     },
     
     addWeight(value, bodyFat, muscleMass, extras) {
@@ -6943,8 +7059,8 @@ function renderGatewayTimeline() {
     const remaining = sessions.length - shown.length;
     wrap.innerHTML = line + shown.map(s => {
         const dateStr = new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const notesPreview = s.notes ? (s.notes.length > 80 ? s.notes.slice(0, 80).replace(/</g,'&lt;') + '…' : s.notes.replace(/</g,'&lt;')) : '';
-        const patternBit = s.patternChange ? `<div class="text-xs" style="margin-top:4px;color:var(--color-dharma);font-style:italic;">Pattern: ${s.patternChange.length > 60 ? s.patternChange.slice(0,60).replace(/</g,'&lt;') + '…' : s.patternChange.replace(/</g,'&lt;')}</div>` : '';
+        const notesPreview = escTrunc(s.notes, 80);
+        const patternBit = s.patternChange ? `<div class="text-xs" style="margin-top:4px;color:var(--color-dharma);font-style:italic;">Pattern: ${escTrunc(s.patternChange, 60)}</div>` : '';
         return `
             <div style="position:relative;padding:10px 0 10px 16px;border-bottom:1px solid rgba(255,255,255,0.04);">
                 <div style="position:absolute;left:-20px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--color-dharma);box-shadow:0 0 6px rgba(245,158,11,0.4);"></div>
@@ -6982,7 +7098,7 @@ function renderRaceHistory() {
             ? `<span class="pill pill-sm" style="background:rgba(57,255,20,0.15);color:var(--color-running);border:1px solid rgba(57,255,20,0.25);font-size:0.625rem;">✓ Goal met</span>`
             : `<span class="pill pill-sm" style="background:rgba(255,255,255,0.05);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1);font-size:0.625rem;">Finished</span>`;
         const notesBlock = r.notes
-            ? `<details style="margin-top:6px;"><summary class="text-xs text-secondary" style="cursor:pointer;">Notes</summary><p class="text-sm text-secondary" style="margin-top:6px;white-space:pre-wrap;">${r.notes.replace(/</g,'&lt;')}</p></details>`
+            ? `<details style="margin-top:6px;"><summary class="text-xs text-secondary" style="cursor:pointer;">Notes</summary><p class="text-sm text-secondary" style="margin-top:6px;white-space:pre-wrap;">${escHTML(r.notes)}</p></details>`
             : '';
         return `
             <div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
@@ -7023,7 +7139,7 @@ function refreshRaceCardPills() {
             if (logBtn) logBtn.textContent = '✎ Edit Result';
             if (notesSlot && result.notes) {
                 notesSlot.style.display = 'block';
-                notesSlot.innerHTML = `<details style="margin-bottom:8px;"><summary class="text-xs text-secondary" style="cursor:pointer;">Post-race notes ${result.goalMet ? '· <span style=\"color:var(--color-running);\">goal met ✓</span>' : ''}</summary><p class="text-sm text-secondary" style="margin-top:6px;white-space:pre-wrap;">${result.notes.replace(/</g,'&lt;')}</p></details>`;
+                notesSlot.innerHTML = `<details style="margin-bottom:8px;"><summary class="text-xs text-secondary" style="cursor:pointer;">Post-race notes ${result.goalMet ? '· <span style="color:var(--color-running);">goal met ✓</span>' : ''}</summary><p class="text-sm text-secondary" style="margin-top:6px;white-space:pre-wrap;">${escHTML(result.notes)}</p></details>`;
             } else if (notesSlot) {
                 notesSlot.style.display = result.goalMet ? 'block' : 'none';
                 notesSlot.innerHTML = result.goalMet ? `<p class="text-xs" style="color:var(--color-running);margin-bottom:8px;">✓ Goal met.</p>` : '';
@@ -8293,6 +8409,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.querySelector('.hero-name');
         if (!name || name.dataset.v3Done) return;
         name.dataset.v3Done = '1';
+        // Reduced-motion: skip the animated reveal, leave text intact (A9)
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const text = name.textContent.trim();
         name.innerHTML = '';
         const frag = document.createDocumentFragment();
@@ -8349,11 +8467,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!window.gsap || !window.ScrollTrigger) return;
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (reduced) return;
+        // Dedup: kill any v3-owned triggers before re-registering (A7)
+        try {
+            ScrollTrigger.getAll().forEach(t => {
+                if (t.vars && t.vars.__v3) t.kill();
+            });
+        } catch(e){}
         gsap.utils.toArray('.section-header').forEach(h => {
             if (h.dataset.v3Reveal) return;
             h.dataset.v3Reveal = '1';
             gsap.from(h, {
                 y: 24, opacity: 0, duration: 0.9, ease: 'expo.out',
+                __v3: true,
                 scrollTrigger: { trigger: h, start: 'top 85%', once: true }
             });
         });
@@ -8362,6 +8487,7 @@ document.addEventListener('DOMContentLoaded', () => {
             c.dataset.v3Reveal = '1';
             gsap.from(c, {
                 y: 20, opacity: 0, duration: 0.7, ease: 'expo.out', delay: (i % 5) * 0.04,
+                __v3: true,
                 scrollTrigger: { trigger: c, start: 'top 90%', once: true }
             });
         });
@@ -8384,8 +8510,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Cursor-follow glow on interactive hover surfaces (desktop only)
-    if (window.matchMedia('(pointer: fine)').matches) {
+    // Cursor-follow glow on interactive hover surfaces (desktop only, motion-safe)
+    if (window.matchMedia('(pointer: fine)').matches &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.addEventListener('mousemove', (e) => {
             const t = e.target.closest('.metric-card, .card-glass, .quality-card');
             if (!t) return;
@@ -8416,6 +8543,74 @@ document.addEventListener('DOMContentLoaded', () => {
     .metric-card:hover::after, .card-glass:hover::after, .quality-card:hover::after { opacity: 1; }
     .metric-card, .card-glass, .quality-card { position: relative; overflow: hidden; }
 }
+
+/* ------------------------------------------------------------
+   NAV SCROLL AFFORDANCE (B2)
+   Right-edge fade cue that hints "more tabs →" on mobile.
+   Masks off when the sentinel is fully in view.
+   ------------------------------------------------------------ */
+.nav { position: fixed; }
+.nav::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 1px; /* sit above the nav border */
+    width: 48px;
+    pointer-events: none;
+    background: linear-gradient(to right,
+        rgba(10, 10, 10, 0) 0%,
+        rgba(10, 10, 10, 0.85) 60%,
+        rgba(10, 10, 10, 0.98) 100%);
+    opacity: 0;
+    transition: opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+}
+.nav[data-nav-overflow="true"]::after { opacity: 1; }
+.nav-scroll-sentinel {
+    display: inline-block;
+    flex: 0 0 1px;
+    width: 1px;
+    height: 1px;
+}
+@media (min-width: 768px) {
+    .nav::after { display: none; }
+}
 </style>
+<script>
+/* Nav scroll affordance: toggle data-nav-overflow when end-sentinel hidden */
+(function() {
+    const wire = () => {
+        const nav = document.querySelector('.nav');
+        const inner = nav && nav.querySelector('.nav-inner');
+        const sentinel = nav && nav.querySelector('.nav-scroll-sentinel');
+        if (!nav || !inner || !sentinel) return;
+        if (nav.dataset.navWired) return;
+        nav.dataset.navWired = '1';
+        try {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach((en) => {
+                    // Sentinel visible = scrolled to end = hide fade
+                    nav.setAttribute('data-nav-overflow', en.isIntersecting ? 'false' : 'true');
+                });
+            }, { root: inner, threshold: 1.0 });
+            io.observe(sentinel);
+        } catch (e) {
+            // Fallback: show fade if inner scrolls
+            const update = () => {
+                const overflow = inner.scrollWidth > inner.clientWidth + 4 &&
+                                 inner.scrollLeft + inner.clientWidth < inner.scrollWidth - 2;
+                nav.setAttribute('data-nav-overflow', overflow ? 'true' : 'false');
+            };
+            inner.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        }
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wire);
+    } else { wire(); }
+})();
+</script>
 </body>
 </html>
