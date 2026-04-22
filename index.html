@@ -1692,6 +1692,511 @@
             .nav-tab { padding: 9px 12px; font-size: 0.75rem; }
             .nav-tab::after { left: 10px; right: 10px; }
         }
+
+        /* ==========================================================
+           ░░  DESIGN v3 · EDITORIAL REFINEMENT  (Apr 21, 2026)  ░░
+           Layered on top of the v2 design. OKLCH-tuned palette,
+           editorial typography, tactile surface depth, Lucide icons.
+           Inspiration: godly.website · awwwards storytelling ·
+           Subtle Extravagant design system.
+           ========================================================== */
+
+        :root {
+            /* --- OKLCH-tuned core palette (warm-neutral dark) --- */
+            --v3-bg-0: oklch(0.095 0.004 60);       /* base — near black w/ tiny warm hue */
+            --v3-bg-1: oklch(0.125 0.005 60);       /* elevated surface */
+            --v3-bg-2: oklch(0.155 0.006 60);       /* card */
+            --v3-bg-3: oklch(0.195 0.008 60);       /* hover / modal */
+            --v3-line-hair: oklch(1 0 0 / 0.06);    /* hairline */
+            --v3-line-soft: oklch(1 0 0 / 0.10);
+            --v3-line-hard: oklch(1 0 0 / 0.18);
+
+            /* Text — never pure white */
+            --v3-text-0: oklch(0.97 0.004 60);       /* display */
+            --v3-text-1: oklch(0.92 0.006 60);       /* body primary */
+            --v3-text-2: oklch(0.72 0.006 60);       /* secondary */
+            --v3-text-3: oklch(0.56 0.006 60);       /* tertiary */
+            --v3-text-4: oklch(0.40 0.006 60);       /* muted */
+
+            /* Brand accents — perceptually tuned */
+            --v3-accent-run:     oklch(0.86 0.22 142);  /* running — electric green */
+            --v3-accent-strike:  oklch(0.72 0.18 45);   /* strength — burnt orange */
+            --v3-accent-cricket: oklch(0.84 0.15 220);  /* cricket — cyan */
+            --v3-accent-race:    oklch(0.70 0.22 15);   /* race — crimson */
+            --v3-accent-hyrox:   oklch(0.65 0.20 320);  /* hyrox — magenta */
+            --v3-accent-dharma:  oklch(0.80 0.17 75);   /* dharma — amber */
+            --v3-accent-travel:  oklch(0.82 0.13 210);  /* travel — sky */
+            --v3-accent-gold:    oklch(0.84 0.14 88);   /* editorial accent */
+
+            /* Override legacy tokens where safe (cascading) */
+            --bg-primary: var(--v3-bg-0);
+            --bg-secondary: var(--v3-bg-1);
+            --bg-card: var(--v3-bg-2);
+            --bg-card-hover: var(--v3-bg-3);
+            --bg-elevated: var(--v3-bg-3);
+            --text-primary: var(--v3-text-0);
+            --text-secondary: var(--v3-text-2);
+            --text-tertiary: var(--v3-text-3);
+            --text-muted: var(--v3-text-4);
+            --border-subtle: var(--v3-line-hair);
+            --border-light: var(--v3-line-soft);
+            --border-medium: var(--v3-line-hard);
+
+            /* Type system */
+            --v3-font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+            --v3-font-body:    'Inter', system-ui, sans-serif;
+            --v3-font-mono:    'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+            /* Fluid scale — clamp(min, preferred, max) */
+            --fs-eyebrow:  clamp(0.62rem, 0.58rem + 0.2vw, 0.72rem);
+            --fs-body:     clamp(0.9rem, 0.87rem + 0.15vw, 1rem);
+            --fs-h4:       clamp(1rem, 0.94rem + 0.4vw, 1.25rem);
+            --fs-h3:       clamp(1.25rem, 1.12rem + 0.7vw, 1.75rem);
+            --fs-h2:       clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+            --fs-h1:       clamp(2.5rem, 1.8rem + 3.2vw, 5rem);
+            --fs-display:  clamp(3rem, 2rem + 4.5vw, 6.5rem);
+            --fs-metric:   clamp(2rem, 1.6rem + 1.8vw, 3rem);
+
+            /* Shadows — softer, layered */
+            --v3-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.4), 0 2px 6px oklch(0 0 0 / 0.2);
+            --v3-shadow-md: 0 2px 4px oklch(0 0 0 / 0.35), 0 8px 24px oklch(0 0 0 / 0.28);
+            --v3-shadow-lg: 0 8px 16px oklch(0 0 0 / 0.35), 0 24px 64px oklch(0 0 0 / 0.45);
+
+            /* Inner highlight — the signature glass edge */
+            --v3-edge-top: inset 0 1px 0 oklch(1 0 0 / 0.06);
+        }
+
+        /* --- Film grain / noise overlay (subtle tactile depth) --- */
+        body {
+            font-family: var(--v3-font-body);
+            color: var(--v3-text-1);
+            font-feature-settings: 'ss01', 'cv11', 'cv02', 'ss03';
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.16 0.04 265 / 0.35), transparent 60%),
+                radial-gradient(ellipse 60% 40% at 100% 110%, oklch(0.15 0.05 30 / 0.25), transparent 50%),
+                var(--v3-bg-0);
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.035;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+        }
+
+        /* Lift real content above the grain layer */
+        nav.nav, main, .tab-panel, .toast-container, .modal-overlay, section {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- Typography refinement --- */
+        h1, h2, h3, h4, h5, .hero-name, .section-title {
+            font-family: var(--v3-font-display);
+            color: var(--v3-text-0);
+            letter-spacing: -0.022em;
+        }
+
+        .metric-value, .big-num, .stat-num, .kpi-value, .counter-num,
+        #race-countdown, #weight-value, #weekly-sessions,
+        #gateway-streak-value, #fbs-value {
+            font-family: var(--v3-font-mono) !important;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.04em !important;
+            font-weight: 600 !important;
+        }
+
+        .eyebrow, .metric-label, .section-kicker {
+            font-family: var(--v3-font-mono);
+            font-size: var(--fs-eyebrow);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--v3-text-3);
+            font-weight: 500;
+        }
+
+        /* --- Hero refinement (editorial presence) --- */
+        .hero {
+            padding: clamp(32px, 6vw, 80px) 0 clamp(24px, 4vw, 48px);
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -10%;
+            width: 120%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--v3-line-soft) 15%, var(--v3-line-soft) 85%, transparent);
+            opacity: 0.6;
+        }
+
+        .hero-phase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px 6px 10px;
+            border: 1px solid var(--v3-line-soft);
+            background:
+                linear-gradient(135deg, oklch(1 0 0 / 0.04), oklch(1 0 0 / 0.01)),
+                var(--v3-bg-1);
+            border-radius: 999px;
+            font-family: var(--v3-font-mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            color: var(--v3-text-2);
+            text-transform: uppercase;
+            box-shadow: var(--v3-edge-top);
+        }
+
+        .hero-phase-badge .pulse-dot {
+            width: 6px; height: 6px;
+            background: var(--v3-accent-run);
+            box-shadow: 0 0 10px var(--v3-accent-run), 0 0 20px oklch(0.86 0.22 142 / 0.4);
+        }
+
+        .hero-name {
+            font-size: var(--fs-display) !important;
+            font-weight: 700 !important;
+            line-height: 0.92 !important;
+            letter-spacing: -0.045em !important;
+            margin: clamp(14px, 2vw, 24px) 0 clamp(10px, 1.5vw, 18px) !important;
+            background: linear-gradient(175deg, var(--v3-text-0) 0%, var(--v3-text-0) 60%, oklch(0.78 0.02 60) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-sub {
+            font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem) !important;
+            color: var(--v3-text-2) !important;
+            font-weight: 400 !important;
+            max-width: 60ch;
+            line-height: 1.5 !important;
+        }
+
+        .hero-sub strong {
+            color: var(--v3-text-0);
+            font-weight: 600;
+        }
+
+        /* --- Navigation: refined hairline + gradient border --- */
+        .nav {
+            background: oklch(0.095 0.004 60 / 0.72) !important;
+            backdrop-filter: blur(24px) saturate(1.2);
+            -webkit-backdrop-filter: blur(24px) saturate(1.2);
+            border-bottom: 1px solid transparent !important;
+            border-image: linear-gradient(90deg, transparent, var(--v3-line-hard) 20%, var(--v3-line-hard) 80%, transparent) 1;
+            box-shadow: 0 1px 0 oklch(1 0 0 / 0.03), 0 8px 24px oklch(0 0 0 / 0.2);
+        }
+
+        .nav-tab {
+            font-family: var(--v3-font-body);
+            color: var(--v3-text-3) !important;
+            font-weight: 500;
+            transition: color 200ms var(--ease-out-expo), background 200ms var(--ease-out-expo);
+        }
+
+        .nav-tab:hover { color: var(--v3-text-1) !important; }
+        .nav-tab.active { color: var(--v3-text-0) !important; }
+        .nav-tab.active svg { color: var(--v3-accent-run); }
+        .nav-tab[data-tab="dharma"].active svg { color: var(--v3-accent-dharma); }
+        .nav-tab[data-tab="travel"].active svg { color: var(--v3-accent-travel); }
+        .nav-tab[data-tab="race-strategy"].active svg { color: var(--v3-accent-race); }
+        .nav-tab[data-tab="cricket"].active svg { color: var(--v3-accent-cricket); }
+
+        .nav-tab.active::after {
+            background: linear-gradient(90deg, transparent, currentColor, transparent) !important;
+            opacity: 1 !important;
+            height: 1px !important;
+            bottom: -1px !important;
+        }
+
+        /* --- Section headers: decorative rule + editorial feel --- */
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin: clamp(32px, 5vw, 56px) 0 clamp(16px, 2vw, 24px) !important;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: var(--v3-font-display) !important;
+            font-size: clamp(1.4rem, 1.1rem + 0.8vw, 2rem) !important;
+            font-weight: 600 !important;
+            letter-spacing: -0.028em !important;
+            color: var(--v3-text-0) !important;
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--v3-line-soft), transparent 80%);
+            margin-left: 10px;
+            align-self: center;
+        }
+
+        /* --- Glass cards: multi-layer tactile surface --- */
+        .card-glass {
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.025), oklch(1 0 0 / 0) 60%),
+                var(--v3-bg-2) !important;
+            border: 1px solid var(--v3-line-soft) !important;
+            box-shadow: var(--v3-shadow-sm), var(--v3-edge-top) !important;
+            border-radius: 14px !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 400ms var(--ease-out-expo), box-shadow 400ms var(--ease-out-expo), border-color 400ms var(--ease-out-expo) !important;
+        }
+
+        .card-glass:hover {
+            border-color: var(--v3-line-hard) !important;
+            box-shadow: var(--v3-shadow-md), var(--v3-edge-top) !important;
+            transform: translateY(-1px);
+        }
+
+        /* --- Metric cards: editorial numbers --- */
+        .metric-card {
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.025), oklch(1 0 0 / 0) 50%),
+                var(--v3-bg-2) !important;
+            border: 1px solid var(--v3-line-hair) !important;
+            border-radius: 14px !important;
+            padding: 22px !important;
+            box-shadow: var(--v3-edge-top);
+            position: relative;
+        }
+
+        .metric-card::before {
+            left: 22px !important;
+            right: 22px !important;
+            height: 1px !important;
+            background: currentColor !important;
+            opacity: 0.4 !important;
+        }
+
+        .metric-card:hover::before { opacity: 1 !important; }
+        .metric-card:hover {
+            border-color: var(--v3-line-soft) !important;
+            box-shadow: var(--v3-shadow-md), var(--v3-edge-top);
+        }
+
+        .metric-card.accent-green  { color: var(--v3-accent-run); }
+        .metric-card.accent-orange { color: var(--v3-accent-strike); }
+        .metric-card.accent-pink   { color: var(--v3-accent-race); }
+        .metric-card.accent-cyan   { color: var(--v3-accent-cricket); }
+        .metric-card.accent-purple { color: var(--v3-accent-hyrox); }
+        .metric-card.accent-amber  { color: var(--v3-accent-dharma); }
+        .metric-card.accent-dharma { color: var(--v3-accent-dharma); }
+
+        .metric-card > * { color: var(--v3-text-1); }
+        .metric-card .metric-value { color: var(--v3-text-0); }
+        .metric-card.accent-green  .metric-value,
+        .metric-card.accent-orange .metric-value,
+        .metric-card.accent-pink   .metric-value,
+        .metric-card.accent-cyan   .metric-value,
+        .metric-card.accent-purple .metric-value,
+        .metric-card.accent-amber  .metric-value,
+        .metric-card.accent-dharma .metric-value {
+            background: linear-gradient(180deg, currentColor 0%, oklch(from currentColor calc(l - 0.15) c h) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            font-family: var(--v3-font-mono) !important;
+            font-size: 0.66rem !important;
+            letter-spacing: 0.18em !important;
+            color: var(--v3-text-3) !important;
+            font-weight: 500 !important;
+            text-transform: uppercase !important;
+            margin-bottom: 14px !important;
+        }
+
+        .metric-value {
+            font-size: var(--fs-metric) !important;
+        }
+
+        .metric-sub {
+            color: var(--v3-text-3) !important;
+            font-size: 0.72rem !important;
+            margin-top: 4px !important;
+        }
+
+        /* --- Pills: refined --- */
+        .pill {
+            font-family: var(--v3-font-mono);
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            padding: 5px 11px;
+            border: 1px solid transparent;
+        }
+
+        .pill-dharma { background: oklch(0.80 0.17 75 / 0.10); color: var(--v3-accent-dharma); border-color: oklch(0.80 0.17 75 / 0.25); }
+
+        /* --- Buttons: refined --- */
+        .btn-primary {
+            background: linear-gradient(180deg, var(--v3-text-0), oklch(0.88 0.004 60)) !important;
+            color: var(--v3-bg-0) !important;
+            border: 1px solid oklch(1 0 0 / 0.2) !important;
+            box-shadow: var(--v3-shadow-sm), inset 0 1px 0 oklch(1 0 0 / 0.4) !important;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            transition: transform 200ms var(--ease-out-expo), box-shadow 200ms var(--ease-out-expo) !important;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--v3-shadow-md), inset 0 1px 0 oklch(1 0 0 / 0.4) !important;
+        }
+
+        .btn-ghost {
+            background: oklch(1 0 0 / 0.03) !important;
+            border: 1px solid var(--v3-line-soft) !important;
+            color: var(--v3-text-1) !important;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            transition: background 200ms var(--ease-out-expo), border-color 200ms var(--ease-out-expo) !important;
+        }
+        .btn-ghost:hover {
+            background: oklch(1 0 0 / 0.06) !important;
+            border-color: var(--v3-line-hard) !important;
+        }
+
+        /* --- Quality cards (Astras, dharma) polish --- */
+        .quality-card {
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.03), oklch(1 0 0 / 0) 55%),
+                var(--v3-bg-2);
+            border: 1px solid var(--v3-line-hair);
+            box-shadow: var(--v3-edge-top);
+            transition: transform 400ms var(--ease-out-expo), border-color 400ms var(--ease-out-expo), box-shadow 400ms var(--ease-out-expo);
+        }
+        .quality-card:hover {
+            border-color: oklch(0.80 0.17 75 / 0.35);
+            box-shadow: 0 0 0 1px oklch(0.80 0.17 75 / 0.15), 0 12px 32px oklch(0 0 0 / 0.4);
+            transform: translateY(-2px);
+        }
+        .quality-sanskrit, .quality-num {
+            color: var(--v3-accent-dharma);
+        }
+
+        /* --- Modal polish --- */
+        .modal-overlay {
+            backdrop-filter: blur(18px) saturate(1.1);
+            -webkit-backdrop-filter: blur(18px) saturate(1.1);
+            background: oklch(0.05 0 0 / 0.65) !important;
+        }
+
+        .modal {
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.03), oklch(1 0 0 / 0) 40%),
+                var(--v3-bg-2) !important;
+            border: 1px solid var(--v3-line-soft) !important;
+            box-shadow: var(--v3-shadow-lg), var(--v3-edge-top) !important;
+            border-radius: 18px !important;
+        }
+
+        /* --- Focus rings (a11y) --- */
+        button:focus-visible, a:focus-visible, input:focus-visible,
+        textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+            outline: 2px solid var(--v3-accent-gold) !important;
+            outline-offset: 2px !important;
+            border-radius: 6px;
+        }
+
+        /* --- Horizontal rule style --- */
+        hr, .hr-editorial {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--v3-line-soft) 20%, var(--v3-line-soft) 80%, transparent);
+            margin: 32px 0;
+        }
+
+        /* --- Lucide icon sizing defaults --- */
+        [data-lucide] {
+            width: 18px;
+            height: 18px;
+            stroke-width: 1.75;
+            vertical-align: -3px;
+        }
+
+        /* --- Inline data monospace treatment --- */
+        code, kbd, .mono, .tabular, .numeric {
+            font-family: var(--v3-font-mono);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.01em;
+        }
+
+        /* --- Editorial footer hair rule for cards with big numbers --- */
+        .metric-card .ring-container {
+            filter: drop-shadow(0 4px 8px oklch(0 0 0 / 0.3));
+        }
+
+        /* --- Table refinement --- */
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        table th {
+            font-family: var(--v3-font-mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--v3-text-3);
+            font-weight: 500;
+            border-bottom: 1px solid var(--v3-line-soft) !important;
+            padding-bottom: 10px !important;
+        }
+        table td {
+            border-bottom: 1px solid var(--v3-line-hair);
+            padding: 10px 8px;
+        }
+        table tr:last-child td { border-bottom: 0; }
+        table tbody tr { transition: background 200ms var(--ease-out-expo); }
+        table tbody tr:hover { background: oklch(1 0 0 / 0.02); }
+
+        /* --- Scrollbar refinement --- */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--v3-line-soft);
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--v3-line-hard); background-clip: padding-box; }
+
+        /* --- Selection --- */
+        ::selection {
+            background: oklch(0.86 0.22 142 / 0.28);
+            color: var(--v3-text-0);
+        }
+
+        /* --- Mobile refinements --- */
+        @media (max-width: 640px) {
+            .hero-name {
+                line-height: 0.95 !important;
+                letter-spacing: -0.04em !important;
+            }
+            .section-header { gap: 10px; margin: 28px 0 14px !important; }
+            .metric-card { padding: 16px !important; }
+            body::before { opacity: 0.025; }
+        }
+
+        /* --- Reduced-motion respect --- */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-name { background: none; -webkit-text-fill-color: currentColor; color: var(--v3-text-0); }
+        }
     </style>
 </head>
 <body>
@@ -7773,5 +8278,144 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => initScrollAnimations());
 });
 </script>
+
+<!-- ============================================================
+     DESIGN v3 · LUCIDE ICONS + EDITORIAL MOTION (Apr 21, 2026)
+     ============================================================ -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+(function() {
+    // Init Lucide on load + after tab switches (in case lazy panels need it)
+    const initLucide = () => { try { window.lucide && window.lucide.createIcons(); } catch(e){} };
+
+    // Editorial hero entrance — SplitText-style char reveal without the premium plugin
+    const heroEntrance = () => {
+        const name = document.querySelector('.hero-name');
+        if (!name || name.dataset.v3Done) return;
+        name.dataset.v3Done = '1';
+        const text = name.textContent.trim();
+        name.innerHTML = '';
+        const frag = document.createDocumentFragment();
+        text.split('').forEach((ch, i) => {
+            const span = document.createElement('span');
+            span.textContent = ch === ' ' ? '\u00A0' : ch;
+            span.style.display = 'inline-block';
+            span.style.opacity = '0';
+            span.style.transform = 'translateY(40%) rotateX(-35deg)';
+            span.style.transformOrigin = '50% 100%';
+            span.style.transition = `opacity 700ms cubic-bezier(0.16,1,0.3,1) ${i*28}ms, transform 900ms cubic-bezier(0.16,1,0.3,1) ${i*28}ms`;
+            frag.appendChild(span);
+        });
+        name.appendChild(frag);
+        requestAnimationFrame(() => {
+            name.querySelectorAll('span').forEach(s => {
+                s.style.opacity = '1';
+                s.style.transform = 'translateY(0) rotateX(0)';
+            });
+        });
+    };
+
+    // Animated counter reveal for metric values (when they appear / on mount)
+    const animateCounters = () => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) return;
+        document.querySelectorAll('.metric-value').forEach(el => {
+            if (el.dataset.v3Counted) return;
+            const raw = el.textContent.trim();
+            const match = raw.match(/^(\d+\.?\d*)/);
+            if (!match) return;
+            const target = parseFloat(match[1]);
+            if (!isFinite(target) || target === 0) return;
+            el.dataset.v3Counted = '1';
+            const suffix = raw.slice(match[0].length);
+            const decimals = (match[1].split('.')[1] || '').length;
+            const duration = 900;
+            const start = performance.now();
+            const initial = el.innerHTML;
+            const step = (now) => {
+                const t = Math.min(1, (now - start) / duration);
+                const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+                const v = (target * eased).toFixed(decimals);
+                el.textContent = v + suffix.replace(/<[^>]+>/g, '');
+                if (t < 1) requestAnimationFrame(step);
+                else el.innerHTML = initial; // restore any nested markup
+            };
+            requestAnimationFrame(step);
+        });
+    };
+
+    // GSAP-enhanced section reveal (if GSAP present)
+    const sectionReveals = () => {
+        if (!window.gsap || !window.ScrollTrigger) return;
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) return;
+        gsap.utils.toArray('.section-header').forEach(h => {
+            if (h.dataset.v3Reveal) return;
+            h.dataset.v3Reveal = '1';
+            gsap.from(h, {
+                y: 24, opacity: 0, duration: 0.9, ease: 'expo.out',
+                scrollTrigger: { trigger: h, start: 'top 85%', once: true }
+            });
+        });
+        gsap.utils.toArray('.card-glass, .metric-card, .quality-card').forEach((c, i) => {
+            if (c.dataset.v3Reveal) return;
+            c.dataset.v3Reveal = '1';
+            gsap.from(c, {
+                y: 20, opacity: 0, duration: 0.7, ease: 'expo.out', delay: (i % 5) * 0.04,
+                scrollTrigger: { trigger: c, start: 'top 90%', once: true }
+            });
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initLucide();
+        heroEntrance();
+        setTimeout(animateCounters, 400);
+        setTimeout(sectionReveals, 100);
+    });
+
+    // Re-init after tab switches — new panels come into view
+    const originalSwitch = window.switchTab;
+    if (typeof originalSwitch === 'function') {
+        window.switchTab = function(tabId) {
+            const r = originalSwitch.apply(this, arguments);
+            setTimeout(() => { initLucide(); sectionReveals(); }, 50);
+            return r;
+        };
+    }
+
+    // Cursor-follow glow on interactive hover surfaces (desktop only)
+    if (window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+            const t = e.target.closest('.metric-card, .card-glass, .quality-card');
+            if (!t) return;
+            const r = t.getBoundingClientRect();
+            const x = ((e.clientX - r.left) / r.width) * 100;
+            const y = ((e.clientY - r.top) / r.height) * 100;
+            t.style.setProperty('--v3-mouse-x', x + '%');
+            t.style.setProperty('--v3-mouse-y', y + '%');
+        });
+    }
+})();
+</script>
+
+<style>
+/* Cursor-follow subtle glow on hover-sensitive cards */
+@media (pointer: fine) {
+    .metric-card::after, .card-glass::after, .quality-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1);
+        background: radial-gradient(220px circle at var(--v3-mouse-x, 50%) var(--v3-mouse-y, 50%),
+                    oklch(1 0 0 / 0.04), transparent 60%);
+    }
+    .metric-card:hover::after, .card-glass:hover::after, .quality-card:hover::after { opacity: 1; }
+    .metric-card, .card-glass, .quality-card { position: relative; overflow: hidden; }
+}
+</style>
 </body>
 </html>
