@@ -986,8 +986,16 @@
         /* ========================================
            TAB PANELS
            ======================================== */
+        /* Class-based visibility (v2.0-a.2 hotfix).
+           The inline tab-switcher script is parsed before the 8 panel sections
+           exist, so its cached NodeList was empty — nothing could be hidden.
+           Now CSS owns visibility; switchTab just toggles `.active`. */
         .tab-panel {
             padding: 0 0 60px 0;
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
             animation: fadeIn 0.4s var(--ease-out-expo);
         }
 
@@ -2322,22 +2330,33 @@
     <!-- Tab Switching Script (inline, runs immediately) -->
     <script>
         (function() {
-            const tabs = document.querySelectorAll('.nav-tab');
-            // v2.0: cache the node collections — they don't change at runtime
-            const allTabs = Array.from(tabs);
-            const allPanels = Array.from(document.querySelectorAll('.tab-panel'));
+            // v2.0-a.2 hotfix: this script is inline inside <body> BEFORE the 8
+            // <section class="tab-panel"> nodes are parsed. Caching
+            // `document.querySelectorAll('.tab-panel')` here returned an EMPTY
+            // list, so switchTab could never hide the previous panel and tabs
+            // stacked vertically. Fix: query panels lazily (DCL-gated), toggle
+            // an `.active` class (CSS owns display), and keep tab lookups fresh.
+            const allTabs = Array.from(document.querySelectorAll('.nav-tab'));
 
             const switchTab = (tabId) => {
-                // v2.0: close any open modal before switching tabs (prevents overlay orphans)
+                // Close any open modal before switching tabs
                 if (typeof closeModal === 'function' && document.querySelector('.modal-overlay')) {
                     closeModal();
                 }
-                allTabs.forEach(t => {
+                // Lazy re-query on every call so parsing order can't bite us.
+                const panels = document.querySelectorAll('.tab-panel');
+                const tabs = document.querySelectorAll('.nav-tab');
+                tabs.forEach(t => {
                     t.classList.remove('active');
                     t.setAttribute('aria-selected', 'false');
                     t.setAttribute('tabindex', '-1'); // roving tabindex
                 });
-                allPanels.forEach(p => { p.style.display = 'none'; });
+                panels.forEach(p => {
+                    p.classList.remove('active');
+                    // Clear any legacy inline style="display:none" so the CSS
+                    // .active rule can actually show the panel.
+                    if (p.style.display) p.style.display = '';
+                });
                 const activeTab = document.querySelector(`.nav-tab[data-tab="${tabId}"]`);
                 const activePanel = document.getElementById(`panel-${tabId}`);
                 if (activeTab) {
@@ -2346,14 +2365,17 @@
                     activeTab.setAttribute('tabindex', '0');
                 }
                 if (activePanel) {
-                    activePanel.style.display = 'block';
+                    activePanel.classList.add('active');
                     activePanel.querySelectorAll('.animate-in').forEach((el, i) => {
                         el.style.animationDelay = `${i * 0.05}s`;
                     });
+                    // Bring the newly-shown panel to the top of the viewport
+                    // so content starts below the sticky nav (not mid-scroll).
+                    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
                 }
             };
 
-            // v2.0: roving tabindex + ArrowLeft/ArrowRight keyboard navigation (WCAG tab pattern)
+            // Roving tabindex + ArrowLeft/ArrowRight keyboard navigation (WCAG tab pattern)
             allTabs.forEach((tab, idx) => {
                 tab.setAttribute('tabindex', tab.classList.contains('active') ? '0' : '-1');
                 tab.addEventListener('click', () => switchTab(tab.dataset.tab));
@@ -2372,6 +2394,22 @@
             });
 
             window.switchTab = switchTab;
+
+            // Safety: after DOMContentLoaded, ensure exactly one panel is
+            // .active (defaults to dashboard). Handles first-paint edge cases
+            // where neither the inline class nor inline style matched reality.
+            document.addEventListener('DOMContentLoaded', () => {
+                const actives = document.querySelectorAll('.tab-panel.active');
+                if (actives.length === 0) {
+                    const dash = document.getElementById('panel-dashboard');
+                    if (dash) dash.classList.add('active');
+                }
+                // Strip any leftover inline display:none on non-active panels
+                // — CSS owns visibility now.
+                document.querySelectorAll('.tab-panel').forEach(p => {
+                    if (p.style.display === 'none') p.style.display = '';
+                });
+            });
         })();
     </script>
 
@@ -2381,7 +2419,7 @@
     <!-- ========================================
          DASHBOARD TAB
          ======================================== -->
-    <section class="tab-panel" id="panel-dashboard" role="tabpanel" aria-label="Dashboard">
+    <section class="tab-panel active" id="panel-dashboard" role="tabpanel" aria-label="Dashboard">
         <div class="container">
 
             <!-- Hero -->
@@ -3027,7 +3065,7 @@
     <!-- ========================================
          TRAINING TAB
          ======================================== -->
-    <section class="tab-panel" id="panel-training" style="display:none" role="tabpanel" aria-label="Training Plan">
+    <section class="tab-panel" id="panel-training" role="tabpanel" aria-label="Training Plan">
         <div class="container">
 
             <!-- Phase Selector Strip -->
@@ -3237,7 +3275,7 @@
     <!-- ========================================
          DIET TAB
          ======================================== -->
-    <section class="tab-panel" id="panel-diet" style="display:none" role="tabpanel" aria-label="Diet Plan">
+    <section class="tab-panel" id="panel-diet" role="tabpanel" aria-label="Diet Plan">
         <div class="container">
             <div style="padding: 24px 0 20px;">
                 <div class="section-header">
@@ -3765,7 +3803,7 @@
     <!-- ========================================
          CRICKET TAB
          ======================================== -->
-    <section class="tab-panel" id="panel-cricket" style="display:none" role="tabpanel" aria-label="Cricket Bowling">
+    <section class="tab-panel" id="panel-cricket" role="tabpanel" aria-label="Cricket Bowling">
         <div class="container">
             <div style="padding: 24px 0 20px;">
                 <span class="section-title">Fast Bowling Development</span>
@@ -3955,7 +3993,7 @@
     <!-- ========================================
          RACE STRATEGY TAB
          ======================================== -->
-    <section class="tab-panel" id="panel-race-strategy" style="display:none" role="tabpanel" aria-label="Race Strategy">
+    <section class="tab-panel" id="panel-race-strategy" role="tabpanel" aria-label="Race Strategy">
         <div class="container">
             <div style="padding: 24px 0 20px;">
                 <span class="section-title">Race Strategies</span>
@@ -4134,7 +4172,7 @@
     <!-- ========================================
          PROGRESS TAB
          ======================================== -->
-    <section class="tab-panel" id="panel-progress" style="display:none" role="tabpanel" aria-label="Progress">
+    <section class="tab-panel" id="panel-progress" role="tabpanel" aria-label="Progress">
         <div class="container">
             <div style="padding: 24px 0 20px;">
                 <span class="section-title">Progress & Analytics</span>
@@ -4419,7 +4457,7 @@
     <!-- ========================================
          DHARMA TAB
          ======================================== -->
-    <section class="tab-panel" id="panel-dharma" style="display:none" role="tabpanel" aria-label="Dharma">
+    <section class="tab-panel" id="panel-dharma" role="tabpanel" aria-label="Dharma">
         <div class="container">
 
             <!-- Tab Header -->
@@ -5233,7 +5271,7 @@
     <!-- ========================================
          TRAVEL TAB — Korea Trip (Jun 12–23, 2026)
          ======================================== -->
-    <section class="tab-panel" id="panel-travel" style="display:none" role="tabpanel" aria-label="Travel">
+    <section class="tab-panel" id="panel-travel" role="tabpanel" aria-label="Travel">
         <div class="container">
 
             <!-- T1: Trip Overview -->
