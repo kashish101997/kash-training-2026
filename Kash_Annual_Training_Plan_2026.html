@@ -2253,6 +2253,373 @@
         @media (prefers-reduced-motion: reduce) {
             .hero-name { background: none; -webkit-text-fill-color: currentColor; color: var(--v3-text-0); }
         }
+
+        /* ══════════════════════════════════════════════════════════════
+           ░░  v2.5-a · FOUNDATION POLISH — UNIFY ALL TABS TO V3  ░░
+           Extends v3 to Training / Diet / Cricket / Race / Progress /
+           Travel. New primitives: .section-eyebrow, .phase-eyebrow,
+           .eyebrow-inline, .section-title-icon. Upgrades existing
+           .phase-header-card + .race-card + .splits-table to glass.
+           ══════════════════════════════════════════════════════════════ */
+
+        /* Phase-header-card (Training) → glass treatment */
+        .phase-header-card {
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.025), oklch(1 0 0 / 0) 60%),
+                var(--v3-bg-2) !important;
+            border: 1px solid var(--v3-line-soft) !important;
+            box-shadow: var(--v3-shadow-sm), var(--v3-edge-top) !important;
+            border-radius: 14px !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 400ms var(--ease-out-expo),
+                        box-shadow 400ms var(--ease-out-expo),
+                        border-color 400ms var(--ease-out-expo) !important;
+        }
+        .phase-header-card:hover {
+            border-color: var(--v3-line-hard) !important;
+            box-shadow: var(--v3-shadow-md), var(--v3-edge-top) !important;
+            transform: translateY(-1px);
+        }
+        .phase-header-card::before {
+            opacity: 0.9;
+            height: 2px !important;
+        }
+
+        /* Section eyebrow — kicker label paired with .section-title */
+        .section-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--v3-font-mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--v3-text-3);
+            font-weight: 500;
+            margin: clamp(24px, 4vw, 40px) 0 6px 0;
+        }
+        .section-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 22px;
+            height: 1px;
+            background: var(--v3-line-hard);
+        }
+        .section-eyebrow [data-lucide] {
+            width: 12px;
+            height: 12px;
+            opacity: 0.75;
+        }
+
+        /* Phase-card internal eyebrow (inside each phase card) */
+        .phase-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--v3-font-mono);
+            font-size: 0.64rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--v3-text-3);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .phase-eyebrow [data-lucide] {
+            width: 13px;
+            height: 13px;
+            opacity: 0.85;
+        }
+        .phase-eyebrow.accent-run { color: var(--v3-accent-run); }
+        .phase-eyebrow.accent-strike { color: var(--v3-accent-strike); }
+        .phase-eyebrow.accent-cricket { color: var(--v3-accent-cricket); }
+        .phase-eyebrow.accent-race { color: var(--v3-accent-race); }
+        .phase-eyebrow.accent-hyrox { color: var(--v3-accent-hyrox); }
+        .phase-eyebrow.accent-gold { color: var(--v3-accent-gold); }
+
+        /* Inline eyebrow (lives inside cards) */
+        .eyebrow-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--v3-font-mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--v3-text-3);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .eyebrow-inline [data-lucide] {
+            width: 13px;
+            height: 13px;
+            opacity: 0.8;
+        }
+        .eyebrow-inline.accent-run { color: var(--v3-accent-run); }
+        .eyebrow-inline.accent-strike { color: var(--v3-accent-strike); }
+        .eyebrow-inline.accent-cricket { color: var(--v3-accent-cricket); }
+        .eyebrow-inline.accent-race { color: var(--v3-accent-race); }
+        .eyebrow-inline.accent-hyrox { color: var(--v3-accent-hyrox); }
+        .eyebrow-inline.accent-dharma { color: var(--v3-accent-dharma); }
+        .eyebrow-inline.accent-travel { color: var(--v3-accent-travel); }
+        .eyebrow-inline.accent-gold { color: var(--v3-accent-gold); }
+
+        /* Section-title with Lucide icon prefix */
+        .section-title-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title-icon [data-lucide] {
+            width: 20px;
+            height: 20px;
+            color: var(--v3-text-2);
+            stroke-width: 1.75;
+        }
+
+        /* Content-tab <details> → glass treatment */
+        #panel-diet details,
+        #panel-travel details,
+        #panel-cricket details,
+        #panel-race-strategy details,
+        #panel-dharma details {
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.025), oklch(1 0 0 / 0) 60%),
+                var(--v3-bg-2);
+            border: 1px solid var(--v3-line-soft);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin: 10px 0;
+            box-shadow: var(--v3-edge-top);
+            transition: border-color 300ms var(--ease-out-expo),
+                        box-shadow 300ms var(--ease-out-expo),
+                        background 300ms var(--ease-out-expo);
+        }
+        #panel-diet details:hover,
+        #panel-travel details:hover,
+        #panel-cricket details:hover,
+        #panel-race-strategy details:hover,
+        #panel-dharma details:hover {
+            border-color: var(--v3-line-hard);
+            box-shadow: var(--v3-shadow-sm), var(--v3-edge-top);
+        }
+        #panel-diet details[open],
+        #panel-travel details[open],
+        #panel-cricket details[open],
+        #panel-race-strategy details[open],
+        #panel-dharma details[open] {
+            border-color: var(--v3-line-hard);
+        }
+        #panel-diet details > summary,
+        #panel-travel details > summary,
+        #panel-cricket details > summary,
+        #panel-race-strategy details > summary,
+        #panel-dharma details > summary {
+            cursor: pointer;
+            font-family: var(--v3-font-display);
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: -0.018em;
+            color: var(--v3-text-0);
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            outline: none;
+        }
+        #panel-diet details > summary::-webkit-details-marker,
+        #panel-travel details > summary::-webkit-details-marker,
+        #panel-cricket details > summary::-webkit-details-marker,
+        #panel-race-strategy details > summary::-webkit-details-marker,
+        #panel-dharma details > summary::-webkit-details-marker {
+            display: none;
+        }
+        #panel-diet details > summary::before,
+        #panel-travel details > summary::before,
+        #panel-cricket details > summary::before,
+        #panel-race-strategy details > summary::before,
+        #panel-dharma details > summary::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-right: 1.5px solid var(--v3-text-2);
+            border-bottom: 1.5px solid var(--v3-text-2);
+            transform: rotate(-45deg);
+            transition: transform 250ms var(--ease-out-expo);
+            flex-shrink: 0;
+            margin-right: 4px;
+        }
+        #panel-diet details[open] > summary::before,
+        #panel-travel details[open] > summary::before,
+        #panel-cricket details[open] > summary::before,
+        #panel-race-strategy details[open] > summary::before,
+        #panel-dharma details[open] > summary::before {
+            transform: rotate(45deg);
+        }
+
+        /* Race-card → glass */
+        .race-card {
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.02), oklch(1 0 0 / 0) 55%),
+                var(--v3-bg-2) !important;
+            border: 1px solid var(--v3-line-soft) !important;
+            border-radius: 14px !important;
+            box-shadow: var(--v3-edge-top) !important;
+            transition: border-color 300ms var(--ease-out-expo),
+                        box-shadow 300ms var(--ease-out-expo),
+                        transform 300ms var(--ease-out-expo) !important;
+        }
+        .race-card:hover {
+            border-color: var(--v3-line-hard) !important;
+            box-shadow: var(--v3-shadow-sm), var(--v3-edge-top) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Splits-table → editorial frame (monospace, bordered, hover) */
+        .splits-table, .split-table {
+            background: transparent !important;
+            border-collapse: separate !important;
+            border-spacing: 0;
+            width: 100%;
+            font-family: var(--v3-font-mono) !important;
+            font-size: 0.8rem;
+        }
+        .splits-table thead th, .split-table thead th {
+            background: oklch(1 0 0 / 0.02) !important;
+            color: var(--v3-text-3) !important;
+            font-family: var(--v3-font-mono) !important;
+            font-size: 0.64rem !important;
+            letter-spacing: 0.18em !important;
+            text-transform: uppercase;
+            padding: 10px 12px !important;
+            text-align: left;
+            border-bottom: 1px solid var(--v3-line-soft) !important;
+            font-weight: 500 !important;
+        }
+        .splits-table tbody td, .split-table tbody td {
+            padding: 10px 12px !important;
+            border-bottom: 1px solid var(--v3-line-hair) !important;
+            color: var(--v3-text-1) !important;
+            font-variant-numeric: tabular-nums;
+        }
+        .splits-table tbody tr:last-child td,
+        .split-table tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+        .splits-table tbody tr:hover,
+        .split-table tbody tr:hover {
+            background: oklch(1 0 0 / 0.018) !important;
+        }
+
+        /* Blood work table (Progress) — same editorial frame */
+        #blood-work-table,
+        .blood-work-table {
+            background: transparent;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            font-family: var(--v3-font-mono);
+            font-size: 0.82rem;
+        }
+        #blood-work-table thead th,
+        .blood-work-table thead th {
+            background: oklch(1 0 0 / 0.02);
+            color: var(--v3-text-3);
+            font-family: var(--v3-font-mono);
+            font-size: 0.64rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            padding: 10px 12px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--v3-line-soft);
+        }
+        #blood-work-table tbody td,
+        .blood-work-table tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--v3-line-hair);
+            color: var(--v3-text-1);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Accent-bar helper (goal-A/B mini cards on Race tab) */
+        .accent-bar {
+            position: relative;
+        }
+        .accent-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            border-radius: 2px 0 0 2px;
+        }
+        .accent-bar.accent-run::before { background: var(--v3-accent-run); box-shadow: 0 0 12px oklch(0.86 0.22 142 / 0.5); }
+        .accent-bar.accent-race::before { background: var(--v3-accent-race); box-shadow: 0 0 12px oklch(0.70 0.22 15 / 0.5); }
+        .accent-bar.accent-hyrox::before { background: var(--v3-accent-hyrox); box-shadow: 0 0 12px oklch(0.65 0.20 320 / 0.5); }
+        .accent-bar.accent-dharma::before { background: var(--v3-accent-dharma); box-shadow: 0 0 12px oklch(0.80 0.17 75 / 0.5); }
+        .accent-bar.accent-travel::before { background: var(--v3-accent-travel); box-shadow: 0 0 12px oklch(0.82 0.13 210 / 0.5); }
+        .accent-bar.accent-gold::before { background: var(--v3-accent-gold); box-shadow: 0 0 12px oklch(0.84 0.14 88 / 0.5); }
+
+        /* Card-as-goal-bar pattern (mini metric card with side accent) */
+        .goal-card {
+            position: relative;
+            padding: 16px 18px 16px 22px;
+            background:
+                linear-gradient(180deg, oklch(1 0 0 / 0.02), oklch(1 0 0 / 0) 55%),
+                var(--v3-bg-2);
+            border: 1px solid var(--v3-line-soft);
+            border-radius: 12px;
+            box-shadow: var(--v3-edge-top);
+            overflow: hidden;
+            transition: border-color 300ms var(--ease-out-expo),
+                        box-shadow 300ms var(--ease-out-expo),
+                        transform 300ms var(--ease-out-expo);
+        }
+        .goal-card:hover {
+            border-color: var(--v3-line-hard);
+            transform: translateY(-1px);
+        }
+        .goal-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0;
+            width: 3px; height: 100%;
+            background: var(--v3-line-hard);
+        }
+        .goal-card.accent-run::before { background: var(--v3-accent-run); box-shadow: 0 0 14px oklch(0.86 0.22 142 / 0.4); }
+        .goal-card.accent-race::before { background: var(--v3-accent-race); box-shadow: 0 0 14px oklch(0.70 0.22 15 / 0.4); }
+        .goal-card.accent-hyrox::before { background: var(--v3-accent-hyrox); box-shadow: 0 0 14px oklch(0.65 0.20 320 / 0.4); }
+        .goal-card.accent-gold::before { background: var(--v3-accent-gold); box-shadow: 0 0 14px oklch(0.84 0.14 88 / 0.4); }
+        .goal-card .goal-label {
+            font-family: var(--v3-font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--v3-text-3);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .goal-card .goal-value {
+            font-family: var(--v3-font-mono);
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--v3-text-0);
+            font-variant-numeric: tabular-nums;
+        }
+        .goal-card .goal-sub {
+            font-size: 0.78rem;
+            color: var(--v3-text-2);
+            margin-top: 2px;
+        }
+
+        /* Reduced-motion gates for new primitives */
+        @media (prefers-reduced-motion: reduce) {
+            .phase-header-card:hover,
+            .race-card:hover,
+            .goal-card:hover {
+                transform: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3070,8 +3437,9 @@
 
             <!-- Phase Selector Strip -->
             <div style="padding: 24px 0 20px;">
+                <span class="section-eyebrow"><i data-lucide="layers-3"></i>52-Week Periodization · 7 Phases</span>
                 <div class="section-header">
-                    <span class="section-title">Training Phases</span>
+                    <span class="section-title section-title-icon"><i data-lucide="activity"></i>Training Phases</span>
                     <div class="view-toggle">
                         <button class="view-toggle-btn active" data-view="phase" onclick="setTrainingView('phase')">Phase View</button>
                         <button class="view-toggle-btn" data-view="weekly" onclick="setTrainingView('weekly')">Weekly Focus</button>
@@ -3108,6 +3476,7 @@
                 <!-- Phase 1 -->
                 <div class="phase-desc" data-phase-desc="1">
                     <div class="phase-header-card">
+                        <span class="phase-eyebrow accent-run"><i data-lucide="layers"></i>Phase 01 · Aerobic Base</span>
                         <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
                             <h2>Phase 1: Base Building</h2>
                             <span class="phase-weeks">Weeks 1&ndash;4 &middot; Jan 6 &ndash; Feb 2</span>
@@ -3130,6 +3499,7 @@
                         <div class="flex items-center gap-xs" style="margin-bottom: 8px;">
                             <span class="pill pill-sm pill-active">CURRENT PHASE</span>
                         </div>
+                        <span class="phase-eyebrow accent-run"><i data-lucide="zap"></i>Phase 02 · Speed Block</span>
                         <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
                             <h2>Phase 2: 10K Speed Block</h2>
                             <span class="phase-weeks">Weeks 5&ndash;12 &middot; Feb 3 &ndash; Mar 29</span>
@@ -3149,6 +3519,7 @@
                 <!-- Phase 3 -->
                 <div class="phase-desc" data-phase-desc="3">
                     <div class="phase-header-card">
+                        <span class="phase-eyebrow accent-race"><i data-lucide="target"></i>Phase 03 · Race Taper</span>
                         <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
                             <h2>Phase 3: TCSW 10K Taper</h2>
                             <span class="phase-weeks">Weeks 13&ndash;16 &middot; Mar 30 &ndash; Apr 26</span>
@@ -3167,6 +3538,7 @@
                 <!-- Phase 4 -->
                 <div class="phase-desc" data-phase-desc="4">
                     <div class="phase-header-card">
+                        <span class="phase-eyebrow accent-run"><i data-lucide="trending-up"></i>Phase 04 · Half Marathon</span>
                         <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
                             <h2>Phase 4: Half Marathon Build</h2>
                             <span class="phase-weeks">Weeks 17&ndash;26 &middot; Apr 27 &ndash; Jun 28</span>
@@ -3185,6 +3557,7 @@
                 <!-- Phase 5 -->
                 <div class="phase-desc" data-phase-desc="5">
                     <div class="phase-header-card">
+                        <span class="phase-eyebrow accent-hyrox"><i data-lucide="flame"></i>Phase 05 · Hybrid / HYROX</span>
                         <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
                             <h2>Phase 5: Hyrox Preparation</h2>
                             <span class="phase-weeks">Weeks 27&ndash;34 &middot; Jun 29 &ndash; Aug 23</span>
@@ -3203,6 +3576,7 @@
                 <!-- Phase 6 -->
                 <div class="phase-desc" data-phase-desc="6">
                     <div class="phase-header-card">
+                        <span class="phase-eyebrow accent-strike"><i data-lucide="mountain"></i>Phase 06 · Marathon Build</span>
                         <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
                             <h2>Phase 6: Marathon Build</h2>
                             <span class="phase-weeks">Weeks 35&ndash;46 &middot; Aug 24 &ndash; Nov 8</span>
@@ -3221,6 +3595,7 @@
                 <!-- Phase 7 -->
                 <div class="phase-desc" data-phase-desc="7">
                     <div class="phase-header-card">
+                        <span class="phase-eyebrow accent-gold"><i data-lucide="flag-triangle-right"></i>Phase 07 · Peak &amp; Taper</span>
                         <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
                             <h2>Phase 7: Peak &amp; Taper</h2>
                             <span class="phase-weeks">Weeks 47&ndash;52 &middot; Nov 9 &ndash; Dec 20</span>
@@ -3278,8 +3653,9 @@
     <section class="tab-panel" id="panel-diet" role="tabpanel" aria-label="Diet Plan">
         <div class="container">
             <div style="padding: 24px 0 20px;">
+                <span class="section-eyebrow"><i data-lucide="utensils-crossed"></i>100-Day Body-Comp Arc · Pre-Diabetic Protocol</span>
                 <div class="section-header">
-                    <span class="section-title">Nutrition Plan</span>
+                    <span class="section-title section-title-icon"><i data-lucide="salad"></i>Nutrition Plan</span>
                     <div class="view-toggle">
                         <button class="view-toggle-btn active" onclick="setDietView('plan')">Meal Plan</button>
                         <button class="view-toggle-btn" onclick="setDietView('tracker')">Macro Tracker</button>
@@ -3425,7 +3801,8 @@
                 </div>
 
                 <!-- PHASE 1 & 3: Structured Cut -->
-                <div class="section-header"><span class="section-title">Structured Cut &mdash; Days 1&ndash;16, 31&ndash;58 (~1,400&ndash;1,500 kcal)</span></div>
+                <span class="section-eyebrow"><i data-lucide="scissors"></i>Fat-loss Phase · Moderate Deficit</span>
+                <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="scale"></i>Structured Cut &mdash; Days 1&ndash;16, 31&ndash;58 (~1,400&ndash;1,500 kcal)</span></div>
                 <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 16px;">
                     <div class="grid-4" style="gap:8px;">
                         <div style="text-align:center;"><span class="text-xs text-tertiary">Protein</span><div class="text-sm font-bold" style="color:var(--color-cricket);">180g (720 kcal)</div></div>
@@ -3435,7 +3812,8 @@
                     </div>
                 </div>
 
-                <div class="section-header"><span class="section-title">Sample Home Day (~1,450 kcal)</span></div>
+                <span class="section-eyebrow"><i data-lucide="home"></i>Home · No-Chicken Baseline</span>
+                <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="utensils"></i>Sample Home Day (~1,450 kcal)</span></div>
                 <div style="overflow-x:auto;margin-bottom:24px;">
                     <table class="splits-table">
                         <thead><tr><th>Meal</th><th>Time</th><th>Food</th><th>Protein</th><th>Cals</th></tr></thead>
@@ -3452,7 +3830,8 @@
                 </div>
 
                 <!-- PHASE 2 & 4: PSMF -->
-                <div class="section-header"><span class="section-title">PSMF Sprint &mdash; Days 17&ndash;30, 59&ndash;72 (~900 kcal)</span></div>
+                <span class="section-eyebrow"><i data-lucide="timer"></i>Aggressive Phase · Protein-Sparing Fast</span>
+                <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="flame"></i>PSMF Sprint &mdash; Days 17&ndash;30, 59&ndash;72 (~900 kcal)</span></div>
                 <div class="card-glass" style="border-left: 3px solid var(--color-strength); margin-bottom: 16px;">
                     <div class="grid-4" style="gap:8px;">
                         <div style="text-align:center;"><span class="text-xs text-tertiary">Protein</span><div class="text-sm font-bold" style="color:var(--color-cricket);">200g (800 kcal)</div></div>
@@ -3463,8 +3842,9 @@
                 </div>
 
                 <div class="grid-2" style="margin-bottom:24px;">
-                    <div class="card">
-                        <h4 style="color:var(--color-strength);margin-bottom:8px;">PSMF &mdash; Home Day (No Chicken)</h4>
+                    <div class="card-glass" style="border-left: 3px solid var(--color-strength);">
+                        <span class="eyebrow-inline accent-strike"><i data-lucide="egg"></i>Shake + Eggs + Soy</span>
+                        <h4 style="color:var(--color-strength);margin:6px 0 8px;">PSMF &mdash; Home Day (No Chicken)</h4>
                         <table class="splits-table" style="font-size:0.75rem;">
                             <thead><tr><th>Meal</th><th>Time</th><th>Food</th><th>P</th><th>Cal</th></tr></thead>
                             <tbody>
@@ -3478,8 +3858,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="card">
-                        <h4 style="color:var(--color-strength);margin-bottom:8px;">PSMF &mdash; Chicken Day (2&ndash;3x/wk)</h4>
+                    <div class="card-glass" style="border-left: 3px solid var(--color-cricket);">
+                        <span class="eyebrow-inline accent-cricket"><i data-lucide="drumstick"></i>Ordered Protein · 2–3× /wk</span>
+                        <h4 style="color:var(--color-strength);margin:6px 0 8px;">PSMF &mdash; Chicken Day (2&ndash;3x/wk)</h4>
                         <table class="splits-table" style="font-size:0.75rem;">
                             <thead><tr><th>Meal</th><th>Time</th><th>Food</th><th>P</th><th>Cal</th></tr></thead>
                             <tbody>
@@ -3496,7 +3877,8 @@
                 </div>
 
                 <!-- PHASE 5: HYROX Prep -->
-                <div class="section-header"><span class="section-title">HYROX Prep &mdash; Days 73&ndash;100 (~1,600 kcal)</span></div>
+                <span class="section-eyebrow"><i data-lucide="flame"></i>Performance Phase · Fuel for Training</span>
+                <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="zap"></i>HYROX Prep &mdash; Days 73&ndash;100 (~1,600 kcal)</span></div>
                 <div class="card-glass" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 16px;">
                     <div class="grid-4" style="gap:8px;">
                         <div style="text-align:center;"><span class="text-xs text-tertiary">Protein</span><div class="text-sm font-bold" style="color:var(--color-cricket);">170g</div></div>
@@ -3521,7 +3903,8 @@
                 </div>
 
                 <!-- Supplement Stack (Blueprint-enhanced) -->
-                <div class="section-header"><span class="section-title">Supplement Stack</span></div>
+                <span class="section-eyebrow"><i data-lucide="pill"></i>Daily Protocol · Non-Negotiable + Longevity</span>
+                <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="flask-conical"></i>Supplement Stack</span></div>
                 <div class="card-glass" style="border-left: 3px solid var(--color-cricket); margin-bottom: 16px;">
                     <div class="flex items-center gap-sm" style="margin-bottom:10px;">
                         <span class="text-sm font-bold" style="color:var(--color-cricket);">Core Stack (Non-Negotiable)</span>
@@ -3806,7 +4189,10 @@
     <section class="tab-panel" id="panel-cricket" role="tabpanel" aria-label="Cricket Bowling">
         <div class="container">
             <div style="padding: 24px 0 20px;">
-                <span class="section-title">Fast Bowling Development</span>
+                <span class="section-eyebrow"><i data-lucide="zap"></i>Pace Program · 105 → 120+ KPH</span>
+                <div class="section-header">
+                    <span class="section-title section-title-icon"><i data-lucide="target"></i>Fast Bowling Development</span>
+                </div>
             </div>
 
             <!-- Speed Gauge -->
@@ -3834,12 +4220,14 @@
             </div>
 
             <!-- Bowling Strength Program -->
-            <div class="section-header"><span class="section-title">Bowling Strength Program</span></div>
+            <span class="section-eyebrow"><i data-lucide="dumbbell"></i>Integrated · Tue/Thu/Sat PT</span>
+            <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="activity"></i>Bowling Strength Program</span></div>
             <p class="text-sm text-secondary" style="margin-bottom: 16px;">Integrated into Tue/Thu/Sat PT sessions. Focus on pace-generating muscle groups.</p>
 
             <div class="grid-2" style="margin-bottom: 28px;">
-                <div class="card" style="border-left: 3px solid var(--color-strength);">
-                    <h4 class="text-orange" style="margin-bottom: 10px;">Posterior Chain</h4>
+                <div class="card-glass" style="border-left: 3px solid var(--color-strength);">
+                    <span class="eyebrow-inline accent-strike"><i data-lucide="chevrons-up"></i>Deadlift · Glute · Hamstring</span>
+                    <h4 class="text-orange" style="margin:6px 0 10px;">Posterior Chain</h4>
                     <ul class="meal-list">
                         <li><strong>Deadlifts:</strong> 4×6 (heavy, progressive overload)</li>
                         <li><strong>Romanian Deadlifts:</strong> 3×8</li>
@@ -3847,8 +4235,9 @@
                         <li><strong>Nordic Hamstring Curls:</strong> 3×5 (eccentric)</li>
                     </ul>
                 </div>
-                <div class="card" style="border-left: 3px solid var(--color-running);">
-                    <h4 class="text-green" style="margin-bottom: 10px;">Lower Body Power</h4>
+                <div class="card-glass" style="border-left: 3px solid var(--color-running);">
+                    <span class="eyebrow-inline accent-run"><i data-lucide="zap"></i>Jumps · Plyo · Single-leg</span>
+                    <h4 class="text-green" style="margin:6px 0 10px;">Lower Body Power</h4>
                     <ul class="meal-list">
                         <li><strong>Box Jumps:</strong> 4×5 (maximal height)</li>
                         <li><strong>Squat Jumps:</strong> 3×8</li>
@@ -3856,8 +4245,9 @@
                         <li><strong>Single-leg Calf Raises:</strong> 3×15/leg</li>
                     </ul>
                 </div>
-                <div class="card" style="border-left: 3px solid var(--color-cricket);">
-                    <h4 class="text-cyan" style="margin-bottom: 10px;">Core Rotation</h4>
+                <div class="card-glass" style="border-left: 3px solid var(--color-cricket);">
+                    <span class="eyebrow-inline accent-cricket"><i data-lucide="rotate-3d"></i>Anti-Rotation · Trunk Power</span>
+                    <h4 class="text-cyan" style="margin:6px 0 10px;">Core Rotation</h4>
                     <ul class="meal-list">
                         <li><strong>Med Ball Rotational Throws:</strong> 3×8/side</li>
                         <li><strong>Pallof Press:</strong> 3×10/side</li>
@@ -3865,8 +4255,9 @@
                         <li><strong>Anti-Rotation Holds:</strong> 3×20 sec/side</li>
                     </ul>
                 </div>
-                <div class="card" style="border-left: 3px solid var(--color-race);">
-                    <h4 class="text-race" style="margin-bottom: 10px;">Shoulder Stability</h4>
+                <div class="card-glass" style="border-left: 3px solid var(--color-race);">
+                    <span class="eyebrow-inline accent-race"><i data-lucide="shield"></i>Cuff · Prehab</span>
+                    <h4 class="text-race" style="margin:6px 0 10px;">Shoulder Stability</h4>
                     <ul class="meal-list">
                         <li><strong>Band External Rotation:</strong> 3×15/side</li>
                         <li><strong>Band Internal Rotation:</strong> 3×15/side</li>
@@ -3878,7 +4269,8 @@
 
             <!-- Sprint Work -->
             <div class="card-glass" style="border-left: 3px solid var(--color-running); margin-bottom: 28px;">
-                <h4 class="text-green" style="margin-bottom: 8px;">⚡ Sprint Work (1–2x/week)</h4>
+                <span class="eyebrow-inline accent-run"><i data-lucide="footprints"></i>Max-velocity · 1–2× /week</span>
+                <h4 class="text-green" style="margin:6px 0 8px;">Sprint Work</h4>
                 <div class="grid-2">
                     <ul class="meal-list">
                         <li>20m sprints × 6 (full recovery)</li>
@@ -3892,88 +4284,98 @@
             </div>
 
             <!-- Bowling Drills -->
-            <div class="section-header"><span class="section-title">Bowling Drills (Wed/Fri Sessions)</span></div>
+            <span class="section-eyebrow"><i data-lucide="list-checks"></i>Drill Library · Wed/Fri at Nets</span>
+            <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="target"></i>Bowling Drills</span></div>
             <p class="text-sm text-secondary" style="margin-bottom: 16px;">From Cricket SA drill library + biomechanics research. Rent nets for these sessions.</p>
 
             <div class="grid-2" style="margin-bottom: 28px;">
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">1</div>
-                    <h4>Line & Length</h4>
+                    <span class="eyebrow-inline accent-cricket"><i data-lucide="crosshair"></i>Accuracy · 6 overs</span>
+                    <h4 style="margin:4px 0 6px;">Line &amp; Length</h4>
                     <p class="text-sm text-secondary">Target: 1m × 30cm area on good length. 6 overs of 6 balls. Start half-pace, build to full pace. Track accuracy %.</p>
                 </div>
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">2</div>
-                    <h4>Seam Control (Aggot Drill)</h4>
+                    <span class="eyebrow-inline accent-cricket"><i data-lucide="git-branch"></i>Seam · 4 overs</span>
+                    <h4 style="margin:4px 0 6px;">Seam Control (Aggot Drill)</h4>
                     <p class="text-sm text-secondary">Hold ball with seam upright, bowl at single stump. Focus on landing seam on the pitch. 4 overs. Count seam-up deliveries.</p>
                 </div>
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">3</div>
-                    <h4>Red/White Ball Drill</h4>
+                    <span class="eyebrow-inline accent-cricket"><i data-lucide="shuffle"></i>Grip · 6 overs</span>
+                    <h4 style="margin:4px 0 6px;">Red/White Ball Drill</h4>
                     <p class="text-sm text-secondary">Alternate red and white balls each delivery. Forces focus on grip adjustment between balls. 6 overs total.</p>
                 </div>
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">4</div>
-                    <h4>Using the Crease</h4>
+                    <span class="eyebrow-inline accent-cricket"><i data-lucide="move-horizontal"></i>Angles · 2× 4 overs</span>
+                    <h4 style="margin:4px 0 6px;">Using the Crease</h4>
                     <p class="text-sm text-secondary">Bowl from wide of crease, then tight to stumps. Vary angles to create different lines. 4 overs each position.</p>
                 </div>
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">5</div>
-                    <h4>Yorker Practice</h4>
+                    <span class="eyebrow-inline accent-race"><i data-lucide="target"></i>Death · 6 overs</span>
+                    <h4 style="margin:4px 0 6px;">Yorker Practice</h4>
                     <p class="text-sm text-secondary">Mark 50cm strip at batting crease. 6 overs targeting the crease line. Track hit percentage.</p>
                 </div>
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">6</div>
-                    <h4>Bouncer Practice</h4>
+                    <span class="eyebrow-inline accent-race"><i data-lucide="arrow-up"></i>Short · 4 overs</span>
+                    <h4 style="margin:4px 0 6px;">Bouncer Practice</h4>
                     <p class="text-sm text-secondary">Cross-seam, targeting above waist. Focus on back-of-a-length consistency. 4 overs.</p>
                 </div>
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">7</div>
-                    <h4>Fatigued Bowling</h4>
+                    <span class="eyebrow-inline accent-strike"><i data-lucide="flame"></i>Conditioning · 4–6 rounds</span>
+                    <h4 style="margin:4px 0 6px;">Fatigued Bowling</h4>
                     <p class="text-sm text-secondary">10× run-ups (no ball) then immediately bowl 1 over. Repeat 4–6 times. Tests technique under match fatigue.</p>
                 </div>
-                <div class="card drill-card">
+                <div class="card-glass drill-card">
                     <div class="drill-num">8</div>
-                    <h4>Match Simulation</h4>
+                    <span class="eyebrow-inline accent-gold"><i data-lucide="swords"></i>Pressure · 4-over spell</span>
+                    <h4 style="margin:4px 0 6px;">Match Simulation</h4>
                     <p class="text-sm text-secondary">2 batsmen in, 4-over spell. Bowl as if in a match — set fields mentally, execute plans under pressure.</p>
                 </div>
             </div>
 
             <!-- Biomechanics Reference -->
-            <div class="section-header"><span class="section-title">Bowling Biomechanics</span></div>
+            <span class="section-eyebrow"><i data-lucide="git-branch"></i>Kinetic Chain · 6 Phases</span>
+            <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="activity"></i>Bowling Biomechanics</span></div>
             <p class="text-sm text-secondary" style="margin-bottom: 16px;">The 6 phases of the fast bowling action. Each phase links to specific strength exercises.</p>
 
             <div class="grid-3" style="margin-bottom: 28px;">
-                <div class="card" style="text-align: center;">
+                <div class="card-glass" style="text-align: center;">
                     <div class="bio-phase-num">1</div>
                     <h4>Run-Up</h4>
                     <p class="text-xs text-secondary">Acceleration to ~80% max sprint speed. Builds momentum. Controlled rhythm.</p>
                     <span class="pill pill-sm pill-running" style="margin-top: 8px;">Sprint work</span>
                 </div>
-                <div class="card" style="text-align: center;">
+                <div class="card-glass" style="text-align: center;">
                     <div class="bio-phase-num">2</div>
                     <h4>Gather/Leap</h4>
                     <p class="text-xs text-secondary">Pre-delivery stride. Body organizes for delivery. Hip loading phase.</p>
                     <span class="pill pill-sm pill-strength" style="margin-top: 8px;">Hip thrusts</span>
                 </div>
-                <div class="card" style="text-align: center;">
+                <div class="card-glass" style="text-align: center;">
                     <div class="bio-phase-num">3</div>
                     <h4>Front Foot Contact</h4>
                     <p class="text-xs text-secondary">Forces up to 9× body weight. Braced front leg = max velocity transfer.</p>
                     <span class="pill pill-sm pill-strength" style="margin-top: 8px;">Squats, calf raises</span>
                 </div>
-                <div class="card" style="text-align: center;">
+                <div class="card-glass" style="text-align: center;">
                     <div class="bio-phase-num">4</div>
                     <h4>Trunk Flexion</h4>
                     <p class="text-xs text-secondary">Hip-shoulder separation generates ~80% of ball speed. Core rotation is king.</p>
                     <span class="pill pill-sm pill-cricket" style="margin-top: 8px;">Med ball throws</span>
                 </div>
-                <div class="card" style="text-align: center;">
+                <div class="card-glass" style="text-align: center;">
                     <div class="bio-phase-num">5</div>
                     <h4>Ball Release</h4>
                     <p class="text-xs text-secondary">Delayed arm swing, high arm position. Wrist snap for seam control.</p>
                     <span class="pill pill-sm" style="margin-top: 8px; border-color: var(--color-race); color: var(--color-race);">Shoulder stability</span>
                 </div>
-                <div class="card" style="text-align: center;">
+                <div class="card-glass" style="text-align: center;">
                     <div class="bio-phase-num">6</div>
                     <h4>Follow-Through</h4>
                     <p class="text-xs text-secondary">Deceleration and injury prevention. Complete the kinetic chain.</p>
@@ -3983,8 +4385,9 @@
 
             <!-- Injury Prevention Note -->
             <div class="card-glass" style="border-left: 3px solid var(--color-race); margin-bottom: 28px;">
-                <h4 class="text-race" style="margin-bottom: 8px;">⚠️ Injury Risk at 98.4 kg</h4>
-                <p class="text-sm text-secondary">Front foot landing creates 9× body weight forces (~885 kg!). Maintain <1% body mass dehydration loss during bowling. Hydrate between overs. Banana + water provides optimal recovery (COX2 anti-inflammatory benefits superior to sports drinks).</p>
+                <span class="eyebrow-inline accent-race"><i data-lucide="alert-triangle"></i>Load Management · Pre-Diabetic Risk</span>
+                <h4 class="text-race" style="margin:6px 0 8px;">Injury Risk at 98.4 kg</h4>
+                <p class="text-sm text-secondary">Front foot landing creates 9× body weight forces (~885 kg!). Maintain &lt;1% body mass dehydration loss during bowling. Hydrate between overs. Banana + water provides optimal recovery (COX2 anti-inflammatory benefits superior to sports drinks).</p>
             </div>
         </div>
     </section>
@@ -3996,44 +4399,66 @@
     <section class="tab-panel" id="panel-race-strategy" role="tabpanel" aria-label="Race Strategy">
         <div class="container">
             <div style="padding: 24px 0 20px;">
-                <span class="section-title">Race Strategies</span>
+                <span class="section-eyebrow"><i data-lucide="flag-triangle-right"></i>2026 Race Calendar · Pacing &amp; Splits</span>
+                <div class="section-header">
+                    <span class="section-title section-title-icon"><i data-lucide="timer"></i>Race Strategies</span>
+                </div>
             </div>
 
             <!-- Completed Race -->
-            <div class="card" style="border-left: 3px solid var(--color-running); margin-bottom: 20px; opacity: 0.85;">
+            <div class="card-glass race-card" style="border-left: 3px solid var(--color-running); margin-bottom: 20px; opacity: 0.9;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm" style="background: var(--color-running); color: #000; font-weight: 700;">✓ COMPLETED</span>
+                    <span class="pill pill-sm" style="background: var(--color-running); color: #000; font-weight: 700;"><i data-lucide="check" style="width:10px;height:10px;"></i> COMPLETED</span>
                     <span class="text-xs text-secondary">Mar 1, 2026</span>
                 </div>
-                <h3>Juhu Half Marathon — 2:41:00</h3>
+                <span class="eyebrow-inline accent-run"><i data-lucide="trophy"></i>Juhu Half · 11-min PB</span>
+                <h3 style="margin-top:4px;">Juhu Half Marathon — 2:41:00</h3>
                 <p class="text-sm text-secondary" style="margin-top: 6px;">11 min PB over Jan result (2:52). 7:37/km avg. At 95 kg on 3 hrs sleep. Calf cramps last 2 km. Shins held up well.</p>
             </div>
 
             <!-- Cancelled Races -->
             <div class="grid-2" style="margin-bottom: 20px;">
-                <div class="card" style="opacity: 0.4;">
+                <div class="card-glass" style="opacity: 0.4;">
                     <span class="pill pill-sm" style="background: var(--text-muted); color: #000;">CANCELLED</span>
                     <h4 style="margin-top: 8px;">5K (Pacing Wife) — Mar 8</h4>
                 </div>
-                <div class="card" style="opacity: 0.4;">
+                <div class="card-glass" style="opacity: 0.4;">
                     <span class="pill pill-sm" style="background: var(--text-muted); color: #000;">CANCELLED</span>
                     <h4 style="margin-top: 8px;">HRX 10K — Mar 15</h4>
                 </div>
             </div>
 
             <!-- Bangalore 10K -->
-            <div class="card race-card" data-race-id="bangalore-tcsw-10k" style="border-left: 3px solid var(--color-race); margin-bottom: 20px;">
+            <div class="card-glass race-card" data-race-id="bangalore-tcsw-10k" style="border-left: 3px solid var(--color-race); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-race race-status-pill">NEXT RACE</span>
-                    <span class="text-xs text-secondary">Apr 26, 2026</span>
-                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'bangalore-tcsw-10k')">+ Log Result</button>
+                    <span class="pill pill-sm pill-race race-status-pill"><i data-lucide="flag" style="width:10px;height:10px;"></i> NEXT RACE</span>
+                    <span class="text-xs text-secondary">Apr 26, 2026 · Bangalore</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'bangalore-tcsw-10k')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log Result</button>
                 </div>
                 <div class="race-result-notes" style="display:none;"></div>
-                <h3>Bangalore TCSW 10K</h3>
-                <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-1:12 (7:12/km) | B: Sub-1:15 (7:30/km) | C: Finish with negative split</p>
+                <span class="eyebrow-inline accent-race"><i data-lucide="timer"></i>10K · Negative Split Focus</span>
+                <h3 style="margin-top:4px;">Bangalore TCSW 10K</h3>
+                <div class="grid-3" style="gap:10px; margin:14px 0 10px;">
+                    <div class="goal-card accent-bar" style="--accent-color: var(--color-race);">
+                        <span class="eyebrow-inline accent-race"><i data-lucide="chevron-up"></i>A-Goal</span>
+                        <div class="text-lg font-bold" style="color: var(--color-race); margin-top:2px;">Sub-1:12</div>
+                        <div class="text-xs text-tertiary">7:12/km avg</div>
+                    </div>
+                    <div class="goal-card accent-bar" style="--accent-color: var(--color-strength);">
+                        <span class="eyebrow-inline accent-strike"><i data-lucide="minus"></i>B-Goal</span>
+                        <div class="text-lg font-bold" style="color: var(--color-strength); margin-top:2px;">Sub-1:15</div>
+                        <div class="text-xs text-tertiary">7:30/km avg</div>
+                    </div>
+                    <div class="goal-card accent-bar" style="--accent-color: var(--color-running);">
+                        <span class="eyebrow-inline accent-run"><i data-lucide="check"></i>C-Goal</span>
+                        <div class="text-lg font-bold" style="color: var(--color-running); margin-top:2px;">Finish +</div>
+                        <div class="text-xs text-tertiary">negative split</div>
+                    </div>
+                </div>
                 <p class="text-sm text-secondary" style="margin-bottom: 12px;">Revised after 5K test (35:40, Apr 1). Pre-diabetic blood sugar = early fatigue risk. Negative split is the real goal. Bangalore altitude ~920m.</p>
 
-                <h4 class="text-sm" style="margin: 12px 0 8px; color: var(--text-primary);">B-Goal Splits (Sub-1:15 = 7:30/km avg)</h4>
+                <span class="eyebrow-inline accent-strike" style="margin-top: 12px;"><i data-lucide="minus"></i>B-Goal · 7:30/km avg</span>
+                <h4 class="text-sm" style="margin: 4px 0 8px; color: var(--text-primary);">B-Goal Splits (Sub-1:15)</h4>
                 <table class="splits-table">
                     <thead><tr><th>Segment</th><th>KM</th><th>Pace</th><th>Cumulative</th><th>Notes</th></tr></thead>
                     <tbody>
@@ -4045,7 +4470,8 @@
                     </tbody>
                 </table>
 
-                <h4 class="text-sm" style="margin: 16px 0 8px; color: var(--text-primary);">A-Goal Splits (Sub-1:12 = 7:12/km avg)</h4>
+                <span class="eyebrow-inline accent-race" style="margin-top: 16px;"><i data-lucide="chevron-up"></i>A-Goal · 7:12/km avg</span>
+                <h4 class="text-sm" style="margin: 4px 0 8px; color: var(--text-primary);">A-Goal Splits (Sub-1:12)</h4>
                 <table class="splits-table">
                     <thead><tr><th>Segment</th><th>KM</th><th>Pace</th><th>Cumulative</th><th>Notes</th></tr></thead>
                     <tbody>
@@ -4066,17 +4492,18 @@
             </div>
 
             <!-- HYROX Delhi -->
-            <div class="card race-card" data-race-id="hyrox-delhi" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
+            <div class="card-glass race-card" data-race-id="hyrox-delhi" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm flex-wrap" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-hyrox race-status-pill">UPCOMING</span>
-                    <span class="text-xs text-secondary">Jul 26, 2026</span>
+                    <span class="pill pill-sm pill-hyrox race-status-pill"><i data-lucide="flame" style="width:10px;height:10px;"></i> UPCOMING</span>
+                    <span class="text-xs text-secondary">Jul 26, 2026 · Delhi</span>
                     <div style="margin-left:auto; display:flex; gap:6px;">
-                        <button class="btn btn-ghost btn-sm" onclick="openModal('hyrox-session', 'hyrox-delhi')">+ Log Splits</button>
-                        <button class="btn btn-ghost btn-sm race-log-btn" onclick="openModal('race-result', 'hyrox-delhi')">+ Log Result</button>
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('hyrox-session', 'hyrox-delhi')"><i data-lucide="split" style="width:12px;height:12px;"></i> Log Splits</button>
+                        <button class="btn btn-ghost btn-sm race-log-btn" onclick="openModal('race-result', 'hyrox-delhi')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log Result</button>
                     </div>
                 </div>
                 <div class="race-result-notes" style="display:none;"></div>
-                <h3>HYROX Delhi — Men's Singles</h3>
+                <span class="eyebrow-inline accent-hyrox"><i data-lucide="award"></i>First HYROX · Conservative Pacing</span>
+                <h3 style="margin-top:4px;">HYROX Delhi — Men's Singles</h3>
                 <p class="text-sm text-secondary" style="margin-top: 6px;">First Hyrox ever. Goal: finish strong, learn pacing and transitions. At ~78 kg post-100-day transformation. Conservative station approach — bank energy for running segments. Don't blow up on SkiErg or Rowing.</p>
                 <details style="margin-top: 12px;">
                     <summary class="text-sm" style="cursor: pointer; color: var(--color-hyrox);">View Station Strategy →</summary>
@@ -4097,17 +4524,18 @@
             </div>
 
             <!-- Hyrox Mumbai -->
-            <div class="card race-card" data-race-id="hyrox-mumbai" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
+            <div class="card-glass race-card" data-race-id="hyrox-mumbai" style="border-left: 3px solid var(--color-hyrox); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm flex-wrap" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-hyrox race-status-pill">UPCOMING</span>
-                    <span class="text-xs text-secondary">Sep 7, 2026</span>
+                    <span class="pill pill-sm pill-hyrox race-status-pill"><i data-lucide="flame" style="width:10px;height:10px;"></i> UPCOMING</span>
+                    <span class="text-xs text-secondary">Sep 7, 2026 · Mumbai</span>
                     <div style="margin-left:auto; display:flex; gap:6px;">
-                        <button class="btn btn-ghost btn-sm" onclick="openModal('hyrox-session', 'hyrox-mumbai')">+ Log Splits</button>
-                        <button class="btn btn-ghost btn-sm race-log-btn" onclick="openModal('race-result', 'hyrox-mumbai')">+ Log Result</button>
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('hyrox-session', 'hyrox-mumbai')"><i data-lucide="split" style="width:12px;height:12px;"></i> Log Splits</button>
+                        <button class="btn btn-ghost btn-sm race-log-btn" onclick="openModal('race-result', 'hyrox-mumbai')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log Result</button>
                     </div>
                 </div>
                 <div class="race-result-notes" style="display:none;"></div>
-                <h3>Hyrox Mumbai — Goal: Sub-1:30</h3>
+                <span class="eyebrow-inline accent-hyrox"><i data-lucide="chevrons-up"></i>Sub-1:30 Target · 8×1km Ready</span>
+                <h3 style="margin-top:4px;">Hyrox Mumbai — Goal: Sub-1:30</h3>
                 <p class="text-sm text-secondary" style="margin-top: 6px;">Second Hyrox — use Delhi learnings to push for Sub-1:30. 8x1km runs + 8 stations. At ~78 kg, running pace: 5:15–5:30/km. Refine station pacing based on Delhi splits.</p>
                 <details style="margin-top: 12px;">
                     <summary class="text-sm" style="cursor: pointer; color: var(--color-hyrox);">View Station Strategy →</summary>
@@ -4128,42 +4556,61 @@
             </div>
 
             <!-- Delhi HM -->
-            <div class="card race-card" data-race-id="delhi-hm" style="border-left: 3px solid var(--color-running); margin-bottom: 20px;">
+            <div class="card-glass race-card" data-race-id="delhi-hm" style="border-left: 3px solid var(--color-running); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-running race-status-pill">UPCOMING</span>
-                    <span class="text-xs text-secondary">Oct 18, 2026</span>
-                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'delhi-hm')">+ Log Result</button>
+                    <span class="pill pill-sm pill-running race-status-pill"><i data-lucide="footprints" style="width:10px;height:10px;"></i> UPCOMING</span>
+                    <span class="text-xs text-secondary">Oct 18, 2026 · Delhi</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'delhi-hm')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log Result</button>
                 </div>
                 <div class="race-result-notes" style="display:none;"></div>
-                <h3>Delhi Half Marathon</h3>
+                <span class="eyebrow-inline accent-run"><i data-lucide="mountain"></i>21.1km · Post-Transformation Race</span>
+                <h3 style="margin-top:4px;">Delhi Half Marathon</h3>
                 <p class="text-sm" style="color: var(--color-running); margin: 6px 0;">A: Sub-2:00 (5:41/km) | B: Sub-2:10 (6:10/km) | C: Sub-2:20 (6:37/km)</p>
                 <p class="text-sm text-secondary">At ~78 kg (vs 95 kg at Juhu 2:41) — 17 kg lighter = ~30-40 min faster potential. Delhi October weather ideal (~22–28°C). Gel at km 8 and km 15. Blueprint: post-race walk 10 min, collagen + whey within 30 min.</p>
             </div>
 
             <!-- Kolkata 25K -->
-            <div class="card race-card" data-race-id="kolkata-25k" style="border-left: 3px solid var(--color-strength); margin-bottom: 20px;">
+            <div class="card-glass race-card" data-race-id="kolkata-25k" style="border-left: 3px solid var(--color-strength); margin-bottom: 20px;">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-strength race-status-pill">UPCOMING</span>
-                    <span class="text-xs text-secondary">Dec 20, 2026</span>
-                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'kolkata-25k')">+ Log Result</button>
+                    <span class="pill pill-sm pill-strength race-status-pill"><i data-lucide="gauge" style="width:10px;height:10px;"></i> UPCOMING</span>
+                    <span class="text-xs text-secondary">Dec 20, 2026 · Kolkata</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'kolkata-25k')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log Result</button>
                 </div>
                 <div class="race-result-notes" style="display:none;"></div>
-                <h3>Kolkata 25K — Marathon Tune-Up</h3>
+                <span class="eyebrow-inline accent-strike"><i data-lucide="route"></i>25K · Marathon Tune-Up</span>
+                <h3 style="margin-top:4px;">Kolkata 25K — Marathon Tune-Up</h3>
                 <p class="text-sm text-secondary" style="margin-top: 6px;">Run hard but DON'T destroy yourself — marathon is 28 days away. Start at MP (6:30–6:45/km), push last 5 km to HM pace if feeling good. Gel at km 8, 16, 22.</p>
             </div>
 
             <!-- Mumbai Marathon -->
-            <div class="card race-card" data-race-id="mumbai-marathon" style="border: 1px solid var(--color-race); margin-bottom: 20px; background: rgba(255, 45, 85, 0.05);">
+            <div class="card-glass race-card" data-race-id="mumbai-marathon" style="border: 1px solid var(--color-race); margin-bottom: 20px; background: linear-gradient(180deg, rgba(255,45,85,0.05) 0%, rgba(255,255,255,0.02) 100%);">
                 <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                    <span class="pill pill-sm pill-race race-status-pill" style="font-weight: 800;">★ A-RACE</span>
-                    <span class="text-xs text-secondary">Jan 17, 2027</span>
-                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'mumbai-marathon')">+ Log Result</button>
+                    <span class="pill pill-sm pill-race race-status-pill" style="font-weight: 800;"><i data-lucide="star" style="width:10px;height:10px;"></i> A-RACE</span>
+                    <span class="text-xs text-secondary">Jan 17, 2027 · Mumbai</span>
+                    <button class="btn btn-ghost btn-sm race-log-btn" style="margin-left:auto;" onclick="openModal('race-result', 'mumbai-marathon')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log Result</button>
                 </div>
                 <div class="race-result-notes" style="display:none;"></div>
-                <h3>Tata Mumbai Marathon — 42.2 km</h3>
-                <p class="text-sm" style="color: var(--color-race); margin: 8px 0;">A: Sub-4:15 (6:02/km) | B: Sub-4:30 (6:24/km) | C: Sub-4:45 (6:45/km)</p>
+                <span class="eyebrow-inline accent-race"><i data-lucide="award"></i>A-Race · 42.2km · Year Finale</span>
+                <h3 style="margin-top:4px;">Tata Mumbai Marathon — 42.2 km</h3>
+                <div class="grid-3" style="gap:10px; margin:14px 0 10px;">
+                    <div class="goal-card accent-bar" style="--accent-color: var(--color-race);">
+                        <span class="eyebrow-inline accent-race"><i data-lucide="chevron-up"></i>A-Goal</span>
+                        <div class="text-lg font-bold" style="color: var(--color-race); margin-top:2px;">Sub-4:15</div>
+                        <div class="text-xs text-tertiary">6:02/km</div>
+                    </div>
+                    <div class="goal-card accent-bar" style="--accent-color: var(--color-strength);">
+                        <span class="eyebrow-inline accent-strike"><i data-lucide="minus"></i>B-Goal</span>
+                        <div class="text-lg font-bold" style="color: var(--color-strength); margin-top:2px;">Sub-4:30</div>
+                        <div class="text-xs text-tertiary">6:24/km</div>
+                    </div>
+                    <div class="goal-card accent-bar" style="--accent-color: var(--color-running);">
+                        <span class="eyebrow-inline accent-run"><i data-lucide="check"></i>C-Goal</span>
+                        <div class="text-lg font-bold" style="color: var(--color-running); margin-top:2px;">Sub-4:45</div>
+                        <div class="text-xs text-tertiary">6:45/km</div>
+                    </div>
+                </div>
                 <p class="text-sm text-secondary">At ~78 kg, running economy is a different world. Run first 10 km at EXACTLY target pace. Walk 30 sec at every 5 km water station. Gel every 45 min from km 8. Pedder Road climb at km 20 — maintain effort, not pace.</p>
-                <p class="text-sm text-secondary" style="margin-top: 8px; font-style: italic;">You started at 98.4 kg with a 2:41 half marathon on 3 hrs sleep. 100 days later, 20 kg lighter, pre-diabetes reversed. Whatever happens on race day, you've already won. Run with joy.</p>
+                <p class="text-sm text-secondary" style="margin-top: 8px; font-style: italic; border-left: 2px solid var(--color-race); padding-left: 12px;">You started at 98.4 kg with a 2:41 half marathon on 3 hrs sleep. 100 days later, 20 kg lighter, pre-diabetes reversed. Whatever happens on race day, you've already won. Run with joy.</p>
             </div>
         </div>
     </section>
@@ -4175,15 +4622,21 @@
     <section class="tab-panel" id="panel-progress" role="tabpanel" aria-label="Progress">
         <div class="container">
             <div style="padding: 24px 0 20px;">
-                <span class="section-title">Progress & Analytics</span>
+                <span class="section-eyebrow"><i data-lucide="line-chart"></i>Data · Trends · Transformation</span>
+                <div class="section-header">
+                    <span class="section-title section-title-icon"><i data-lucide="trending-up"></i>Progress &amp; Analytics</span>
+                </div>
             </div>
 
             <!-- Weight Chart -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
-                    <h3>Weight Trend</h3>
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 10px;">
+                    <div>
+                        <span class="eyebrow-inline accent-run"><i data-lucide="scale"></i>Weight · 98.4 → 78kg</span>
+                        <h3 style="margin-top:4px;">Weight Trend</h3>
+                    </div>
                     <div style="display:flex;gap:8px;">
-                        <button class="btn btn-ghost btn-sm" onclick="openModal('weight')" title="InBody scans use the checkbox inside the modal">+ Log Weight</button>
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('weight')" title="InBody scans use the checkbox inside the modal"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log Weight</button>
                     </div>
                 </div>
                 <canvas id="weight-chart" width="800" height="250" style="width: 100%; height: auto;"></canvas>
@@ -4194,10 +4647,13 @@
             </div>
 
             <!-- FBS Chart -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
-                    <h3>Fasting Blood Sugar</h3>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('fbs')">+ Log FBS</button>
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 10px;">
+                    <div>
+                        <span class="eyebrow-inline accent-race"><i data-lucide="heart-pulse"></i>Pre-Diabetic · FBS &lt;100 target</span>
+                        <h3 style="margin-top:4px;">Fasting Blood Sugar</h3>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('fbs')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Log FBS</button>
                 </div>
                 <canvas id="fbs-chart" width="800" height="220" style="width: 100%; height: auto;"></canvas>
                 <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-top: 12px;">
@@ -4207,9 +4663,12 @@
             </div>
 
             <!-- Body Composition Chart (InBody) -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
-                    <h3>Body Composition (InBody)</h3>
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 10px;">
+                    <div>
+                        <span class="eyebrow-inline accent-gold"><i data-lucide="percent"></i>InBody · Weight + BF%</span>
+                        <h3 style="margin-top:4px;">Body Composition</h3>
+                    </div>
                     <span class="pill pill-sm" style="background:rgba(255,210,63,0.12);color:#ffd23f;border:1px solid rgba(255,210,63,0.25);font-size:0.625rem;">Scheduled: May 10 · Jun 21 · Jul 21</span>
                 </div>
                 <canvas id="body-comp-chart" width="800" height="220" style="width: 100%; height: auto;"></canvas>
@@ -4220,9 +4679,12 @@
             </div>
 
             <!-- Race History -->
-            <div class="card" id="race-history-card" style="margin-bottom: 24px;">
-                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
-                    <h3>Race History</h3>
+            <div class="card-glass" id="race-history-card" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 10px;">
+                    <div>
+                        <span class="eyebrow-inline accent-race"><i data-lucide="trophy"></i>Personal Bests · Race Log</span>
+                        <h3 style="margin-top:4px;">Race History</h3>
+                    </div>
                     <span class="text-xs text-secondary" id="race-history-count">0 races logged</span>
                 </div>
                 <div id="race-history-list">
@@ -4232,12 +4694,15 @@
             </div>
 
             <!-- Blood Work Tracker -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
-                    <h3>Blood Work Tracker</h3>
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 10px;">
+                    <div>
+                        <span class="eyebrow-inline accent-race"><i data-lucide="droplet"></i>Blood Panel · 3-point History</span>
+                        <h3 style="margin-top:4px;">Blood Work Tracker</h3>
+                    </div>
                     <span class="pill pill-sm" style="background:rgba(255,45,85,0.1);color:var(--color-race);border:1px solid rgba(255,45,85,0.2);">Latest: Apr 10, 2026 · v3 baseline</span>
                 </div>
-                <div style="overflow-x:auto;">
+                <div id="blood-work-table" style="overflow-x:auto;">
                     <table class="splits-table" style="min-width:600px;">
                         <thead>
                             <tr>
@@ -4355,9 +4820,12 @@
             </div>
 
             <!-- 100-Day Milestones Timeline -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="flex items-center justify-between" style="margin-bottom: 16px;">
-                    <h3>100-Day Milestones</h3>
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between" style="margin-bottom: 10px;">
+                    <div>
+                        <span class="eyebrow-inline accent-race"><i data-lucide="milestone"></i>Apr 13 → Jul 21 · The Arc</span>
+                        <h3 style="margin-top:4px;">100-Day Milestones</h3>
+                    </div>
                     <span class="pill pill-sm" style="background:rgba(255,45,85,0.1);color:var(--color-race);border:1px solid rgba(255,45,85,0.2);" id="milestone-phase-pill">Day 1 of 100</span>
                 </div>
                 <div style="position:relative;padding-left:24px;" id="milestones-timeline">
@@ -4415,8 +4883,9 @@
             </div>
 
             <!-- Workout Completion -->
-            <div class="card" style="margin-bottom: 24px;">
-                <h3 style="margin-bottom: 16px;">Weekly Completion</h3>
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <span class="eyebrow-inline accent-run"><i data-lucide="calendar-check"></i>Consistency · 7-Day Rolling</span>
+                <h3 style="margin:6px 0 16px;">Weekly Completion</h3>
                 <div id="completion-grid" class="completion-grid">
                     <!-- Filled by JS -->
                 </div>
@@ -4428,16 +4897,19 @@
             </div>
 
             <!-- Adaptive Recommendations -->
-            <div class="section-header"><span class="section-title">Adaptive Recommendations</span></div>
+            <span class="section-eyebrow"><i data-lucide="sparkles"></i>Engine · Pattern Analysis</span>
+            <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="brain"></i>Adaptive Recommendations</span></div>
             <div id="recommendations">
                 <div class="card-glass" style="border-left: 3px solid var(--color-info); margin-bottom: 12px;">
-                    <p class="text-sm"><strong style="color: var(--color-info);">ℹ️ Getting Started:</strong> Log your first workout and weight entry to activate the adaptive engine. Recommendations will appear here based on your training patterns.</p>
+                    <span class="eyebrow-inline"><i data-lucide="info"></i>Getting Started</span>
+                    <p class="text-sm" style="margin-top:4px;">Log your first workout and weight entry to activate the adaptive engine. Recommendations will appear here based on your training patterns.</p>
                 </div>
             </div>
 
             <!-- 10 Commandments -->
-            <div class="section-header" style="margin-top: 28px;"><span class="section-title">The 10 Commandments</span></div>
-            <div class="card" style="margin-bottom: 28px;">
+            <span class="section-eyebrow" style="margin-top: 28px;"><i data-lucide="scroll"></i>Non-Negotiable Rules</span>
+            <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="book-open-check"></i>The 10 Commandments</span></div>
+            <div class="card-glass" style="margin-bottom: 28px;">
                 <ol class="commandments">
                     <li><strong>Easy means EASY.</strong> If you can't hold a conversation, slow down.</li>
                     <li><strong>Never skip warm-up or cool-down.</strong> At your weight, these prevent injury.</li>
@@ -4462,8 +4934,9 @@
 
             <!-- Tab Header -->
             <div style="padding: 24px 0 20px;">
+                <span class="section-eyebrow"><i data-lucide="flame"></i>Bhagavad Gita · Karma Yoga · Daily Discipline</span>
                 <div class="section-header">
-                    <span class="section-title">DHARMA &middot; THE WARRIOR'S PATH</span>
+                    <span class="section-title section-title-icon"><i data-lucide="sun"></i>DHARMA &middot; The Warrior's Path</span>
                     <div class="flex items-center gap-sm">
                         <span class="pill pill-sm pill-dharma" id="dharma-streak-pill">0-Day Streak</span>
                         <span class="pill pill-sm pill-dharma" id="dharma-date-pill"></span>
@@ -4493,11 +4966,12 @@
             </div>
 
             <!-- ===== SECTION 1: MORNING RITUAL (Brahma Muhurta) ===== -->
+            <span class="section-eyebrow animate-in delay-1"><i data-lucide="sunrise"></i>Brahma Muhurta · 96 min before sunrise</span>
             <div class="section-header animate-in delay-1">
-                <span class="section-title">Pratah Kriya &middot; Morning Ritual</span>
+                <span class="section-title section-title-icon"><i data-lucide="sun-medium"></i>Pratah Kriya &middot; Morning Ritual</span>
                 <span class="dharma-time-badge">4:45 &ndash; 6:30 AM</span>
             </div>
-            <div class="card animate-in delay-2" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-morning-card">
+            <div class="card-glass animate-in delay-2" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-morning-card">
                 <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Brahma Muhurta (approx. 96 min before sunrise) is the Vedic hour of creation. The mind is sattvic, cortisol is naturally rising, and the world is still. Arjuna rose before the camp. So do you.</p>
 
                 <div class="dharma-check-item" data-key="wake">
@@ -4565,16 +5039,18 @@
             </div>
 
             <!-- ===== SECTION 2: DAILY DISCIPLINES (Niyamas) ===== -->
+            <span class="section-eyebrow animate-in delay-2"><i data-lucide="check-square"></i>Patanjali · Yoga Sutras · Niyamas</span>
             <div class="section-header animate-in delay-2">
-                <span class="section-title">Niyamas &middot; Daily Disciplines</span>
+                <span class="section-title section-title-icon"><i data-lucide="shield-check"></i>Niyamas &middot; Daily Disciplines</span>
                 <span class="text-xs text-secondary font-medium" id="dharma-niyama-count">0 / 10</span>
             </div>
             <p class="text-xs text-tertiary animate-in delay-2" style="margin-bottom: 16px;">Patanjali's Niyamas mapped to your 100-day transformation. These are not habits &mdash; they are non-negotiable vows (vratas). Arjuna did not "try" to practice archery. He practiced.</p>
 
             <div class="grid-2 animate-in delay-3" style="margin-bottom: 28px;">
                 <!-- Left column: Body disciplines -->
-                <div class="card" style="border-left: 3px solid var(--color-dharma);">
-                    <h4 style="color: var(--color-dharma); margin-bottom: 12px;">Tapas (Austerity of Body)</h4>
+                <div class="card-glass" style="border-left: 3px solid var(--color-dharma);">
+                    <span class="eyebrow-inline accent-dharma"><i data-lucide="flame"></i>Austerity · Body</span>
+                    <h4 style="color: var(--color-dharma); margin:6px 0 12px;">Tapas (Austerity of Body)</h4>
 
                     <div class="dharma-check-item" data-key="training">
                         <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
@@ -4618,8 +5094,9 @@
                 </div>
 
                 <!-- Right column: Mind disciplines -->
-                <div class="card" style="border-left: 3px solid var(--color-dharma);">
-                    <h4 style="color: var(--color-dharma); margin-bottom: 12px;">Svadhyaya (Self-Study)</h4>
+                <div class="card-glass" style="border-left: 3px solid var(--color-dharma);">
+                    <span class="eyebrow-inline accent-dharma"><i data-lucide="book-open"></i>Self-Study · Mind</span>
+                    <h4 style="color: var(--color-dharma); margin:6px 0 12px;">Svadhyaya (Self-Study)</h4>
 
                     <div class="dharma-check-item" data-key="nosugar">
                         <div class="dharma-checkbox" onclick="toggleDharma(this)"></div>
@@ -4664,55 +5141,56 @@
             </div>
 
             <!-- ===== SECTION 3: ARJUNA'S 7 QUALITIES ===== -->
+            <span class="section-eyebrow animate-in delay-3"><i data-lucide="sword"></i>Mahabharata · Warrior Archetype</span>
             <div class="section-header animate-in delay-3">
-                <span class="section-title">Arjuna's Seven Qualities</span>
+                <span class="section-title section-title-icon"><i data-lucide="crown"></i>Arjuna's Seven Qualities</span>
             </div>
             <p class="text-xs text-tertiary animate-in delay-3" style="margin-bottom: 16px;">Each quality of the Mahabharata's greatest warrior maps directly to your transformation. You are not "becoming like" Arjuna. You are building these same qualities through the same method: daily practice under pressure.</p>
 
             <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 28px;" class="animate-in delay-4">
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">1</div>
                     <div class="quality-sanskrit">Ekagrata</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Single-Pointed Focus</h4>
                     <p class="text-xs text-secondary">Arjuna saw only the bird's eye. You see only the next rep, the next km, the next meal. No multitasking. No half-presence.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Training + Meditation</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">2</div>
                     <div class="quality-sanskrit">Abhyasa</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Relentless Practice</h4>
                     <p class="text-xs text-secondary">10,000 arrows before breakfast. Your equivalent: 100 days without a break. The body transforms through repetition, not inspiration.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">100-Day Streak</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">3</div>
                     <div class="quality-sanskrit">Viveka</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Discrimination</h4>
                     <p class="text-xs text-secondary">Knowing what serves you and what destroys you. Sugar vs. protein. Sleep vs. scrolling. This run vs. this excuse. Choose correctly 100 times.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Diet Discipline</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">4</div>
                     <div class="quality-sanskrit">Dhairya</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Courage &amp; Patience</h4>
                     <p class="text-xs text-secondary">Arjuna faced Karna knowing he might die. You face PSMF at 900 kcal knowing it will hurt. Courage is not absence of suffering &mdash; it is action despite it.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">PSMF + Race Day</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">5</div>
                     <div class="quality-sanskrit">Vinaya</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Humility</h4>
                     <p class="text-xs text-secondary">Arjuna bowed to every guru. You ran a 2:41 HM. You blew up at 5K. You have pre-diabetes at 28. Start from truth, not ego.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Blood Work Reality</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">6</div>
                     <div class="quality-sanskrit">Sthitaprajna</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Steady Wisdom</h4>
                     <p class="text-xs text-secondary">Equanimity in victory and defeat. The scale goes up one day &mdash; you stay the course. A race goes badly &mdash; you analyze, not despair. Gita 2.56: "Unshaken by adversity."</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Mental Fortitude</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">7</div>
                     <div class="quality-sanskrit">Nishkama Karma</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Action Without Attachment</h4>
@@ -4722,89 +5200,91 @@
             </div>
 
             <!-- ===== SECTION 3.5: KSHATRIYA CHITTA (Gateway × Vedic) ===== -->
+            <span class="section-eyebrow animate-in delay-3"><i data-lucide="brain-circuit"></i>Focus 10 / 12 · Monroe × Vedic</span>
             <div class="section-header animate-in delay-3">
-                <span class="section-title">Kshatriya Chitta &middot; Warrior's Mind Protocol</span>
+                <span class="section-title section-title-icon"><i data-lucide="shield"></i>Kshatriya Chitta &middot; Warrior's Mind Protocol</span>
                 <span class="pill pill-sm pill-dharma">Gateway &times; Vedic &middot; 1977 / 2003 Declassified</span>
             </div>
 
             <!-- Block A: Framing Card -->
-            <div class="card animate-in delay-3" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;">
+            <div class="card-glass animate-in delay-3" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;">
                 <p class="text-sm text-secondary" style="line-height: 1.7;">Before Arjuna picked up the Gandiva on Day 1 of Kurukshetra, his mind had already trained for the war. The <strong style="color: var(--color-dharma);">Gateway Process</strong> &mdash; declassified from CIA files in 2003, rooted in the Monroe Institute's 1977 research &mdash; is a practical protocol that parallels what yogis called Pratyahara (withdrawal), Dharana (concentration), and Dhyana (meditation).</p>
                 <p class="text-sm text-secondary" style="line-height: 1.7; margin-top: 10px;">Use it as Arjuna used his mantras: to <strong style="color: var(--color-dharma);">charge the body with prana</strong>, to <strong style="color: var(--color-dharma);">heal what is weak</strong>, to <strong style="color: var(--color-dharma);">manifest what is not yet real</strong>. Focus 10 = body asleep, mind awake. Focus 12 = expanded awareness. These are not mystical states &mdash; they are trainable tools.</p>
                 <p class="text-xs text-tertiary" style="margin-top: 14px; font-style: italic;">&mdash; CIA-RDP96-00788R001700210023-7 &middot; Monroe Institute of Applied Sciences, Gateway Intermediate Workbook</p>
             </div>
 
             <!-- Block B: The Ten Astras -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="swords"></i>Itihasas · Divine Weapons</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Dasha Astra &middot; The Ten Divine Weapons</span>
+                <span class="section-title section-title-icon"><i data-lucide="zap"></i>Dasha Astra &middot; The Ten Divine Weapons</span>
                 <span class="pill pill-sm pill-dharma" style="font-size:0.6rem;">Expanded 5 → 10 on Apr 21, 2026</span>
             </div>
             <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Each Gateway energy tool mapped to one of the divine weapons of the Itihasas. These are not abstract &mdash; each has a specific moment in your training when you draw it.</p>
             <div class="grid-3 animate-in delay-4" style="margin-bottom: 28px;">
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">1</div>
                     <div class="quality-sanskrit">Agni Astra</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Fire Weapon &middot; Red Energy Charge</h4>
                     <p class="text-xs text-secondary">Close eyes, inhale deeply, think of the act &mdash; visualize radiant <strong style="color:#FF3B30;">red energy</strong>. Exhale, open eyes, perform. Speed and strength surge.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Pre-tempo &middot; HYROX stations &middot; PSMF AM</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">2</div>
                     <div class="quality-sanskrit">Sanjeevani</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Healing Herb &middot; Purple Heal</h4>
                     <p class="text-xs text-secondary">Close eyes, look at the weak part, send <strong style="color:#A855F7;">purple healing light</strong> to it. Say in your mind: "Heal. Balance." Foreign substance, inflammation, tightness &mdash; eliminated through normal channels.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Post-run knees &middot; Hip flexors &middot; Lower back</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">3</div>
                     <div class="quality-sanskrit">Amrit Dhara</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Nectar Stream &middot; White Palm Energy</h4>
                     <p class="text-xs text-secondary">Extend palms up. Inhale deeply. Radiant <strong style="color:#FFFFFF;">pure white energy</strong> from above flows down through palms, up through arms, spreads through total self. Hunger signal neutralized &mdash; "need has been satisfied."</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">PSMF waves Day 21&ndash;34 / 49&ndash;62</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">4</div>
                     <div class="quality-sanskrit">Narayan Kavach</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Divine Shield &middot; REBAL</h4>
                     <p class="text-xs text-secondary">Resonant Energy Balloon. Breathe energy up, exhale it swirling down to toes. Build a bright egg-shaped sphere around you. It protects, it carries you into expanded states. Arjuna wore this before every battle.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Race morning &middot; Bloodwork day &middot; High-stakes meetings</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">5</div>
                     <div class="quality-sanskrit">Divya Drishti</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Divine Sight &middot; Focus 12 Pattern Change</h4>
                     <p class="text-xs text-secondary">In Focus 12, build the pattern you desire with precision. Release it strongly into all areas of expanded awareness. Sanjaya saw Kurukshetra from 100 miles away &mdash; you see your Day 100 self. It forms because you believed it.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Weekly &middot; Day 100: 78 kg, HbA1c 5.7, HYROX finish</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">6</div>
                     <div class="quality-sanskrit">Vajra</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Indra's Thunderbolt &middot; EBT Rapid-Fire</h4>
                     <p class="text-xs text-secondary">Energy Bar Tool, fired in <strong style="color:#fbbf24;">rapid succession</strong> like Indra's vajra splitting clouds. Three sharp inhales, each charging a bar, release on a long exhale. Pure kinetic ignition before an interval, a sprint, a sled push.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Pre 400s / 1K reps &middot; HYROX transitions</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">7</div>
                     <div class="quality-sanskrit">Pashupatastra</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Shiva's Weapon &middot; REBAL + Focus 15</h4>
                     <p class="text-xs text-secondary">Not for enemies &mdash; for the deepest recovery. Build the full REBAL shield, drop into Focus 15 (no time). Nervous system returns to baseline, tissue repairs at depth. Reserve for the hardest weeks &mdash; Week 6 PSMF, post-Korea, post-HYROX Delhi.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Deload Sundays &middot; Post-race Day 1</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">8</div>
                     <div class="quality-sanskrit">Brahmastra</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Brahma's Weapon &middot; Living Body Map</h4>
                     <p class="text-xs text-secondary">Full-body scan from toes to crown, feeling every segment, asking <em>"alive?"</em> and awaiting the answer. The weapon of absolute truth &mdash; it doesn't lie about what's injured, what's dormant, what's over-trained. Use before big decisions: push or rest? Train or taper?</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Monday AM &middot; Pre-race week &middot; Injury doubt</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">9</div>
                     <div class="quality-sanskrit">Sudarshana Chakra</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Vishnu's Disc &middot; Emotional Body Map</h4>
                     <p class="text-xs text-secondary">The spinning disc severs emotional residue. Scan for <strong style="color:#06b6d4;">anxiety, doubt, anger</strong> lodged in the body &mdash; chest, gut, jaw. Spin the chakra through it, clear it. Pre-race mental clean-up before the A-races so the nervous system arrives unburdened.</p>
                     <span class="pill pill-sm pill-dharma" style="margin-top: 8px;">Night before Bangalore / HYROX / Mumbai</span>
                 </div>
-                <div class="card quality-card">
+                <div class="card-glass quality-card">
                     <div class="quality-num">10</div>
                     <div class="quality-sanskrit">Trishul</div>
                     <h4 style="font-size: 0.8125rem; margin-bottom: 6px;">Three-Pronged Spear &middot; Emergency Abort</h4>
@@ -4814,11 +5294,12 @@
             </div>
 
             <!-- Gateway Audio — free theta/delta resources -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="headphones"></i>Binaural Beats · Brainwave Entrainment</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Hemi-Sync &middot; Gateway Audio</span>
+                <span class="section-title section-title-icon"><i data-lucide="radio"></i>Hemi-Sync &middot; Gateway Audio</span>
                 <span class="pill pill-sm pill-dharma" style="font-size: 0.6rem;">Free resources</span>
             </div>
-            <div class="card animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 20px;">
+            <div class="card-glass animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 20px;">
                 <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Binaural beats (delivered via headphones) drive brainwave entrainment.
                 <strong style="color:var(--text-primary);">4&nbsp;Hz delta</strong> drops you toward Focus 10 (mind awake, body asleep).
                 <strong style="color:var(--text-primary);">7&nbsp;Hz theta</strong> holds Focus 12 (expanded awareness).
@@ -4856,7 +5337,7 @@
             </div>
 
             <!-- Gateway Session Timeline -->
-            <div class="card animate-in delay-4" style="margin-bottom: 28px;">
+            <div class="card-glass animate-in delay-4" style="margin-bottom: 28px;">
                 <div class="flex items-center justify-between" style="margin-bottom: 14px;">
                     <h3 style="margin:0;">Session Timeline</h3>
                     <span class="text-xs text-secondary" id="gateway-session-count">0 sessions</span>
@@ -4868,13 +5349,14 @@
             </div>
 
             <!-- iOS Shortcuts — static reference card -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="smartphone"></i>Apple · Automations · No Server</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">iOS Shortcuts &middot; Automated Reminders</span>
+                <span class="section-title section-title-icon"><i data-lucide="bell"></i>iOS Shortcuts &middot; Automated Reminders</span>
                 <span class="pill pill-sm pill-dharma" style="font-size: 0.6rem;">Client-only, no backend</span>
             </div>
             <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Four Shortcuts to build in Apple's Shortcuts app. These are pure iOS automations &mdash; no server, no notifications service worker. Open Shortcuts → + New Shortcut → Automation tab. Takes ~15 min each.</p>
             <div class="grid-2 animate-in delay-4" style="margin-bottom: 28px;">
-                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                <div class="card-glass" style="border-left: 3px solid var(--color-dharma);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                         <span style="font-size:1.25rem;">🕉️</span>
                         <h4 style="margin:0;font-size:0.875rem;">Brahma Muhurta Alarm</h4>
@@ -4887,7 +5369,7 @@
                         <li>Action: Open URL → <code style="background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px;">file path or site#panel-dharma</code>.</li>
                     </ol>
                 </div>
-                <div class="card" style="border-left: 3px solid var(--color-running);">
+                <div class="card-glass" style="border-left: 3px solid var(--color-running);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                         <span style="font-size:1.25rem;">🏃</span>
                         <h4 style="margin:0;font-size:0.875rem;">Pre-Run Red Charge</h4>
@@ -4900,7 +5382,7 @@
                         <li>Action: Show Notification → "Red energy charge. Visualize the finish."</li>
                     </ol>
                 </div>
-                <div class="card" style="border-left: 3px solid var(--color-travel);">
+                <div class="card-glass" style="border-left: 3px solid var(--color-travel);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                         <span style="font-size:1.25rem;">🌙</span>
                         <h4 style="margin:0;font-size:0.875rem;">10 PM Wind-Down</h4>
@@ -4913,7 +5395,7 @@
                         <li>Action: Play background sound (rain / Hz drone). Append a "sleep-intent" line to a Notes file.</li>
                     </ol>
                 </div>
-                <div class="card" style="border-left: 3px solid var(--color-dharma);">
+                <div class="card-glass" style="border-left: 3px solid var(--color-dharma);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                         <span style="font-size:1.25rem;">⚔️</span>
                         <h4 style="margin:0;font-size:0.875rem;">Sunday Kurukshetra Dhyana</h4>
@@ -4932,8 +5414,9 @@
             </div>
 
             <!-- Block C: Daily Quick-Tools Panel -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="wand-2"></i>Emergency Tools · Seconds to Deploy</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Sapta Kriya &middot; Seven Quick-Tools</span>
+                <span class="section-title section-title-icon"><i data-lucide="zap"></i>Sapta Kriya &middot; Seven Quick-Tools</span>
             </div>
             <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Reference protocols mapped to specific training moments. Memorize these &mdash; they work in seconds, eyes closed, anywhere.</p>
             <div class="grid-2 animate-in delay-4" style="margin-bottom: 28px;">
@@ -4996,11 +5479,12 @@
             </div>
 
             <!-- Block D: Three New Checkable Daily Items -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="repeat"></i>Daily Non-Negotiables · Trackable</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Daily Gateway Practice</span>
+                <span class="section-title section-title-icon"><i data-lucide="check-circle"></i>Daily Gateway Practice</span>
                 <span class="pill pill-sm pill-dharma">Adds to your daily tracking</span>
             </div>
-            <div class="card animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;">
+            <div class="card-glass animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;">
                 <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Three new practices &mdash; these count toward your daily dharma completion ring.</p>
 
                 <div class="dharma-check-item" data-key="resonant">
@@ -5032,8 +5516,9 @@
             </div>
 
             <!-- Block E: Weekly Kurukshetra Visualization -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="mountain-snow"></i>20-Min Weekly · Sunday Evening</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Saptahik Kurukshetra Dhyana &middot; Weekly Battlefield Meditation</span>
+                <span class="section-title section-title-icon"><i data-lucide="eye"></i>Saptahik Kurukshetra Dhyana &middot; Weekly Battlefield Meditation</span>
                 <span class="dharma-time-badge">Sunday 9:00 PM</span>
             </div>
             <div class="card card-glass animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 28px;">
@@ -5112,11 +5597,12 @@
             </div>
 
             <!-- ===== SECTION 4: EVENING RITUAL (Sandhya) ===== -->
+            <span class="section-eyebrow animate-in delay-3"><i data-lucide="moon"></i>Sandhya · Day-Night Junction</span>
             <div class="section-header animate-in delay-3">
-                <span class="section-title">Sandhya Kriya &middot; Evening Ritual</span>
+                <span class="section-title section-title-icon"><i data-lucide="sunset"></i>Sandhya Kriya &middot; Evening Ritual</span>
                 <span class="dharma-time-badge">9:00 &ndash; 10:00 PM</span>
             </div>
-            <div class="card animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-evening-card">
+            <div class="card-glass animate-in delay-4" style="border-left: 3px solid var(--color-dharma); margin-bottom: 24px;" id="dharma-evening-card">
                 <p class="text-xs text-tertiary" style="margin-bottom: 12px;">Sandhya means "junction" &mdash; the transition between day and night. The warrior cleans his weapons, reviews the battle, and prepares for tomorrow.</p>
 
                 <div class="dharma-check-item" data-key="review">
@@ -5157,13 +5643,16 @@
             </div>
 
             <!-- ===== SECTION 5: WEEKLY SADHANA SCHEDULE ===== -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="calendar-days"></i>7-Day Plan · Parallel to Training</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Weekly Sadhana &middot; Spiritual Practice Schedule</span>
+                <span class="section-title section-title-icon"><i data-lucide="gem"></i>Weekly Sadhana &middot; Spiritual Practice Schedule</span>
             </div>
             <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Sadhana means sustained spiritual practice. This schedule layers onto your existing training plan. The body and the spirit are trained in parallel.</p>
 
-            <div style="overflow-x:auto;margin-bottom:28px;" class="animate-in delay-4">
-                <table class="splits-table">
+            <div class="card-glass animate-in delay-4" style="margin-bottom:28px; padding: 20px;">
+                <span class="eyebrow-inline accent-dharma" style="margin-bottom: 14px;"><i data-lucide="calendar-range"></i>Mon &rarr; Sun · Layered onto Training</span>
+                <div style="overflow-x:auto;">
+                <table class="splits-table" style="margin: 0;">
                     <thead>
                         <tr><th>Day</th><th>Morning Focus</th><th>Training Link</th><th>Evening Focus</th><th>Gita Chapter</th></tr>
                     </thead>
@@ -5177,11 +5666,13 @@
                         <tr><td><strong>Sunday</strong></td><td>Extended meditation (20 min) + pranayama (15 min)</td><td style="color:var(--color-rest);">REST &mdash; Vishram. Even Arjuna rested between battles.</td><td>Plan next week's sankalpa</td><td style="color:var(--color-dharma);">Re-read any chapter</td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <!-- ===== SECTION 6: KEY SHLOKAS ===== -->
+            <span class="section-eyebrow animate-in delay-4"><i data-lucide="scroll"></i>7 Verses · One per Week</span>
             <div class="section-header animate-in delay-4">
-                <span class="section-title">Shlokas for the Warrior's Path</span>
+                <span class="section-title section-title-icon"><i data-lucide="book-open-check"></i>Shlokas for the Warrior's Path</span>
             </div>
             <p class="text-xs text-tertiary animate-in delay-4" style="margin-bottom: 16px;">Seven verses from the Bhagavad Gita, each chosen for a specific moment in your 100-day journey. Memorize one per week. Let them become your inner voice when the body wants to quit.</p>
 
@@ -5252,8 +5743,9 @@
             </div>
 
             <!-- ===== SECTION 8: 100-DAY VOW ===== -->
-            <div class="card animate-in delay-4" style="border: 1px solid var(--color-dharma); margin-bottom: 20px; background: rgba(245, 158, 11, 0.03); text-align: center; padding: 28px;">
-                <h3 style="color: var(--color-dharma); margin-bottom: 12px;">The 100-Day Vow (Vrata)</h3>
+            <div class="card-glass animate-in delay-4" style="border: 1px solid var(--color-dharma); margin-bottom: 20px; background: linear-gradient(180deg, rgba(245, 158, 11, 0.06) 0%, rgba(245, 158, 11, 0.02) 100%); text-align: center; padding: 32px;">
+                <span class="eyebrow-inline accent-dharma" style="margin: 0 auto 16px; display: inline-flex;"><i data-lucide="scroll-text"></i>Vrata · Binding Contract</span>
+                <h3 style="color: var(--color-dharma); margin-bottom: 12px; font-family: var(--font-display); letter-spacing: -0.02em;">The 100-Day Vow (Vrata)</h3>
                 <p class="text-sm text-secondary" style="max-width: 560px; margin: 0 auto 16px; line-height: 1.7;">
                     In the Mahabharata, every great undertaking begins with a vow. Bhishma's vow of celibacy. Arjuna's vow to kill Jayadratha before sunset. A vow is not a goal &mdash; it is a binding contract with your own dharma.
                 </p>
@@ -5275,11 +5767,13 @@
         <div class="container">
 
             <!-- T1: Trip Overview -->
-            <div class="card-glass" style="border-left: 3px solid var(--color-travel); margin: 24px 0;">
-                <div class="section-header" style="margin-bottom: 10px;">
-                    <span class="section-title" style="color: var(--color-travel); font-size: 1rem;">South Korea — Seoul</span>
-                    <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.25);">Jun 12–23 &middot; 11 days</span>
-                </div>
+            <span class="section-eyebrow animate-in" style="margin-top: 24px;"><i data-lucide="plane-takeoff"></i>Jun 12 → 23 · 11 Days Abroad</span>
+            <div class="section-header animate-in">
+                <span class="section-title section-title-icon"><i data-lucide="map-pin"></i>Korea Trip &middot; Managed Maintenance Window</span>
+            </div>
+
+            <div class="card-glass animate-in" style="border-left: 3px solid var(--color-travel); margin: 0 0 24px;">
+                <span class="eyebrow-inline accent-travel"><i data-lucide="globe"></i>South Korea · Seoul · PSMF Paused</span>
                 <div class="grid-3" style="gap: 12px; margin-top: 14px;">
                     <div class="metric-card" style="border-top: 2px solid var(--color-travel);">
                         <div class="metric-label">Trip Countdown</div>
@@ -5301,15 +5795,16 @@
             </div>
 
             <!-- T2: Flight Itinerary -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="section-header" style="margin-bottom: 14px;">
-                    <span class="section-title" style="font-size: 0.95rem;">Flight Itinerary</span>
-                    <span class="pill pill-sm" style="background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1);">PNR: SQ-7QY9VL · Singapore Airlines</span>
+            <div class="card-glass animate-in" style="margin-bottom: 24px;">
+                <span class="eyebrow-inline accent-travel"><i data-lucide="plane"></i>PNR SQ-7QY9VL · Singapore Airlines</span>
+                <div class="section-header" style="margin-bottom: 14px; margin-top: 10px;">
+                    <span class="section-title section-title-icon" style="font-size: 1rem;"><i data-lucide="ticket"></i>Flight Itinerary</span>
+                    <span class="pill pill-sm" style="background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1);">25 kg check-in</span>
                 </div>
 
                 <!-- Outbound -->
-                <div style="margin-bottom: 18px;">
-                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-travel); margin-bottom: 8px;">✈ Outbound — Fri 12 Jun 2026</div>
+                <div style="margin-bottom: 18px; padding: 14px; background: rgba(34,211,238,0.04); border-radius: 10px; border: 1px solid rgba(34,211,238,0.12);">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--color-travel); margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.08em;"><i data-lucide="plane-takeoff" style="width:14px;height:14px;"></i>Outbound &middot; Fri 12 Jun 2026</div>
                     <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
                         <strong style="color: var(--text-primary);">SQ 421</strong> &nbsp; BOM 11:45 → SIN 19:50 &nbsp;·&nbsp; <em>Aircraft 787, Terminal 2 → T1</em><br>
                         <span style="color: var(--color-travel);">— Layover 6h 35m @ Changi —</span><br>
@@ -5318,8 +5813,8 @@
                 </div>
 
                 <!-- Return -->
-                <div>
-                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-travel); margin-bottom: 8px;">✈ Return — Tue 23 Jun 2026</div>
+                <div style="padding: 14px; background: rgba(34,211,238,0.04); border-radius: 10px; border: 1px solid rgba(34,211,238,0.12);">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--color-travel); margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.08em;"><i data-lucide="plane-landing" style="width:14px;height:14px;"></i>Return &middot; Tue 23 Jun 2026</div>
                     <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
                         <strong style="color: var(--text-primary);">SQ 607</strong> &nbsp; ICN 09:00 → SIN 14:20 &nbsp;·&nbsp; <em>Aircraft 787, T1 → T2/3</em><br>
                         <span style="color: var(--color-travel);">— Layover 4h 30m @ Changi —</span><br>
@@ -5327,13 +5822,14 @@
                     </div>
                 </div>
 
-                <p class="text-xs text-tertiary" style="margin-top: 14px;">Baggage: 25 kg check-in per passenger. Cabin not pre-selected.</p>
+                <p class="text-xs text-tertiary" style="margin-top: 14px;"><i data-lucide="info" style="width:12px;height:12px;display:inline-block;vertical-align:-2px;"></i>&nbsp;Cabin not pre-selected.</p>
             </div>
 
             <!-- T3: Changi Layover Protocols -->
-            <div class="card-glass" style="border-left: 3px solid var(--color-travel); margin-bottom: 24px;">
-                <div class="section-header" style="margin-bottom: 10px;">
-                    <span class="section-title" style="font-size: 0.95rem; color: var(--color-travel);">Changi Layover Protocols</span>
+            <div class="card-glass animate-in" style="border-left: 3px solid var(--color-travel); margin-bottom: 24px;">
+                <span class="eyebrow-inline accent-travel"><i data-lucide="clock-4"></i>11h 05m Total Layover · Use It</span>
+                <div class="section-header" style="margin-bottom: 10px; margin-top: 10px;">
+                    <span class="section-title section-title-icon" style="font-size: 1rem; color: var(--color-travel);"><i data-lucide="plane-takeoff"></i>Changi Layover Protocols</span>
                     <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.2);">Use the time, don't lose it</span>
                 </div>
 
@@ -5369,9 +5865,10 @@
             </div>
 
             <!-- T4: What to Carry / Buy -->
-            <div class="grid-2" style="margin-bottom: 24px; gap: 16px;">
-                <div class="card">
-                    <h4 style="color: var(--color-running); margin-bottom: 10px; font-size: 0.9rem;">🧳 Carry from India</h4>
+            <div class="grid-2 animate-in" style="margin-bottom: 24px; gap: 16px;">
+                <div class="card-glass" style="border-left: 3px solid var(--color-running);">
+                    <span class="eyebrow-inline accent-run"><i data-lucide="luggage"></i>Carry From India · Non-Negotiables</span>
+                    <h4 style="color: var(--color-running); margin: 10px 0 12px; font-size: 0.95rem; font-family: var(--font-display); letter-spacing: -0.01em;">Ship with you · 8 items</h4>
                     <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.8;">
                         <strong style="color: var(--text-primary);">Freak Labs Whey</strong> ~600g (sealed tub, declare if asked — it's fine)<br>
                         <strong style="color: var(--text-primary);">Shaker bottle</strong> ×1<br>
@@ -5383,8 +5880,9 @@
                         <strong style="color: var(--text-primary);">Glucometer + strips</strong> — FBS daily log
                     </div>
                 </div>
-                <div class="card">
-                    <h4 style="color: var(--color-travel); margin-bottom: 10px; font-size: 0.9rem;">🛒 Buy in Korea</h4>
+                <div class="card-glass" style="border-left: 3px solid var(--color-travel);">
+                    <span class="eyebrow-inline accent-travel"><i data-lucide="shopping-cart"></i>Buy in Korea · Convenience-Store Stack</span>
+                    <h4 style="color: var(--color-travel); margin: 10px 0 12px; font-size: 0.95rem; font-family: var(--font-display); letter-spacing: -0.01em;">Find at CU / GS25 / 7-Eleven</h4>
                     <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.8;">
                         <strong style="color: var(--text-primary);">Greek yogurt</strong> — any CU / GS25 / 7-Eleven (~15g P/cup)<br>
                         <strong style="color: var(--text-primary);">Gyeran (hard-boiled eggs)</strong> — convenience stores, pre-packaged (6g P each)<br>
@@ -5399,9 +5897,10 @@
             </div>
 
             <!-- T5: Korean Food Rulebook -->
-            <div class="card-glass" style="margin-bottom: 24px;">
-                <div class="section-header" style="margin-bottom: 10px;">
-                    <span class="section-title" style="font-size: 0.95rem;">Korean Food Rulebook</span>
+            <div class="card-glass animate-in" style="margin-bottom: 24px;">
+                <span class="eyebrow-inline accent-run"><i data-lucide="utensils"></i>3 Zones · Green / Moderate / Avoid</span>
+                <div class="section-header" style="margin-bottom: 10px; margin-top: 10px;">
+                    <span class="section-title section-title-icon" style="font-size: 1rem;"><i data-lucide="chef-hat"></i>Korean Food Rulebook</span>
                     <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.2);">Eat this, avoid that</span>
                 </div>
 
@@ -5448,10 +5947,11 @@
             </div>
 
             <!-- T6: Hotel Gym Workout Plan -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="section-header" style="margin-bottom: 12px;">
-                    <span class="section-title" style="font-size: 0.95rem;">Hotel Gym Workout Plan — Jun 13–22</span>
-                    <span class="pill pill-sm" style="background:rgba(255,107,44,0.1);color:var(--color-strength);border:1px solid rgba(255,107,44,0.25);">10 active days</span>
+            <div class="card-glass animate-in" style="margin-bottom: 24px; border-left: 3px solid var(--color-strength);">
+                <span class="eyebrow-inline accent-strike"><i data-lucide="dumbbell"></i>10 Active Days · Travel-Modified</span>
+                <div class="section-header" style="margin-bottom: 12px; margin-top: 10px;">
+                    <span class="section-title section-title-icon" style="font-size: 1rem;"><i data-lucide="activity"></i>Hotel Gym Workout Plan &middot; Jun 13–22</span>
+                    <span class="pill pill-sm" style="background:rgba(255,107,44,0.1);color:var(--color-strength);border:1px solid rgba(255,107,44,0.25);">Maintenance block</span>
                 </div>
                 <p class="text-xs text-tertiary" style="margin-bottom: 14px;">Assumes: treadmill, stationary bike, DBs 5–20 kg, flat bench, basic cable/lat pulldown. Adjust if hotel gym is sparser. All sessions 30–60 min — built for jet-lag + travel logistics.</p>
 
@@ -5537,9 +6037,10 @@
             </div>
 
             <!-- T7: Other Considerations -->
-            <div class="card-glass" style="margin-bottom: 24px;">
-                <div class="section-header" style="margin-bottom: 12px;">
-                    <span class="section-title" style="font-size: 0.95rem;">Other Things to Plan For</span>
+            <div class="card-glass animate-in" style="margin-bottom: 24px;">
+                <span class="eyebrow-inline accent-travel"><i data-lucide="clipboard-list"></i>Pre-Departure Checklist · 10 Items</span>
+                <div class="section-header" style="margin-bottom: 12px; margin-top: 10px;">
+                    <span class="section-title section-title-icon" style="font-size: 1rem;"><i data-lucide="list-checks"></i>Other Things to Plan For</span>
                 </div>
                 <div class="grid-2" style="gap: 14px;">
                     <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.75;">
