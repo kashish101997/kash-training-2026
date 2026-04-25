@@ -2994,6 +2994,431 @@
             .pr-row.pr-fresh .pr-weight { animation: none !important; }
         }
     </style>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         v2.5-d · R4 HABIT + MOTIVATION LAYER · heatmap, transformation
+         arc, milestone badges, weekly digest, body measurements,
+         PR confetti, custom cursor, Cmd+K palette, CSV export.
+         ════════════════════════════════════════════════════════════════════ -->
+    <style id="v25-r4-styles">
+        /* ── Transformation Arc card ──────────────────────────────────── */
+        .transformation-arc {
+            padding: 26px 24px 22px;
+            background: linear-gradient(135deg,
+                rgba(255, 210, 63, 0.04) 0%,
+                rgba(57, 255, 20, 0.03) 50%,
+                transparent 100%);
+        }
+        .transformation-arc-ghost {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            font-family: var(--v3-font-mono, 'JetBrains Mono', monospace);
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(6rem, 14vw, 12rem);
+            line-height: 0.78;
+            letter-spacing: -0.06em;
+            color: transparent;
+            background: linear-gradient(180deg,
+                oklch(0.86 0.22 142 / 0.10) 0%,
+                oklch(0.70 0.22 15 / 0.04) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .transformation-arc > *:not(.transformation-arc-ghost) { position: relative; z-index: 1; }
+        .transformation-arc-sentence {
+            font-family: var(--v3-font-display, var(--font-display));
+            font-weight: 500;
+            font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+            line-height: 1.45;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            margin-top: 8px;
+            max-width: 52ch;
+        }
+        .transformation-arc-sentence strong {
+            font-weight: 800;
+            font-family: var(--v3-font-mono);
+            background: linear-gradient(180deg, oklch(0.86 0.22 142) 0%, oklch(0.70 0.22 15) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .transformation-arc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .transformation-arc-grid > div {
+            border-left: 2px solid rgba(255,255,255,0.08);
+            padding: 6px 0 6px 12px;
+        }
+        .transformation-arc-grid .ta-eyebrow {
+            display: block;
+            font-family: var(--v3-font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 2px;
+        }
+        .transformation-arc-grid .ta-value {
+            font-family: var(--v3-font-mono);
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+        .transformation-arc-grid .ta-delta {
+            display: block;
+            margin-top: 2px;
+            font-family: var(--v3-font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.04em;
+            color: var(--color-running);
+        }
+        .transformation-arc-grid .ta-delta[data-dir="up"]   { color: var(--color-running); }
+        .transformation-arc-grid .ta-delta[data-dir="down"] { color: oklch(0.78 0.20 50); }
+
+        /* ── Body measurements grid ──────────────────────────────────── */
+        .measurements-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 12px;
+            align-items: baseline;
+            padding: 7px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .measurements-row:first-child { border-top: 0; padding-top: 4px; }
+        .measurements-row .mr-name { font-family: var(--v3-font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+        .measurements-row .mr-value { font-family: var(--v3-font-mono); font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+        .measurements-row .mr-delta { font-family: var(--v3-font-mono); font-size: 0.62rem; letter-spacing: 0.05em; color: var(--text-tertiary); }
+        .measurements-row .mr-delta[data-dir="down"] { color: var(--color-running); }
+        .measurements-row .mr-delta[data-dir="up"]   { color: oklch(0.78 0.20 50); }
+
+        /* ── 365-cell consistency heatmap ────────────────────────────── */
+        .heatmap-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+        .heatmap-scroll::-webkit-scrollbar { height: 6px; }
+        .heatmap-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        .heatmap-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 11px);
+            grid-auto-flow: column;
+            grid-auto-columns: 11px;
+            gap: 3px;
+            padding: 4px 0;
+            min-width: 800px;
+        }
+        .heatmap-cell {
+            width: 11px; height: 11px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.04);
+            transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: default;
+        }
+        .heatmap-cell[data-score="1"] { background: oklch(0.55 0.18 142 / 0.45); }
+        .heatmap-cell[data-score="2"] { background: oklch(0.62 0.20 142 / 0.65); }
+        .heatmap-cell[data-score="3"] { background: oklch(0.72 0.22 142 / 0.85); }
+        .heatmap-cell[data-score="4"] { background: oklch(0.82 0.24 142); box-shadow: 0 0 8px oklch(0.82 0.24 142 / 0.4); }
+        .heatmap-cell[data-today="1"] {
+            outline: 1px solid var(--text-primary);
+            outline-offset: 1px;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.6);
+            z-index: 10;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+        }
+        .heatmap-legend-dot {
+            display: inline-block;
+            width: 10px; height: 10px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.04);
+        }
+        .heatmap-legend-dot[data-score="1"] { background: oklch(0.55 0.18 142 / 0.45); }
+        .heatmap-legend-dot[data-score="2"] { background: oklch(0.62 0.20 142 / 0.65); }
+        .heatmap-legend-dot[data-score="3"] { background: oklch(0.72 0.22 142 / 0.85); }
+        .heatmap-legend-dot[data-score="4"] { background: oklch(0.82 0.24 142); }
+
+        /* ── Milestone badges grid ──────────────────────────────────── */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .badge-card {
+            position: relative;
+            padding: 16px 12px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+            transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), opacity 320ms;
+            opacity: 0.32;
+            filter: grayscale(0.6);
+        }
+        .badge-card.earned {
+            opacity: 1;
+            filter: none;
+            background: linear-gradient(180deg,
+                rgba(245,158,11,0.06) 0%,
+                rgba(255,255,255,0.025) 100%);
+            border-color: rgba(245,158,11,0.25);
+            box-shadow: 0 4px 24px -12px rgba(245,158,11,0.4),
+                        inset 0 0 0 1px rgba(245,158,11,0.06);
+        }
+        .badge-card:hover.earned { transform: translateY(-2px); }
+        .badge-card .badge-icon {
+            display: inline-flex;
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            align-items: center; justify-content: center;
+            margin-bottom: 8px;
+            color: var(--text-tertiary);
+        }
+        .badge-card.earned .badge-icon {
+            background: linear-gradient(135deg, oklch(0.86 0.22 142) 0%, var(--color-dharma) 100%);
+            color: oklch(0.10 0.005 260);
+            box-shadow: 0 4px 20px -6px rgba(245,158,11,0.5);
+        }
+        .badge-card .badge-name {
+            display: block;
+            font-family: var(--v3-font-display, var(--font-display));
+            font-weight: 600;
+            font-size: 0.86rem;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        .badge-card .badge-meta {
+            display: block;
+            font-family: var(--v3-font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+        .badge-card.earned .badge-meta { color: var(--color-dharma); }
+
+        /* ── Weekly digest card ─────────────────────────────────────── */
+        .weekly-digest-card {
+            background: linear-gradient(135deg,
+                rgba(255, 210, 63, 0.04) 0%,
+                rgba(255, 255, 255, 0.015) 60%);
+        }
+        .weekly-digest-card .digest-line {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            padding: 6px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .weekly-digest-card .digest-line:first-child { border-top: 0; }
+        .weekly-digest-card .digest-key {
+            font-family: var(--v3-font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            min-width: 110px;
+        }
+        .weekly-digest-card .digest-val {
+            font-family: var(--v3-font-mono);
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.92rem;
+        }
+
+        /* ── Confetti for PR celebration ─────────────────────────────── */
+        .confetti-host {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 99999;
+            overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 8px; height: 12px;
+            top: -20px;
+            opacity: 0.95;
+            animation: confetti-fall 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes confetti-fall {
+            0%   { transform: translate(0, 0) rotate(0); opacity: 0; }
+            5%   { opacity: 1; }
+            100% { transform: translate(var(--cx, 0), 110vh) rotate(var(--rot, 540deg)); opacity: 0; }
+        }
+
+        /* ── Custom cursor (desktop only) ────────────────────────────── */
+        @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+            html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
+            html.has-custom-cursor a, html.has-custom-cursor button,
+            html.has-custom-cursor input, html.has-custom-cursor select,
+            html.has-custom-cursor textarea, html.has-custom-cursor [tabindex],
+            html.has-custom-cursor [role="tab"] { cursor: none !important; }
+            #v25-cursor-dot, #v25-cursor-ring {
+                position: fixed;
+                top: 0; left: 0;
+                pointer-events: none;
+                z-index: 99998;
+                mix-blend-mode: difference;
+                will-change: transform;
+            }
+            #v25-cursor-dot {
+                width: 6px; height: 6px;
+                border-radius: 50%;
+                background: oklch(0.95 0 0);
+                transform: translate3d(-50%, -50%, 0);
+                transition: width 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                            height 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                            opacity 200ms;
+            }
+            #v25-cursor-ring {
+                width: 28px; height: 28px;
+                border: 1px solid oklch(0.95 0 0 / 0.6);
+                border-radius: 50%;
+                transform: translate3d(-50%, -50%, 0);
+                transition: width 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                            height 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                            border-color 280ms,
+                            opacity 280ms;
+            }
+            html.cursor-hovering #v25-cursor-dot { opacity: 0; }
+            html.cursor-hovering #v25-cursor-ring {
+                width: 44px; height: 44px;
+                border-color: var(--color-running);
+            }
+            html.cursor-pressing #v25-cursor-ring { width: 22px; height: 22px; }
+        }
+
+        /* ── Cmd+K command palette ───────────────────────────────────── */
+        .cmdk-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 8, 12, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 14vh;
+            opacity: 0;
+            transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cmdk-overlay.active { opacity: 1; }
+        .cmdk-panel {
+            width: min(560px, 92vw);
+            background: oklch(0.13 0.005 265);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            box-shadow: 0 32px 80px -24px rgba(0,0,0,0.7);
+            overflow: hidden;
+            transform: translateY(-12px);
+            transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cmdk-overlay.active .cmdk-panel { transform: translateY(0); }
+        .cmdk-input {
+            width: 100%;
+            padding: 16px 18px;
+            background: transparent;
+            border: 0;
+            outline: none;
+            color: var(--text-primary);
+            font-family: var(--v3-font-display, var(--font-display));
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .cmdk-input::placeholder { color: var(--text-tertiary); }
+        .cmdk-results { max-height: 50vh; overflow-y: auto; padding: 6px 0; }
+        .cmdk-empty {
+            padding: 24px 18px;
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.86rem;
+        }
+        .cmdk-row {
+            display: grid;
+            grid-template-columns: 22px 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 18px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: background 120ms;
+        }
+        .cmdk-row.active, .cmdk-row:hover {
+            background: rgba(255,255,255,0.04);
+            color: var(--text-primary);
+        }
+        .cmdk-row .cmdk-label { font-size: 0.88rem; }
+        .cmdk-row .cmdk-tag {
+            font-family: var(--v3-font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.04);
+        }
+        .cmdk-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 18px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            font-family: var(--v3-font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+        }
+        .cmdk-kbd {
+            display: inline-block;
+            padding: 1px 5px;
+            border-radius: 3px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            margin: 0 2px;
+        }
+
+        /* ── Grid-7 mobile fix ───────────────────────────────────────── */
+        @media (max-width: 767px) {
+            .grid-7 {
+                display: flex;
+                gap: 8px;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 6px;
+            }
+            .grid-7 > * {
+                flex: 0 0 auto;
+                min-width: 56px;
+                scroll-snap-align: start;
+            }
+        }
+
+        /* ── Reduced motion ──────────────────────────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            .heatmap-cell { transition: none !important; }
+            .heatmap-cell:hover { transform: none !important; }
+            .badge-card { transition: none !important; }
+            .confetti-piece { animation: none !important; display: none; }
+        }
+    </style>
 </head>
 <body>
 
@@ -3490,6 +3915,24 @@
                 </button>
             </div>
 
+            <!-- ============================================================
+                 R4: WEEKLY DIGEST · Sunday-only Dashboard card
+                 ============================================================ -->
+            <div id="weekly-digest-wrap" style="display: none; margin-bottom: 16px;">
+                <span class="section-eyebrow animate-in delay-4"><i data-lucide="calendar-check"></i>Sunday digest · Week in numbers</span>
+                <div class="section-header animate-in delay-4">
+                    <span class="section-title section-title-icon"><i data-lucide="newspaper"></i>This Week, Honestly</span>
+                </div>
+                <div class="card-glass weekly-digest-card animate-in delay-4" id="weekly-digest" style="position: relative; overflow: hidden;">
+                    <span class="eyebrow-inline accent-gold"><i data-lucide="archive"></i>Mon → Sun · Last 7 days</span>
+                    <div id="weekly-digest-body" style="margin-top: 12px;"></div>
+                    <div class="flex items-center justify-between" style="margin-top: 14px;">
+                        <button class="btn btn-ghost btn-sm" onclick="copyWeeklyDigest()"><i data-lucide="copy" style="width:11px;height:11px;"></i> Copy to clipboard</button>
+                        <span class="text-xs text-tertiary" id="weekly-digest-meta"></span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Activity Feed -->
             <div class="section-header animate-in delay-5">
                 <span class="section-title">Activity Feed</span>
@@ -3524,7 +3967,8 @@
                 'race-result': 'Log Race Result',
                 'hyrox-session': 'Log HYROX Splits',
                 'gateway-session': 'Log Gateway Session',
-                'strength-pr': 'Log Strength PR'
+                'strength-pr': 'Log Strength PR',
+                'measurement': 'Log Body Measurements'
             };
 
             const overlay = document.createElement('div');
@@ -3625,6 +4069,27 @@
                     </select>
                     <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="2" placeholder="Notes / imagery" id="modal-notes"></textarea>
                     <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="2" placeholder="Pattern change / insight (optional)" id="gw-pattern"></textarea>
+                `;
+                modalWidth = 'max-width:520px;';
+            } else if (type === 'measurement') {
+                bodyHTML = `
+                    <div style="font-size:0.6875rem;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Tape measurements (cm) · skip blanks</div>
+                    <div class="feedback-grid">
+                        <input class="modal-input" type="number" placeholder="Waist (cm)" id="modal-input" autocomplete="off" step="0.1" min="40" max="200">
+                        <input class="modal-input" type="number" placeholder="Hip (cm)" id="meas-hip" autocomplete="off" step="0.1" min="40" max="200">
+                    </div>
+                    <div class="feedback-grid" style="margin-top:8px;">
+                        <input class="modal-input" type="number" placeholder="Chest (cm)" id="meas-chest" autocomplete="off" step="0.1" min="40" max="200">
+                        <input class="modal-input" type="number" placeholder="Thigh (cm)" id="meas-thigh" autocomplete="off" step="0.1" min="20" max="120">
+                    </div>
+                    <div class="feedback-grid" style="margin-top:8px;">
+                        <input class="modal-input" type="number" placeholder="Arm (cm)" id="meas-arm" autocomplete="off" step="0.1" min="15" max="80">
+                        <input class="modal-input" type="number" placeholder="Calf (cm)" id="meas-calf" autocomplete="off" step="0.1" min="15" max="80">
+                    </div>
+                    <div class="feedback-grid" style="margin-top:8px;">
+                        <input class="modal-input" type="number" placeholder="Neck (cm)" id="meas-neck" autocomplete="off" step="0.1" min="20" max="60">
+                        <input class="modal-input" type="text" placeholder="Notes (optional)" id="modal-notes" autocomplete="off">
+                    </div>
                 `;
                 modalWidth = 'max-width:520px;';
             } else if (type === 'strength-pr') {
@@ -5402,6 +5867,79 @@
                 </div>
             </div>
 
+            <!-- ============================================================
+                 R4: TRANSFORMATION ARC (editorial sentence)
+                 ============================================================ -->
+            <span class="section-eyebrow"><i data-lucide="sunrise"></i>The Arc · From Day Zero</span>
+            <div class="section-header">
+                <span class="section-title section-title-icon"><i data-lucide="git-branch"></i>Transformation Arc</span>
+            </div>
+            <div class="card-glass transformation-arc" id="transformation-arc-card" style="margin-bottom: 24px; position: relative; overflow: hidden;">
+                <div class="transformation-arc-ghost" aria-hidden="true">100</div>
+                <span class="eyebrow-inline accent-gold"><i data-lucide="compass"></i>Apr 13 · 2026 → today</span>
+                <p class="transformation-arc-sentence" id="transformation-arc-sentence">
+                    Awaiting your first weight, FBS, and workout — the arc writes itself once data starts flowing.
+                </p>
+                <div class="transformation-arc-grid" id="transformation-arc-grid"></div>
+            </div>
+
+            <!-- ============================================================
+                 R4: BODY MEASUREMENTS + WAIST TREND
+                 ============================================================ -->
+            <span class="section-eyebrow"><i data-lucide="ruler"></i>Tape · Beyond the Scale</span>
+            <div class="section-header">
+                <span class="section-title section-title-icon"><i data-lucide="scan"></i>Body Measurements</span>
+            </div>
+            <div class="grid-2" style="gap: 16px; margin-bottom: 24px;">
+                <div class="card-glass" id="measurements-summary-card" style="border-left: 3px solid var(--color-running);">
+                    <div class="flex items-center justify-between" style="margin-bottom: 8px;">
+                        <span class="eyebrow-inline accent-run"><i data-lucide="ruler"></i>Latest tape</span>
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('measurement')"><i data-lucide="plus" style="width:11px;height:11px;"></i> Log Tape</button>
+                    </div>
+                    <h3 style="margin-top: 4px;">Latest measurements</h3>
+                    <div id="measurements-grid" style="margin-top: 12px;">
+                        <div class="empty-state-momentum">
+                            <span class="esm-eyebrow">Below the scale</span>
+                            <span class="esm-title">A tape measure shows what the scale can't — log waist + hip + thigh once a month and the numbers steer you when weight stalls.</span>
+                            <button class="esm-cta" onclick="openModal('measurement')"><i data-lucide="ruler" style="width:13px;height:13px;"></i> First measurement</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-glass" style="border-left: 3px solid var(--color-race); position: relative; overflow: hidden;">
+                    <div class="chart-ghost-numeral" data-source="waist-trend" id="waist-ghost" aria-hidden="true">—</div>
+                    <span class="eyebrow-inline accent-race"><i data-lucide="trending-down"></i>Waist · Pre-diabetic marker</span>
+                    <h3 style="margin-top: 4px;">Waist trend</h3>
+                    <canvas id="waist-chart" width="800" height="180" style="width: 100%; height: auto; margin-top: 10px;"></canvas>
+                    <p class="text-xs text-tertiary" style="margin-top: 8px;">Healthy &lt;94 cm · Risk 94–102 · High risk &gt;102 (men, WHO).</p>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 R4: 365-CELL CONSISTENCY HEATMAP
+                 ============================================================ -->
+            <span class="section-eyebrow"><i data-lucide="calendar-days"></i>Year at a glance · 365 days</span>
+            <div class="section-header">
+                <span class="section-title section-title-icon"><i data-lucide="grid-3x3"></i>Consistency Heatmap</span>
+            </div>
+            <div class="card-glass" style="margin-bottom: 24px;">
+                <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 12px;">
+                    <span class="text-xs text-secondary" id="heatmap-summary">365 days · 0 active days · 0% consistency</span>
+                    <div class="flex items-center gap-xs" style="font-size: 0.62rem; font-family: var(--v3-font-mono); letter-spacing: 0.06em;">
+                        <span class="text-tertiary">Less</span>
+                        <span class="heatmap-legend-dot" data-score="0"></span>
+                        <span class="heatmap-legend-dot" data-score="1"></span>
+                        <span class="heatmap-legend-dot" data-score="2"></span>
+                        <span class="heatmap-legend-dot" data-score="3"></span>
+                        <span class="heatmap-legend-dot" data-score="4"></span>
+                        <span class="text-tertiary">More</span>
+                    </div>
+                </div>
+                <div class="heatmap-scroll">
+                    <div class="heatmap-grid" id="consistency-heatmap" aria-label="365-day activity heatmap"></div>
+                </div>
+                <p class="text-xs text-tertiary" style="margin-top: 10px;">Each cell = one day. Colour intensity tracks daily activity score (workouts + weights + FBS + Gateway sessions). Hover any cell for the day breakdown.</p>
+            </div>
+
             <!-- Adaptive Recommendations -->
             <span class="section-eyebrow"><i data-lucide="sparkles"></i>Engine · Pattern Analysis</span>
             <div class="section-header"><span class="section-title section-title-icon"><i data-lucide="brain"></i>Adaptive Recommendations</span></div>
@@ -5448,6 +5986,18 @@
                         <span class="pill pill-sm pill-dharma" id="dharma-date-pill"></span>
                     </div>
                 </div>
+            </div>
+
+            <!-- ============================================================
+                 R4: MILESTONE BADGES
+                 ============================================================ -->
+            <span class="section-eyebrow animate-in"><i data-lucide="award"></i>Earned through consistency</span>
+            <div class="section-header animate-in">
+                <span class="section-title section-title-icon"><i data-lucide="medal"></i>Milestone Badges</span>
+            </div>
+            <div class="card-glass animate-in" style="margin-bottom: 28px;">
+                <p class="text-xs text-tertiary" style="margin-bottom: 14px;">Auto-awarded as you cross thresholds. The locked ones become bright the moment you earn them — no opt-in, no tap-to-claim.</p>
+                <div class="badge-grid" id="badge-grid"></div>
             </div>
 
             <!-- Hero Quote Card -->
@@ -7030,6 +7580,9 @@ const AppState = {
     gatewaySessions: [],
     hyroxSessions: [],
     strengthPRs: [],
+    measurements: [],
+    milestoneBadges: [],
+    prCelebrationsSeen: [],
     dharmaChecks: {},
     currentPhase: 2,
     trainingView: 'phase',
@@ -7131,6 +7684,9 @@ const AppState = {
             gatewaySessions: this.gatewaySessions || [],
             hyroxSessions: this.hyroxSessions || [],
             strengthPRs: this.strengthPRs || [],
+            measurements: this.measurements || [],
+            milestoneBadges: this.milestoneBadges || [],
+            prCelebrationsSeen: this.prCelebrationsSeen || [],
             dharmaChecks: this.dharmaChecks || {},
             currentPhase: this.currentPhase,
             trainingView: this.trainingView,
@@ -7281,6 +7837,59 @@ const AppState = {
             }
         });
         return Array.from(map.values()).sort((a, b) => b.weight - a.weight);
+    },
+
+    /* v2.5-d — Body measurements */
+    addMeasurement(payload) {
+        if (!payload || typeof payload !== 'object') return false;
+        if (!this.measurements) this.measurements = [];
+        const today = new Date().toISOString().slice(0,10);
+        const fields = ['waist','hip','chest','thigh','arm','calf','neck'];
+        const entry = { date: payload.date || today };
+        let any = false;
+        fields.forEach(k => {
+            const v = parseFloat(payload[k]);
+            if (!isNaN(v) && v > 0 && v < 250) { entry[k] = v; any = true; }
+        });
+        if (!any) return false;
+        if (payload.notes) entry.notes = String(payload.notes).slice(0, 200);
+        // Replace same-date entry if exists
+        const existingIdx = this.measurements.findIndex(m => m.date === entry.date);
+        if (existingIdx >= 0) {
+            this.measurements[existingIdx] = { ...this.measurements[existingIdx], ...entry };
+        } else {
+            this.measurements.push(entry);
+        }
+        this.measurements.sort((a, b) => a.date.localeCompare(b.date));
+        this.save();
+        return true;
+    },
+
+    /* v2.5-d — Milestone badges */
+    awardBadge(id, label) {
+        if (!id) return false;
+        if (!this.milestoneBadges) this.milestoneBadges = [];
+        if (this.milestoneBadges.some(b => b.id === id)) return false; // already earned
+        this.milestoneBadges.push({ id, label: label || id, date: new Date().toISOString().slice(0,10) });
+        this.save();
+        return true;
+    },
+
+    hasBadge(id) {
+        return !!(this.milestoneBadges && this.milestoneBadges.some(b => b.id === id));
+    },
+
+    /* v2.5-d — PR celebration dedup */
+    markPRCelebrated(key) {
+        if (!key) return;
+        if (!this.prCelebrationsSeen) this.prCelebrationsSeen = [];
+        if (!this.prCelebrationsSeen.includes(key)) {
+            this.prCelebrationsSeen.push(key);
+            this.save();
+        }
+    },
+    isPRCelebrated(key) {
+        return !!(this.prCelebrationsSeen && this.prCelebrationsSeen.includes(key));
     },
 
     addHyroxSession(payload) {
@@ -8808,6 +9417,31 @@ function submitModal(type, arg) {
             showToast(`Gateway session logged: ${duration} min · Focus ${focus}`);
             if (typeof renderGatewayTimeline === 'function') renderGatewayTimeline();
             if (typeof renderGatewayStreak === 'function') renderGatewayStreak();
+            break;
+        }
+        case 'measurement': {
+            const waist = parseFloat(input1.value);
+            const payload = {
+                waist:  isNaN(waist) ? null : waist,
+                hip:    parseFloat(document.getElementById('meas-hip')?.value),
+                chest:  parseFloat(document.getElementById('meas-chest')?.value),
+                thigh:  parseFloat(document.getElementById('meas-thigh')?.value),
+                arm:    parseFloat(document.getElementById('meas-arm')?.value),
+                calf:   parseFloat(document.getElementById('meas-calf')?.value),
+                neck:   parseFloat(document.getElementById('meas-neck')?.value),
+                notes:  document.getElementById('modal-notes')?.value.trim()
+            };
+            const ok = AppState.addMeasurement(payload);
+            if (!ok) { showToast('Enter at least one measurement', 'error'); return; }
+            const parts = [];
+            ['waist','hip','chest','thigh','arm','calf','neck'].forEach(k => {
+                if (!isNaN(payload[k]) && payload[k] !== null && payload[k] > 0) {
+                    parts.push(`${k} ${payload[k]}`);
+                }
+            });
+            showToast(`Measurement logged · ${parts.join(' · ')}`);
+            if (typeof window.v25RenderTransformationArc === 'function') window.v25RenderTransformationArc();
+            if (typeof window.v25RenderWaistTrend === 'function') window.v25RenderWaistTrend();
             break;
         }
         case 'strength-pr': {
@@ -10372,6 +11006,707 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         // Defer slightly so AppState.load() has finished
         setTimeout(boot, 120);
+    }
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     v2.5-d · R4 HABIT + MOTIVATION LAYER
+     365-cell consistency heatmap · Transformation Arc · milestone badges ·
+     weekly digest (Sunday) · body measurements + waist trend chart ·
+     PR confetti · custom cursor · Cmd+K palette · CSV export · grid-7 mobile.
+     Reduced-motion safe. Single IIFE, no globals leak beyond namespace.
+     ════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function v25R4(){
+    'use strict';
+
+    const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const desktop       = () => window.matchMedia('(min-width: 768px)').matches;
+    const safeText = s => (typeof escHTML === 'function' ? escHTML(s) : String(s).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c])));
+    const ymd = d => {
+        const x = (d instanceof Date) ? d : new Date(d);
+        if (isNaN(x)) return null;
+        return x.toISOString().slice(0, 10);
+    };
+
+    /* ───────────────────────────────────────────────────────────────────
+       (1) TRANSFORMATION ARC
+       ─────────────────────────────────────────────────────────────────── */
+    function renderTransformationArc() {
+        const sentenceEl = document.getElementById('transformation-arc-sentence');
+        const gridEl     = document.getElementById('transformation-arc-grid');
+        const ghostEl    = document.querySelector('#transformation-arc-card .transformation-arc-ghost');
+        if (!sentenceEl || !gridEl) return;
+
+        const w = AppState.weights || [];
+        const fbs = AppState.bloodSugar || [];
+        const wos = AppState.workouts || [];
+
+        const startWeight = 98.4;            // Apr 13, 2026 baseline
+        const startFBS    = 115;             // Apr 10, 2026 baseline
+        const targetWeight = 78;
+        const targetFBS    = 95;
+        const startDate = new Date('2026-04-13T00:00:00');
+        const today = new Date(); today.setHours(0,0,0,0);
+        const daysIn = Math.max(0, Math.floor((today - startDate) / 86400000));
+
+        const wSorted = w.slice().sort((a,b) => a.date.localeCompare(b.date));
+        const fbsSorted = fbs.slice().sort((a,b) => a.date.localeCompare(b.date));
+        const latestW   = wSorted.length   ? wSorted[wSorted.length - 1].value   : startWeight;
+        const latestFBS = fbsSorted.length ? fbsSorted[fbsSorted.length - 1].value : startFBS;
+        const dWeight = (latestW - startWeight);
+        const dFBS    = (latestFBS - startFBS);
+        const sessions = wos.length;
+
+        // Sentence
+        const dirW = dWeight < 0 ? 'down' : (dWeight > 0 ? 'up' : 'flat');
+        const dirF = dFBS    < 0 ? 'down' : (dFBS    > 0 ? 'up' : 'flat');
+        const wMagnitude = Math.abs(dWeight).toFixed(1);
+        const fMagnitude = Math.abs(dFBS).toFixed(0);
+        let sentence;
+        if (sessions === 0 && wSorted.length === 0 && fbsSorted.length === 0) {
+            sentence = `<strong>Day 0.</strong> The arc starts the moment you log your first workout, weight, or FBS.`;
+        } else {
+            const arc = [];
+            if (dirW === 'down') arc.push(`down <strong>${wMagnitude} kg</strong>`);
+            else if (dirW === 'up') arc.push(`up <strong>${wMagnitude} kg</strong>`);
+            if (dirF === 'down') arc.push(`FBS dropped <strong>${fMagnitude} mg/dL</strong>`);
+            else if (dirF === 'up') arc.push(`FBS climbed <strong>${fMagnitude} mg/dL</strong>`);
+            if (sessions > 0) arc.push(`<strong>${sessions}</strong> session${sessions === 1 ? '' : 's'}`);
+            const arcStr = arc.length ? arc.join(' · ') : 'no movement yet';
+            sentence = `<strong>Day ${daysIn}</strong> of the 100. ${arcStr}. ${dirW === 'down' ? 'The line is bending the right way.' : dirW === 'up' ? 'Reset the calorie discipline this week.' : 'Hold the line — change is rarely linear.'}`;
+        }
+        sentenceEl.innerHTML = sentence;
+
+        // Grid metrics
+        const items = [
+            { label: 'Days in', value: `${daysIn}`, delta: `of 100`, dir: 'up' },
+            { label: 'Weight Δ', value: `${dWeight > 0 ? '+' : ''}${dWeight.toFixed(1)} kg`, delta: `target -${(startWeight - targetWeight).toFixed(1)}`, dir: dirW === 'down' ? 'down' : 'up' },
+            { label: 'FBS Δ', value: `${dFBS > 0 ? '+' : ''}${dFBS.toFixed(0)} mg/dL`, delta: `target ≤${targetFBS}`, dir: dirF === 'down' ? 'down' : 'up' },
+            { label: 'Sessions', value: `${sessions}`, delta: `since Apr 13`, dir: 'up' }
+        ];
+        gridEl.innerHTML = items.map(it => `
+            <div>
+                <span class="ta-eyebrow">${it.label}</span>
+                <span class="ta-value">${it.value}</span>
+                <span class="ta-delta" data-dir="${it.dir}">${it.delta}</span>
+            </div>
+        `).join('');
+
+        if (ghostEl) ghostEl.textContent = String(daysIn);
+    }
+    window.v25RenderTransformationArc = renderTransformationArc;
+
+    /* ───────────────────────────────────────────────────────────────────
+       (2) BODY MEASUREMENTS + WAIST TREND
+       ─────────────────────────────────────────────────────────────────── */
+    function renderMeasurements() {
+        const grid = document.getElementById('measurements-grid');
+        if (!grid) return;
+        const ms = (AppState.measurements || []).slice().sort((a,b) => a.date.localeCompare(b.date));
+        if (!ms.length) {
+            // Default empty-state already in HTML; skip overwrite
+            return;
+        }
+        const latest = ms[ms.length - 1];
+        const prev = ms.length > 1 ? ms[ms.length - 2] : null;
+        const fields = [
+            ['waist', 'Waist'], ['hip', 'Hip'], ['chest', 'Chest'],
+            ['thigh', 'Thigh'], ['arm', 'Arm'], ['calf', 'Calf'], ['neck', 'Neck']
+        ];
+        const rows = fields.filter(([k]) => latest[k] != null).map(([k, name]) => {
+            const v = latest[k];
+            let deltaHTML = '';
+            if (prev && prev[k] != null) {
+                const d = (v - prev[k]).toFixed(1);
+                const dir = (+d) < 0 ? 'down' : ((+d) > 0 ? 'up' : 'flat');
+                deltaHTML = `<span class="mr-delta" data-dir="${dir}">${(+d) > 0 ? '+' : ''}${d}</span>`;
+            } else {
+                deltaHTML = `<span class="mr-delta">first log</span>`;
+            }
+            return `<div class="measurements-row">
+                <span class="mr-name">${name}</span>
+                <span class="mr-value">${v} cm</span>
+                ${deltaHTML}
+            </div>`;
+        }).join('');
+        const dateStr = (() => {
+            const d = new Date(latest.date);
+            return isNaN(d) ? latest.date : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        })();
+        grid.innerHTML = `<div class="text-xs text-tertiary" style="margin-bottom:8px;">${ms.length} log${ms.length === 1 ? '' : 's'} · latest ${safeText(dateStr)}</div>${rows}`;
+    }
+
+    function renderWaistTrend() {
+        const canvas = document.getElementById('waist-chart');
+        const ghost  = document.getElementById('waist-ghost');
+        if (!canvas) return;
+        if (canvas.offsetParent === null) return; // Don't paint hidden canvases
+        const ms = (AppState.measurements || [])
+            .filter(m => typeof m.waist === 'number')
+            .sort((a, b) => a.date.localeCompare(b.date))
+            .map(m => ({ date: m.date, value: m.waist }));
+        if (!ms.length) {
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * dpr; canvas.height = 180 * dpr;
+            canvas.style.width = rect.width + 'px'; canvas.style.height = '180px';
+            ctx.scale(dpr, dpr);
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Log waist circumference to start the trend', rect.width/2, 90);
+            if (ghost) ghost.textContent = '—';
+            return;
+        }
+        const latest = ms[ms.length - 1].value;
+        if (ghost) ghost.textContent = Math.round(latest);
+        if (typeof drawLineChart === 'function') {
+            drawLineChart('waist-chart', ms, {
+                color: '#ff453a',
+                fillRgba: 'rgba(255,69,58,0.10)',
+                yMin: Math.min(70, Math.floor(Math.min(...ms.map(p=>p.value)) - 4)),
+                yMax: Math.max(110, Math.ceil(Math.max(...ms.map(p=>p.value)) + 4)),
+                decimals: 0,
+                yLabel: 'cm',
+                height: 180,
+                zones: [
+                    { from: 0,   to: 94,  color: 'rgba(57,255,20,0.06)' },
+                    { from: 94,  to: 102, color: 'rgba(255,210,63,0.06)' },
+                    { from: 102, to: 999, color: 'rgba(255,69,58,0.08)' }
+                ]
+            });
+        }
+    }
+    window.v25RenderWaistTrend = renderWaistTrend;
+    window.v25RenderMeasurements = renderMeasurements;
+
+    /* ───────────────────────────────────────────────────────────────────
+       (3) 365-CELL CONSISTENCY HEATMAP
+       ─────────────────────────────────────────────────────────────────── */
+    function buildActivityScoreMap() {
+        // Score per ISO date (0..4)
+        const scores = {};
+        const bump = (k) => { if (!k) return; scores[k] = Math.min(4, (scores[k] || 0) + 1); };
+        (AppState.workouts || []).forEach(w => bump(w.date));
+        (AppState.weights  || []).forEach(w => bump(w.date));
+        (AppState.bloodSugar || []).forEach(b => bump(b.date));
+        (AppState.gatewaySessions || []).forEach(g => bump(g.date));
+        (AppState.strengthPRs || []).forEach(p => bump(p.date));
+        (AppState.measurements || []).forEach(m => bump(m.date));
+        return scores;
+    }
+    function renderHeatmap() {
+        const grid = document.getElementById('consistency-heatmap');
+        const summary = document.getElementById('heatmap-summary');
+        if (!grid) return;
+        const scores = buildActivityScoreMap();
+        const today = new Date(); today.setHours(0,0,0,0);
+        const todayKey = ymd(today);
+        // Start 364 days back, anchor to a Sunday so columns are clean weeks.
+        // (No day-name offset row in this minimalist variant — use rows 0..6 for Mon..Sun.)
+        const days = 365;
+        const cells = [];
+        let active = 0;
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            const key = ymd(d);
+            const score = scores[key] || 0;
+            if (score > 0) active++;
+            const dayName = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            const tooltip = score === 0
+                ? `${dayName} · no activity`
+                : `${dayName} · activity ${score}/4`;
+            cells.push(`<div class="heatmap-cell"
+                data-score="${score}"
+                ${key === todayKey ? 'data-today="1"' : ''}
+                data-date="${key}"
+                title="${safeText(tooltip)}"></div>`);
+        }
+        grid.innerHTML = cells.join('');
+        const pct = Math.round((active / days) * 100);
+        if (summary) summary.textContent = `${days} days · ${active} active · ${pct}% consistency`;
+    }
+    window.v25RenderHeatmap = renderHeatmap;
+
+    /* ───────────────────────────────────────────────────────────────────
+       (4) MILESTONE BADGES
+       ─────────────────────────────────────────────────────────────────── */
+    const BADGES = [
+        { id: 'first-workout',    label: 'First Step',          icon: 'play-circle',     test: () => (AppState.workouts || []).length >= 1 },
+        { id: 'week-streak',      label: 'Seven-Day Set',       icon: 'sunrise',         test: () => streakDays() >= 7 },
+        { id: 'month-streak',     label: 'Month One',           icon: 'flame',           test: () => streakDays() >= 28 },
+        { id: 'first-pr',         label: 'Iron Earned',         icon: 'medal',           test: () => (AppState.strengthPRs || []).length >= 1 },
+        { id: 'sub10kg',          label: 'Minus Ten',           icon: 'trending-down',   test: () => (98.4 - latestWeight()) >= 10 },
+        { id: 'sub-pre-diabetic', label: 'Below 100',           icon: 'heart-pulse',     test: () => latestFBS() && latestFBS() < 100 },
+        { id: 'race-logged',      label: 'Crossed the Line',    icon: 'flag',            test: () => (AppState.raceResults || []).length >= 1 },
+        { id: 'gateway-7',        label: 'Seven Sessions Deep', icon: 'brain',           test: () => (AppState.gatewaySessions || []).length >= 7 },
+        { id: 'measure-3',        label: 'Beyond the Scale',    icon: 'ruler',           test: () => (AppState.measurements || []).length >= 3 },
+        { id: 'day-100',          label: 'Day 100',             icon: 'mountain',        test: () => Math.floor((Date.now() - new Date('2026-04-13').getTime()) / 86400000) >= 100 },
+    ];
+    function streakDays() {
+        const dates = new Set();
+        ['workouts','weights','bloodSugar','gatewaySessions'].forEach(k => {
+            (AppState[k] || []).forEach(x => dates.add(x.date));
+        });
+        let streak = 0;
+        const cur = new Date(); cur.setHours(0,0,0,0);
+        for (let i = 0; i < 365; i++) {
+            if (dates.has(ymd(cur))) {
+                streak++;
+                cur.setDate(cur.getDate() - 1);
+            } else if (streak === 0) {
+                cur.setDate(cur.getDate() - 1); // skip today if not yet logged
+            } else {
+                break;
+            }
+        }
+        return streak;
+    }
+    function latestWeight() {
+        const ws = (AppState.weights || []).slice().sort((a,b) => a.date.localeCompare(b.date));
+        return ws.length ? ws[ws.length - 1].value : 98.4;
+    }
+    function latestFBS() {
+        const fs = (AppState.bloodSugar || []).slice().sort((a,b) => a.date.localeCompare(b.date));
+        return fs.length ? fs[fs.length - 1].value : null;
+    }
+
+    function renderBadges() {
+        const grid = document.getElementById('badge-grid');
+        if (!grid) return;
+        // Auto-award newly earned badges
+        const earnedNow = [];
+        BADGES.forEach(b => {
+            try {
+                if (b.test() && !AppState.hasBadge(b.id)) {
+                    AppState.awardBadge(b.id, b.label);
+                    earnedNow.push(b);
+                }
+            } catch(e) { /* badge test errored — skip */ }
+        });
+        // Render
+        grid.innerHTML = BADGES.map(b => {
+            const earned = AppState.hasBadge(b.id);
+            const meta = earned ? 'Earned' : 'Locked';
+            return `<div class="badge-card${earned ? ' earned' : ''}" data-badge-id="${b.id}">
+                <span class="badge-icon"><i data-lucide="${b.icon}" style="width:18px;height:18px;"></i></span>
+                <span class="badge-name">${safeText(b.label)}</span>
+                <span class="badge-meta">${meta}</span>
+            </div>`;
+        }).join('');
+        if (typeof initLucide === 'function') initLucide();
+        // Toast newly earned (after badge UI exists)
+        if (earnedNow.length) {
+            earnedNow.forEach(b => {
+                if (typeof showToast === 'function') {
+                    showToast(`Badge earned · ${b.label}`, 'success');
+                }
+            });
+        }
+    }
+    window.v25RenderBadges = renderBadges;
+
+    /* ───────────────────────────────────────────────────────────────────
+       (5) WEEKLY DIGEST (Sunday-only)
+       ─────────────────────────────────────────────────────────────────── */
+    function buildDigest() {
+        const today = new Date(); today.setHours(0,0,0,0);
+        const start = new Date(today); start.setDate(today.getDate() - 6); // Mon-ish (rolling 7d)
+        const inWk = (dateStr) => {
+            const d = new Date(dateStr);
+            return !isNaN(d) && d >= start && d <= today;
+        };
+        const ws  = (AppState.workouts  || []).filter(w => inWk(w.date));
+        const wts = (AppState.weights   || []).filter(w => inWk(w.date));
+        const fbs = (AppState.bloodSugar|| []).filter(f => inWk(f.date));
+        const gws = (AppState.gatewaySessions || []).filter(g => inWk(g.date));
+        const totalKm = ws.reduce((s, w) => s + (parseFloat(w.distance) || 0), 0);
+        const sessions = ws.length;
+        const avgFBS = fbs.length ? Math.round(fbs.reduce((s,f) => s + f.value, 0) / fbs.length) : null;
+        const wDelta = (wts.length >= 2)
+            ? (wts[wts.length - 1].value - wts[0].value).toFixed(1) : null;
+        const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const todayStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return {
+            startStr, todayStr,
+            sessions,
+            totalKm: totalKm.toFixed(1),
+            avgFBS,
+            wDelta,
+            gateway: gws.length
+        };
+    }
+    function renderWeeklyDigest() {
+        const wrap = document.getElementById('weekly-digest-wrap');
+        if (!wrap) return;
+        const today = new Date();
+        const isSunday = today.getDay() === 0;
+        if (!isSunday) { wrap.style.display = 'none'; return; }
+        wrap.style.display = '';
+        const d = buildDigest();
+        const body = document.getElementById('weekly-digest-body');
+        const meta = document.getElementById('weekly-digest-meta');
+        if (!body) return;
+        body.innerHTML = [
+            ['Sessions',   `${d.sessions}`],
+            ['Distance',   `${d.totalKm} km`],
+            ['Weight Δ',   d.wDelta != null ? `${(+d.wDelta) > 0 ? '+' : ''}${d.wDelta} kg` : '—'],
+            ['Avg FBS',    d.avgFBS != null ? `${d.avgFBS} mg/dL` : '—'],
+            ['Gateway',    `${d.gateway} session${d.gateway === 1 ? '' : 's'}`]
+        ].map(([k, v]) => `<div class="digest-line">
+            <span class="digest-key">${safeText(k)}</span>
+            <span class="digest-val">${safeText(v)}</span>
+        </div>`).join('');
+        if (meta) meta.textContent = `${d.startStr} → ${d.todayStr}`;
+    }
+    function copyDigest() {
+        const d = buildDigest();
+        const text = [
+            `Kash · Week of ${d.startStr} → ${d.todayStr}`,
+            `· Sessions: ${d.sessions}`,
+            `· Distance: ${d.totalKm} km`,
+            `· Weight Δ: ${d.wDelta != null ? ((+d.wDelta) > 0 ? '+' : '') + d.wDelta + ' kg' : '—'}`,
+            `· Avg FBS: ${d.avgFBS != null ? d.avgFBS + ' mg/dL' : '—'}`,
+            `· Gateway: ${d.gateway}`
+        ].join('\n');
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                if (typeof showToast === 'function') showToast('Digest copied to clipboard', 'success');
+            }, () => {
+                if (typeof showToast === 'function') showToast('Could not copy', 'error');
+            });
+        }
+    }
+    window.copyWeeklyDigest = copyDigest;
+
+    /* ───────────────────────────────────────────────────────────────────
+       (6) PR CONFETTI CELEBRATION
+       ─────────────────────────────────────────────────────────────────── */
+    function fireConfetti() {
+        if (reducedMotion()) return;
+        const host = document.createElement('div');
+        host.className = 'confetti-host';
+        document.body.appendChild(host);
+        const colors = ['#39ff14', '#ffd23f', '#ff453a', '#7d5fff', '#1ec8ff'];
+        const N = 70;
+        for (let i = 0; i < N; i++) {
+            const piece = document.createElement('span');
+            piece.className = 'confetti-piece';
+            piece.style.left = (Math.random() * 100) + 'vw';
+            piece.style.background = colors[i % colors.length];
+            piece.style.setProperty('--cx', ((Math.random() - 0.5) * 200) + 'px');
+            piece.style.setProperty('--rot', (Math.random() * 1080) + 'deg');
+            piece.style.animationDelay = (Math.random() * 0.4) + 's';
+            piece.style.animationDuration = (2.0 + Math.random() * 1.2) + 's';
+            host.appendChild(piece);
+        }
+        setTimeout(() => host.remove(), 4000);
+    }
+    window.v25FireConfetti = fireConfetti;
+
+    // Hook PR submission: when renderStrengthPRs fires with a freshLift,
+    // celebrate if not previously celebrated.
+    if (typeof window.renderStrengthPRs === 'function' && !window.renderStrengthPRs._v25R4Wrapped) {
+        const origRender = window.renderStrengthPRs;
+        window.renderStrengthPRs = function(freshLift) {
+            const r = origRender.apply(this, arguments);
+            if (freshLift) {
+                // Use lift+latest weight as celebration key (one celebration per PR moment)
+                const latest = (AppState.strengthPRs || [])
+                    .filter(p => p.lift.toLowerCase() === freshLift.toLowerCase())
+                    .sort((a,b) => b.date.localeCompare(a.date))[0];
+                if (latest) {
+                    const key = `${freshLift.toLowerCase()}|${latest.date}|${latest.weight}`;
+                    if (!AppState.isPRCelebrated(key)) {
+                        fireConfetti();
+                        AppState.markPRCelebrated(key);
+                    }
+                }
+            }
+            return r;
+        };
+        window.renderStrengthPRs._v25R4Wrapped = true;
+    }
+
+    /* ───────────────────────────────────────────────────────────────────
+       (7) CSV EXPORT
+       ─────────────────────────────────────────────────────────────────── */
+    function csvCell(v) {
+        if (v == null) return '';
+        const s = String(v);
+        if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+        return s;
+    }
+    function arrToCSV(prefix, arr) {
+        if (!arr || !arr.length) return '';
+        const keys = Object.keys(arr[0]);
+        const lines = [
+            ['#sheet', prefix].join(','),
+            keys.join(',')
+        ];
+        arr.forEach(row => {
+            lines.push(keys.map(k => csvCell(row[k])).join(','));
+        });
+        lines.push('');
+        return lines.join('\n');
+    }
+    function exportCSV() {
+        const sheets = [
+            ['weights',          AppState.weights],
+            ['workouts',         AppState.workouts],
+            ['bloodSugar',       AppState.bloodSugar],
+            ['raceResults',      AppState.raceResults],
+            ['gatewaySessions',  AppState.gatewaySessions],
+            ['hyroxSessions',    AppState.hyroxSessions],
+            ['strengthPRs',      AppState.strengthPRs],
+            ['measurements',     AppState.measurements],
+            ['injuries',         AppState.injuries],
+            ['meals',            AppState.meals]
+        ];
+        const csv = sheets.map(([k, arr]) => arrToCSV(k, arr)).join('\n');
+        const today = ymd(new Date());
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `kash-fitness-${today}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 200);
+        if (typeof showToast === 'function') showToast('CSV exported', 'success');
+    }
+    window.v25ExportCSV = exportCSV;
+
+    /* ───────────────────────────────────────────────────────────────────
+       (8) Cmd+K COMMAND PALETTE
+       ─────────────────────────────────────────────────────────────────── */
+    function buildPaletteIndex() {
+        const idx = [];
+        // Tabs
+        ['dashboard','training','diet','cricket','race-strategy','progress','dharma','travel'].forEach(t => {
+            idx.push({ label: 'Switch to ' + t.replace('-', ' '), tag: 'tab', action: () => switchTab(t === 'race-strategy' ? 'race' : t) });
+        });
+        // Quick-log shortcuts
+        idx.push({ label: 'Log workout',         tag: 'log', action: () => openModal('workout') });
+        idx.push({ label: 'Log weight (InBody)', tag: 'log', action: () => openModal('weight') });
+        idx.push({ label: 'Log fasting blood sugar', tag: 'log', action: () => openModal('fbs') });
+        idx.push({ label: 'Log strength PR',     tag: 'log', action: () => openModal('strength-pr') });
+        idx.push({ label: 'Log body measurements', tag: 'log', action: () => openModal('measurement') });
+        idx.push({ label: 'Log Gateway session', tag: 'log', action: () => openModal('gateway-session') });
+        // Actions
+        idx.push({ label: 'Export all data as CSV', tag: 'action', action: () => exportCSV() });
+        idx.push({ label: 'Copy this week\'s digest', tag: 'action', action: () => copyDigest() });
+        // Workouts (recent 30)
+        (AppState.workouts || []).slice(-30).forEach(w => {
+            const d = w.date || '';
+            idx.push({ label: `Workout: ${w.name} (${d})`, tag: 'workout', action: () => switchTab('progress') });
+        });
+        // Races
+        (typeof appData !== 'undefined' && appData.races || []).forEach(r => {
+            idx.push({ label: `Race: ${r.name}`, tag: 'race', action: () => switchTab('race') });
+        });
+        return idx;
+    }
+    let paletteIdx = [], paletteRows = [], paletteSelected = 0;
+    function openPalette() {
+        if (document.getElementById('cmdk-overlay')) return;
+        paletteIdx = buildPaletteIndex();
+        const o = document.createElement('div');
+        o.className = 'cmdk-overlay';
+        o.id = 'cmdk-overlay';
+        o.innerHTML = `
+            <div class="cmdk-panel" role="dialog" aria-label="Command palette">
+                <input class="cmdk-input" id="cmdk-input" placeholder="Type to search · workouts, races, log shortcuts…" autocomplete="off" aria-label="Search">
+                <div class="cmdk-results" id="cmdk-results"></div>
+                <div class="cmdk-footer">
+                    <span><span class="cmdk-kbd">↑↓</span> navigate · <span class="cmdk-kbd">⏎</span> select</span>
+                    <span><span class="cmdk-kbd">esc</span> close</span>
+                </div>
+            </div>
+        `;
+        o.addEventListener('click', e => { if (e.target === o) closePalette(); });
+        document.body.appendChild(o);
+        requestAnimationFrame(() => o.classList.add('active'));
+        const input = document.getElementById('cmdk-input');
+        input.addEventListener('input', () => filterPalette(input.value));
+        input.addEventListener('keydown', paletteKey);
+        filterPalette('');
+        setTimeout(() => input.focus(), 60);
+    }
+    function closePalette() {
+        const o = document.getElementById('cmdk-overlay');
+        if (!o) return;
+        o.classList.remove('active');
+        setTimeout(() => o.remove(), 200);
+    }
+    function filterPalette(q) {
+        const lower = (q || '').toLowerCase().trim();
+        paletteRows = lower
+            ? paletteIdx.filter(it => it.label.toLowerCase().includes(lower))
+            : paletteIdx.slice(0, 20);
+        paletteSelected = 0;
+        const wrap = document.getElementById('cmdk-results');
+        if (!wrap) return;
+        if (!paletteRows.length) {
+            wrap.innerHTML = `<div class="cmdk-empty">No matches for "${safeText(q)}"</div>`;
+            return;
+        }
+        wrap.innerHTML = paletteRows.map((it, i) => `
+            <div class="cmdk-row${i === 0 ? ' active' : ''}" data-cmdk-i="${i}">
+                <span><i data-lucide="chevron-right" style="width:14px;height:14px;color:var(--text-tertiary);"></i></span>
+                <span class="cmdk-label">${safeText(it.label)}</span>
+                <span class="cmdk-tag">${safeText(it.tag)}</span>
+            </div>
+        `).join('');
+        if (typeof initLucide === 'function') initLucide();
+        wrap.querySelectorAll('.cmdk-row').forEach(row => {
+            row.addEventListener('click', () => {
+                paletteSelected = parseInt(row.getAttribute('data-cmdk-i'), 10) || 0;
+                executePalette();
+            });
+        });
+    }
+    function paletteKey(e) {
+        if (e.key === 'Escape') { e.preventDefault(); closePalette(); return; }
+        if (e.key === 'Enter') { e.preventDefault(); executePalette(); return; }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            paletteSelected = Math.max(0, Math.min(paletteRows.length - 1,
+                paletteSelected + (e.key === 'ArrowDown' ? 1 : -1)));
+            const rows = document.querySelectorAll('#cmdk-results .cmdk-row');
+            rows.forEach((r, i) => r.classList.toggle('active', i === paletteSelected));
+            const sel = rows[paletteSelected];
+            if (sel) sel.scrollIntoView({ block: 'nearest' });
+        }
+    }
+    function executePalette() {
+        const it = paletteRows[paletteSelected];
+        if (!it) return;
+        closePalette();
+        try { it.action(); } catch(e) { console.warn('palette action failed:', e); }
+    }
+    document.addEventListener('keydown', e => {
+        const isMod = e.metaKey || e.ctrlKey;
+        if (isMod && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            const open = document.getElementById('cmdk-overlay');
+            if (open) closePalette(); else openPalette();
+        }
+    });
+
+    /* ───────────────────────────────────────────────────────────────────
+       (9) CUSTOM CURSOR
+       ─────────────────────────────────────────────────────────────────── */
+    function initCustomCursor() {
+        if (!desktop()) return;
+        if (reducedMotion()) return;
+        if (!matchMedia('(pointer: fine)').matches) return;
+        if (document.getElementById('v25-cursor-dot')) return;
+        const dot = document.createElement('div'); dot.id = 'v25-cursor-dot';
+        const ring = document.createElement('div'); ring.id = 'v25-cursor-ring';
+        document.body.appendChild(dot);
+        document.body.appendChild(ring);
+        document.documentElement.classList.add('has-custom-cursor');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        const move = e => { mx = e.clientX; my = e.clientY;
+            dot.style.transform = `translate3d(${mx - 3}px, ${my - 3}px, 0)`;
+        };
+        const tick = () => {
+            // Ring lerps for smoothness
+            rx += (mx - rx) * 0.18;
+            ry += (my - ry) * 0.18;
+            ring.style.transform = `translate3d(${rx - 14}px, ${ry - 14}px, 0)`;
+            requestAnimationFrame(tick);
+        };
+        document.addEventListener('mousemove', move, { passive: true });
+        document.addEventListener('mousedown', () => document.documentElement.classList.add('cursor-pressing'));
+        document.addEventListener('mouseup',   () => document.documentElement.classList.remove('cursor-pressing'));
+        // Hover on interactive surfaces
+        const hoverSel = 'a, button, [role="button"], .card-glass, .metric-card, [data-tab], [data-cmdk-i], .pill, summary, label';
+        document.addEventListener('mouseover', e => {
+            if (e.target.closest && e.target.closest(hoverSel)) {
+                document.documentElement.classList.add('cursor-hovering');
+            }
+        });
+        document.addEventListener('mouseout', e => {
+            if (e.target.closest && e.target.closest(hoverSel)) {
+                document.documentElement.classList.remove('cursor-hovering');
+            }
+        });
+        requestAnimationFrame(tick);
+    }
+
+    /* ───────────────────────────────────────────────────────────────────
+       (10) Render orchestrator + boot
+       ─────────────────────────────────────────────────────────────────── */
+    function renderAll() {
+        try {
+            renderTransformationArc();
+            renderMeasurements();
+            renderWaistTrend();
+            renderHeatmap();
+            renderBadges();
+            renderWeeklyDigest();
+        } catch(e) { console.warn('[v25R4] render failed:', e); }
+    }
+    window.v25RenderHabitLayer = renderAll;
+
+    const boot = () => {
+        renderAll();
+        initCustomCursor();
+        // Wrap switchTab for re-renders on tab entry
+        const origSwitch = window.switchTab;
+        if (typeof origSwitch === 'function' && !origSwitch._v25R4Wrapped) {
+            window.switchTab = function(tabId) {
+                const r = origSwitch.apply(this, arguments);
+                if (tabId === 'progress') {
+                    setTimeout(() => {
+                        renderTransformationArc();
+                        renderMeasurements();
+                        renderWaistTrend();
+                        renderHeatmap();
+                    }, 80);
+                }
+                if (tabId === 'dharma') {
+                    setTimeout(renderBadges, 80);
+                }
+                if (tabId === 'dashboard') {
+                    setTimeout(renderWeeklyDigest, 80);
+                }
+                return r;
+            };
+            window.switchTab._v25R4Wrapped = true;
+        }
+        // Also re-render badges/heatmap when arrays change via save() — use a poll
+        // tick (cheap) so that submitting a workout in any modal updates badges.
+        let lastSig = '';
+        setInterval(() => {
+            const sig = [
+                (AppState.workouts || []).length,
+                (AppState.weights || []).length,
+                (AppState.bloodSugar || []).length,
+                (AppState.gatewaySessions || []).length,
+                (AppState.strengthPRs || []).length,
+                (AppState.measurements || []).length,
+                (AppState.raceResults || []).length
+            ].join('-');
+            if (sig !== lastSig) {
+                lastSig = sig;
+                renderBadges();
+                if (document.getElementById('panel-progress')?.classList.contains('active')) {
+                    renderTransformationArc();
+                    renderHeatmap();
+                }
+            }
+        }, 1500);
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        setTimeout(boot, 220);
     }
 })();
 </script>
