@@ -2739,6 +2739,261 @@
             .hero-ghost-numeral { opacity: 0.08 !important; }
         }
     </style>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         v2.5-c · R3 PROGRESS NARRATIVE · VO2 / pace zones / ACWR / PRs +
+         editorial chart frames + scrub ghost numerals + empty-state polish.
+         ════════════════════════════════════════════════════════════════════ -->
+    <style id="v25-r3-styles">
+        /* ── Performance insight cards: shared editorial chrome ───────────── */
+        .perf-insight-card {
+            padding: 18px 18px 16px;
+            min-height: 168px;
+            transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 360ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .perf-insight-card:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 18px 48px -24px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+        }
+
+        /* Ghost numeral inside each insight card — sits behind value */
+        .perf-insight-ghost {
+            position: absolute;
+            top: -18px;
+            right: -8px;
+            font-family: var(--v3-font-mono, 'JetBrains Mono', monospace);
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(5rem, 11vw, 9rem);
+            line-height: 0.78;
+            letter-spacing: -0.06em;
+            color: currentColor;
+            opacity: 0.055;
+            pointer-events: none;
+            user-select: none;
+            transition: opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 720ms cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateZ(0);
+            z-index: 0;
+        }
+        .perf-insight-card:hover .perf-insight-ghost {
+            opacity: 0.11;
+            transform: translateY(-4px) translateZ(0);
+        }
+        #vo2max-card .perf-insight-ghost { color: var(--color-running); }
+        #acwr-card .perf-insight-ghost { color: var(--color-hyrox); }
+
+        /* All other content above the ghost */
+        .perf-insight-card > *:not(.perf-insight-ghost) { position: relative; z-index: 1; }
+
+        /* Pace-zones list rows */
+        .pace-zone-row {
+            display: grid;
+            grid-template-columns: 36px 1fr auto;
+            gap: 10px;
+            align-items: center;
+            padding: 8px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: var(--v3-font-mono, 'JetBrains Mono', monospace);
+            font-size: 0.72rem;
+            line-height: 1;
+        }
+        .pace-zone-row:first-child { border-top: 0; padding-top: 4px; }
+        .pace-zone-row .pz-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.66rem;
+            letter-spacing: 0.05em;
+            padding: 4px 6px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        .pace-zone-row[data-zone="Z1"] .pz-tag { background: rgba(57,255,20,0.18); color: oklch(0.86 0.22 142); }
+        .pace-zone-row[data-zone="Z2"] .pz-tag { background: rgba(57,255,20,0.10); color: oklch(0.78 0.20 150); }
+        .pace-zone-row[data-zone="Z3"] .pz-tag { background: rgba(255,210,63,0.18); color: oklch(0.86 0.18 90); }
+        .pace-zone-row[data-zone="Z4"] .pz-tag { background: rgba(255,138,0,0.20); color: oklch(0.78 0.20 50); }
+        .pace-zone-row[data-zone="Z5"] .pz-tag { background: rgba(255,69,58,0.22); color: oklch(0.74 0.22 25); }
+        .pace-zone-row .pz-label { color: var(--text-secondary); font-family: var(--v3-font-sans, var(--font-sans)); font-size: 0.74rem; letter-spacing: 0.01em; }
+        .pace-zone-row .pz-pace { color: var(--text-primary); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.04em; }
+
+        /* ACWR colour-coded value */
+        #acwr-value[data-zone="detrain"] { color: oklch(0.78 0.06 250) !important; }
+        #acwr-value[data-zone="sweet"]   { color: var(--color-hyrox) !important; }
+        #acwr-value[data-zone="caution"] { color: oklch(0.86 0.18 90) !important; }
+        #acwr-value[data-zone="risk"]    { color: oklch(0.74 0.22 25) !important; }
+
+        /* Strength PR rows */
+        .pr-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 12px;
+            align-items: baseline;
+            padding: 9px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .pr-row:first-child { border-top: 0; padding-top: 4px; }
+        .pr-row .pr-name {
+            font-family: var(--v3-font-display, var(--font-display));
+            font-weight: 600;
+            font-size: 0.86rem;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+        .pr-row .pr-weight {
+            font-family: var(--v3-font-mono);
+            font-weight: 800;
+            font-size: 1.02rem;
+            color: var(--color-gold, #ffd23f);
+            letter-spacing: 0.02em;
+        }
+        .pr-row .pr-meta {
+            font-family: var(--v3-font-mono);
+            font-size: 0.62rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.06em;
+        }
+        .pr-row.pr-fresh .pr-weight {
+            text-shadow: 0 0 14px rgba(255, 210, 63, 0.55);
+            animation: pr-halo 2200ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes pr-halo {
+            0%   { text-shadow: 0 0 0 rgba(255, 210, 63, 0); }
+            30%  { text-shadow: 0 0 22px rgba(255, 210, 63, 0.85); }
+            100% { text-shadow: 0 0 14px rgba(255, 210, 63, 0.55); }
+        }
+
+        /* Chart-card ghost numeral (weight, FBS, body comp) — sits behind chart */
+        .chart-ghost-numeral {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-family: var(--v3-font-mono, 'JetBrains Mono', monospace);
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(3.2rem, 8vw, 6.5rem);
+            line-height: 0.82;
+            letter-spacing: -0.05em;
+            color: transparent;
+            background: linear-gradient(180deg,
+                oklch(0.86 0.22 142 / 0.10) 0%,
+                oklch(0.70 0.22 15 / 0.04) 70%,
+                transparent 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            opacity: 0.85;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            transform: translateZ(0);
+            transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .chart-ghost-numeral span { font-weight: 600; }
+        .card-glass:hover .chart-ghost-numeral {
+            transform: translateY(-3px) translateZ(0);
+        }
+        .card-glass canvas { position: relative; z-index: 1; }
+
+        /* HYROX station sparkline — slim row inside race cards */
+        .hyrox-sparkline-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 64px;
+            gap: 12px;
+            align-items: center;
+            padding: 6px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-family: var(--v3-font-mono);
+            font-size: 0.7rem;
+        }
+        .hyrox-sparkline-row:first-child { border-top: 0; }
+        .hyrox-sparkline-row .hsp-name {
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+        .hyrox-sparkline-row canvas {
+            width: 100%;
+            height: 18px;
+            display: block;
+        }
+        .hyrox-sparkline-row .hsp-time {
+            text-align: right;
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        /* Empty-state momentum frame */
+        .empty-state-momentum {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 18px 16px;
+            border-radius: 12px;
+            background: linear-gradient(135deg,
+                rgba(255,255,255,0.02) 0%,
+                rgba(255,255,255,0.005) 100%);
+            border: 1px dashed rgba(255,255,255,0.08);
+        }
+        .empty-state-momentum .esm-eyebrow {
+            font-family: var(--v3-font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+        .empty-state-momentum .esm-title {
+            font-family: var(--v3-font-display, var(--font-display));
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+        .empty-state-momentum .esm-cta {
+            margin-top: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--v3-font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 220ms, border-color 220ms;
+        }
+        .empty-state-momentum .esm-cta:hover {
+            background: rgba(255,255,255,0.10);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 640px) {
+            .perf-insight-ghost { font-size: 4.4rem; top: -10px; right: -4px; }
+            .chart-ghost-numeral { font-size: 2.6rem; top: 10px; right: 12px; }
+            .pace-zone-row { grid-template-columns: 32px 1fr auto; font-size: 0.68rem; }
+        }
+
+        /* Reduced-motion: kill hover transforms + ghost transitions */
+        @media (prefers-reduced-motion: reduce) {
+            .perf-insight-card,
+            .perf-insight-ghost,
+            .chart-ghost-numeral { transition: none !important; }
+            .perf-insight-card:hover { transform: none !important; }
+            .perf-insight-card:hover .perf-insight-ghost { transform: none !important; }
+            .pr-row.pr-fresh .pr-weight { animation: none !important; }
+        }
+    </style>
 </head>
 <body>
 
@@ -3240,12 +3495,10 @@
                 <span class="section-title">Activity Feed</span>
             </div>
             <div class="card animate-in delay-5" id="activity-feed">
-                <div class="feed-empty">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom: 10px;">
-                        <circle cx="16" cy="16" r="12"/>
-                        <path d="M12 16h8M16 12v8" stroke-linecap="round"/>
-                    </svg>
-                    <p>No activity yet today. Log a workout to get started.</p>
+                <div class="empty-state-momentum">
+                    <span class="esm-eyebrow">Day Zero · Reset</span>
+                    <span class="esm-title">Today's slate is blank — log a workout, weight, or FBS and it appears here as the day's first stamp.</span>
+                    <button class="esm-cta" onclick="openWorkoutFeedbackModal()"><i data-lucide="play" style="width:13px;height:13px;"></i> Log workout</button>
                 </div>
             </div>
 
@@ -3270,7 +3523,8 @@
                 fbs: 'Log Fasting Blood Sugar',
                 'race-result': 'Log Race Result',
                 'hyrox-session': 'Log HYROX Splits',
-                'gateway-session': 'Log Gateway Session'
+                'gateway-session': 'Log Gateway Session',
+                'strength-pr': 'Log Strength PR'
             };
 
             const overlay = document.createElement('div');
@@ -3373,6 +3627,28 @@
                     <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="2" placeholder="Pattern change / insight (optional)" id="gw-pattern"></textarea>
                 `;
                 modalWidth = 'max-width:520px;';
+            } else if (type === 'strength-pr') {
+                bodyHTML = `
+                    <div style="font-size:0.6875rem;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Lift</div>
+                    <select class="modal-input" id="pr-lift">
+                        <option value="Deadlift">Deadlift</option>
+                        <option value="Squat">Squat (Back)</option>
+                        <option value="Front Squat">Front Squat</option>
+                        <option value="Bench Press">Bench Press</option>
+                        <option value="Overhead Press">Overhead Press</option>
+                        <option value="Power Clean">Power Clean</option>
+                        <option value="Snatch">Snatch</option>
+                        <option value="Pull-up (weighted)">Pull-up (weighted)</option>
+                        <option value="__custom__">— Custom lift…</option>
+                    </select>
+                    <input class="modal-input" type="text" placeholder="Custom lift name" id="pr-custom" style="margin-top:8px;display:none;" autocomplete="off">
+                    <div class="feedback-grid" style="margin-top:10px;">
+                        <input class="modal-input" type="number" placeholder="Weight (kg)" id="modal-input" autocomplete="off" step="0.5" min="1" max="500">
+                        <input class="modal-input" type="number" placeholder="Reps (e.g. 1)" id="pr-reps" autocomplete="off" step="1" min="1" max="50" value="1">
+                    </div>
+                    <textarea class="modal-input" style="margin-top:10px;resize:vertical;" rows="2" placeholder="Notes (form, RPE, mindset)" id="modal-notes"></textarea>
+                `;
+                modalWidth = 'max-width:520px;';
             }
 
             const submitCall = submitArg
@@ -3392,6 +3668,22 @@
             overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
             document.body.appendChild(overlay);
             setTimeout(() => { const el = document.getElementById('modal-input'); if (el) el.focus(); }, 100);
+
+            // v2.5-c — strength-pr: reveal custom-lift input when "Custom lift…" picked
+            if (type === 'strength-pr') {
+                const sel = document.getElementById('pr-lift');
+                const cust = document.getElementById('pr-custom');
+                if (sel && cust) {
+                    sel.addEventListener('change', () => {
+                        if (sel.value === '__custom__') {
+                            cust.style.display = 'block';
+                            setTimeout(() => cust.focus(), 80);
+                        } else {
+                            cust.style.display = 'none';
+                        }
+                    });
+                }
+            }
         }
 
         // Helper: map raceId → human-readable name (used by race-result modal)
@@ -4649,6 +4941,11 @@
                         </tbody>
                     </table>
                 </details>
+                <details style="margin-top: 10px;">
+                    <summary class="text-sm" style="cursor: pointer; color: var(--color-hyrox);"><i data-lucide="line-chart" style="width:12px;height:12px;display:inline-block;vertical-align:-2px;"></i> Station Trend Sparklines →</summary>
+                    <div style="margin-top: 10px;" data-hyrox-sparklines="hyrox-delhi"></div>
+                    <p class="text-xs text-tertiary" style="margin-top: 6px;">Each sparkline shows your station times across logged sessions. Green = faster trend, red = slower.</p>
+                </details>
             </div>
 
             <!-- Hyrox Mumbai -->
@@ -4680,6 +4977,11 @@
                             <tr><td>8</td><td>Wall Balls 75–100</td><td>Sets of 10–15. Final station — everything.</td></tr>
                         </tbody>
                     </table>
+                </details>
+                <details style="margin-top: 10px;">
+                    <summary class="text-sm" style="cursor: pointer; color: var(--color-hyrox);"><i data-lucide="line-chart" style="width:12px;height:12px;display:inline-block;vertical-align:-2px;"></i> Station Trend Sparklines →</summary>
+                    <div style="margin-top: 10px;" data-hyrox-sparklines="hyrox-mumbai"></div>
+                    <p class="text-xs text-tertiary" style="margin-top: 6px;">Compares Mumbai station times against Delhi splits.</p>
                 </details>
             </div>
 
@@ -4756,8 +5058,79 @@
                 </div>
             </div>
 
+            <!-- ============================================================
+                 R3: PERFORMANCE INSIGHTS (VO2 / pace zones / ACWR / PRs)
+                 Auto-computed from raceResults + workouts + strengthPRs.
+                 ============================================================ -->
+            <span class="section-eyebrow"><i data-lucide="activity"></i>Performance · Auto-Derived from Logs</span>
+            <div class="section-header">
+                <span class="section-title section-title-icon"><i data-lucide="zap"></i>Performance Insights</span>
+            </div>
+            <p class="text-xs text-tertiary" style="margin-bottom: 16px; max-width: 60ch;">Four physiological barometers computed from your latest race + your last 28 days of training. Each updates the moment you log a result.</p>
+
+            <div class="grid-2" style="gap: 16px; margin-bottom: 24px;">
+
+                <!-- VO2 max card -->
+                <div class="card-glass perf-insight-card" id="vo2max-card" style="border-left: 3px solid var(--color-running); position: relative; overflow: hidden;">
+                    <span class="eyebrow-inline accent-run"><i data-lucide="lungs"></i>VO2 Max · Jack Daniels VDOT</span>
+                    <h3 style="margin: 8px 0 4px; font-family: var(--v3-font-display, var(--font-display));">Aerobic Engine</h3>
+                    <div class="perf-insight-ghost" id="vo2max-ghost" aria-hidden="true">—</div>
+                    <div style="margin-top: 14px; display: flex; align-items: baseline; gap: 8px;">
+                        <span class="metric-value" id="vo2max-value" style="color: var(--color-running); font-size: clamp(2.4rem, 5vw, 3.4rem); line-height: 1;">—</span>
+                        <span class="text-xs text-tertiary" style="font-family: var(--v3-font-mono); letter-spacing: 0.08em;">ml/kg/min</span>
+                    </div>
+                    <p class="text-xs text-secondary" style="margin-top: 10px; line-height: 1.6;" id="vo2max-context">Log a 5K or 10K to compute your VDOT.</p>
+                    <p class="text-xs text-tertiary" style="margin-top: 6px; font-family: var(--v3-font-mono); font-size: 0.62rem; letter-spacing: 0.06em;" id="vo2max-source">Awaiting first race result</p>
+                </div>
+
+                <!-- Running Pace Zones -->
+                <div class="card-glass perf-insight-card" id="pace-zones-card" style="border-left: 3px solid var(--color-strength); position: relative; overflow: hidden;">
+                    <span class="eyebrow-inline accent-strike"><i data-lucide="gauge"></i>Pace Zones · Derived from 5K</span>
+                    <h3 style="margin: 8px 0 4px; font-family: var(--v3-font-display, var(--font-display));">Z1 → Z5 Training Pace</h3>
+                    <div id="pace-zones-list" style="margin-top: 14px;">
+                        <p class="text-sm text-tertiary" style="padding: 14px 0;">Log a 5K race result to derive your zones.</p>
+                    </div>
+                </div>
+
+                <!-- ACWR Training Load -->
+                <div class="card-glass perf-insight-card" id="acwr-card" style="border-left: 3px solid var(--color-hyrox); position: relative; overflow: hidden;">
+                    <span class="eyebrow-inline accent-hyrox"><i data-lucide="bar-chart-3"></i>ACWR · Acute ÷ Chronic Load</span>
+                    <h3 style="margin: 8px 0 4px; font-family: var(--v3-font-display, var(--font-display));">Training Load Balance</h3>
+                    <div class="perf-insight-ghost" id="acwr-ghost" aria-hidden="true">—</div>
+                    <div style="margin-top: 14px; display: flex; align-items: baseline; gap: 8px;">
+                        <span class="metric-value" id="acwr-value" style="color: var(--color-hyrox); font-size: clamp(2.4rem, 5vw, 3.4rem); line-height: 1;">—</span>
+                        <span class="text-xs text-tertiary" id="acwr-zone-label" style="font-family: var(--v3-font-mono); letter-spacing: 0.08em;">awaiting</span>
+                    </div>
+                    <div id="acwr-zones-bar" style="display:flex; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 12px; background: rgba(255,255,255,0.05);">
+                        <div data-acwr-z="detrain" style="flex: 0.8; background: rgba(102,102,102,0.4);" title="Detraining (<0.8)"></div>
+                        <div data-acwr-z="sweet"   style="flex: 0.5; background: rgba(57,255,20,0.5);"  title="Sweet spot (0.8–1.3)"></div>
+                        <div data-acwr-z="caution" style="flex: 0.2; background: rgba(255,210,63,0.55);" title="Caution (1.3–1.5)"></div>
+                        <div data-acwr-z="risk"    style="flex: 0.5; background: rgba(255,69,58,0.55);"   title="High risk (>1.5)"></div>
+                    </div>
+                    <p class="text-xs text-secondary" style="margin-top: 10px; line-height: 1.6;" id="acwr-context">Log workouts daily — ratio appears after ~28 days of data.</p>
+                </div>
+
+                <!-- Strength PR Tracker -->
+                <div class="card-glass perf-insight-card" id="strength-pr-card" style="border-left: 3px solid var(--color-gold, #ffd23f); position: relative; overflow: hidden;">
+                    <div class="flex items-center justify-between" style="gap: 8px;">
+                        <span class="eyebrow-inline accent-gold"><i data-lucide="medal"></i>Strength PRs · Progressive Overload</span>
+                        <button class="btn btn-ghost btn-sm" onclick="openModal('strength-pr')" style="font-size: 0.7rem;"><i data-lucide="plus" style="width:11px;height:11px;"></i> Log PR</button>
+                    </div>
+                    <h3 style="margin: 8px 0 4px; font-family: var(--v3-font-display, var(--font-display));">Heaviest Lifts</h3>
+                    <div id="strength-pr-list" style="margin-top: 14px;">
+                        <div class="empty-state-momentum">
+                            <span class="esm-eyebrow">Bar before bone</span>
+                            <span class="esm-title">Tap Log PR to track progressive overload — every kilo on the bar widens the gap from pre-diabetic.</span>
+                            <button class="esm-cta" onclick="openModal('strength-pr')"><i data-lucide="medal" style="width:13px;height:13px;"></i> Log first PR</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
             <!-- Weight Chart -->
-            <div class="card-glass" style="margin-bottom: 24px;">
+            <div class="card-glass" style="margin-bottom: 24px; position: relative; overflow: hidden;">
+                <div class="chart-ghost-numeral" data-source="weight-trend" aria-hidden="true">98<span style="font-size: 0.4em; opacity: 0.6;"> → 78</span></div>
                 <div class="flex items-center justify-between" style="margin-bottom: 10px;">
                     <div>
                         <span class="eyebrow-inline accent-run"><i data-lucide="scale"></i>Weight · 98.4 → 78kg</span>
@@ -4775,7 +5148,8 @@
             </div>
 
             <!-- FBS Chart -->
-            <div class="card-glass" style="margin-bottom: 24px;">
+            <div class="card-glass" style="margin-bottom: 24px; position: relative; overflow: hidden;">
+                <div class="chart-ghost-numeral" data-source="fbs-trend" aria-hidden="true">115<span style="font-size: 0.4em; opacity: 0.6;"> → 95</span></div>
                 <div class="flex items-center justify-between" style="margin-bottom: 10px;">
                     <div>
                         <span class="eyebrow-inline accent-race"><i data-lucide="heart-pulse"></i>Pre-Diabetic · FBS &lt;100 target</span>
@@ -4817,7 +5191,11 @@
                 </div>
                 <div id="race-history-list">
                     <!-- Populated dynamically by renderRaceHistory() -->
-                    <p class="text-sm text-tertiary" style="text-align:center;padding:24px 12px;">No race results logged yet. Log your first result from the Race Strategy tab.</p>
+                    <div class="empty-state-momentum">
+                        <span class="esm-eyebrow">Pacing the line</span>
+                        <span class="esm-title">Your first finish line is logged from the Race Strategy tab — every race becomes a benchmark for the next.</span>
+                        <a href="#" class="esm-cta" onclick="switchTab('race');return false;"><i data-lucide="flag" style="width:13px;height:13px;"></i> Open Race Strategy</a>
+                    </div>
                 </div>
             </div>
 
@@ -5472,7 +5850,11 @@
                 </div>
                 <div id="gateway-timeline" style="position:relative;padding-left:24px;">
                     <div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(245,158,11,0.12);"></div>
-                    <p class="text-sm text-tertiary" style="padding:16px 0;">No sessions logged yet. Log your first Gateway session above.</p>
+                    <div class="empty-state-momentum">
+                        <span class="esm-eyebrow">The deeper room</span>
+                        <span class="esm-title">No Focus levels logged yet — your nervous-system reset starts with the first 35-minute session.</span>
+                        <button class="esm-cta" onclick="openModal('gateway-session')"><i data-lucide="brain" style="width:13px;height:13px;"></i> Log first session</button>
+                    </div>
                 </div>
             </div>
 
@@ -6647,6 +7029,7 @@ const AppState = {
     raceResults: [],
     gatewaySessions: [],
     hyroxSessions: [],
+    strengthPRs: [],
     dharmaChecks: {},
     currentPhase: 2,
     trainingView: 'phase',
@@ -6747,6 +7130,7 @@ const AppState = {
             raceResults: this.raceResults || [],
             gatewaySessions: this.gatewaySessions || [],
             hyroxSessions: this.hyroxSessions || [],
+            strengthPRs: this.strengthPRs || [],
             dharmaChecks: this.dharmaChecks || {},
             currentPhase: this.currentPhase,
             trainingView: this.trainingView,
@@ -6857,6 +7241,46 @@ const AppState = {
     getRaceResult(raceId) {
         if (!this.raceResults) return null;
         return this.raceResults.find(r => r.raceId === raceId) || null;
+    },
+
+    /* v2.5-c — Strength PR tracker */
+    addStrengthPR(payload) {
+        if (!payload || !payload.lift || !payload.weight) return false;
+        if (!this.strengthPRs) this.strengthPRs = [];
+        const today = new Date().toISOString().slice(0,10);
+        const entry = {
+            date: payload.date || today,
+            lift: String(payload.lift).trim(),
+            weight: parseFloat(payload.weight) || 0,
+            reps: parseInt(payload.reps, 10) || 1,
+            unit: payload.unit || 'kg',
+            notes: payload.notes ? String(payload.notes).slice(0, 200) : ''
+        };
+        if (entry.weight <= 0) return false;
+        this.strengthPRs.push(entry);
+        this.strengthPRs.sort((a, b) => a.date.localeCompare(b.date));
+        this.save();
+        return true;
+    },
+
+    getStrengthPRsByLift(lift) {
+        if (!this.strengthPRs) return [];
+        return this.strengthPRs.filter(p => p.lift.toLowerCase() === String(lift).toLowerCase());
+    },
+
+    getLatestPRPerLift() {
+        if (!this.strengthPRs || !this.strengthPRs.length) return [];
+        const map = new Map();
+        this.strengthPRs.forEach(pr => {
+            const key = pr.lift.toLowerCase();
+            const cur = map.get(key);
+            // Track heaviest weight per lift; if tie, latest date wins
+            if (!cur || pr.weight > cur.weight ||
+                (pr.weight === cur.weight && pr.date > cur.date)) {
+                map.set(key, pr);
+            }
+        });
+        return Array.from(map.values()).sort((a, b) => b.weight - a.weight);
     },
 
     addHyroxSession(payload) {
@@ -7730,7 +8154,12 @@ function renderGatewayTimeline() {
     if (countEl) countEl.textContent = `${sessions.length} session${sessions.length === 1 ? '' : 's'}`;
     const line = `<div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(245,158,11,0.12);"></div>`;
     if (sessions.length === 0) {
-        wrap.innerHTML = `${line}<p class="text-sm text-tertiary" style="padding:16px 0;">No sessions logged yet. Log your first Gateway session above.</p>`;
+        wrap.innerHTML = `${line}<div class="empty-state-momentum" style="margin-left:0;">
+            <span class="esm-eyebrow">The deeper room</span>
+            <span class="esm-title">No Focus levels logged yet — your nervous-system reset starts with the first 35-minute session.</span>
+            <button class="esm-cta" onclick="openModal('gateway-session')"><i data-lucide="brain" style="width:13px;height:13px;"></i> Log first session</button>
+        </div>`;
+        if (typeof initLucide === 'function') initLucide();
         return;
     }
     const shown = sessions.slice(0, 10);
@@ -7765,7 +8194,12 @@ function renderRaceHistory() {
     const results = [...(AppState.raceResults || [])].sort((a,b) => b.date.localeCompare(a.date));
     if (countEl) countEl.textContent = `${results.length} race${results.length === 1 ? '' : 's'} logged`;
     if (results.length === 0) {
-        list.innerHTML = `<p class="text-sm text-tertiary" style="text-align:center;padding:24px 12px;">No race results logged yet. Log your first result from the Race Strategy tab.</p>`;
+        list.innerHTML = `<div class="empty-state-momentum">
+            <span class="esm-eyebrow">Pacing the line</span>
+            <span class="esm-title">Your first finish line is logged from the Race Strategy tab — every race becomes a benchmark for the next.</span>
+            <a href="#" class="esm-cta" onclick="switchTab('race');return false;"><i data-lucide="flag" style="width:13px;height:13px;"></i> Open Race Strategy</a>
+        </div>`;
+        if (typeof initLucide === 'function') initLucide();
         return;
     }
     const getName = (typeof getRaceNameById === 'function') ? getRaceNameById : (id) => id;
@@ -8086,7 +8520,12 @@ function updateActivityFeed() {
     const recent = activities.slice(0, 5);
     
     if (recent.length === 0) {
-        container.innerHTML = '<p class="text-xs text-tertiary" style="padding:12px;">No activity logged yet. Use the + buttons above to get started.</p>';
+        container.innerHTML = `<div class="empty-state-momentum">
+            <span class="esm-eyebrow">Day Zero · Reset</span>
+            <span class="esm-title">Today's slate is blank — log a workout, weight, or FBS and it appears here as the day's first stamp.</span>
+            <button class="esm-cta" onclick="openWorkoutFeedbackModal()"><i data-lucide="play" style="width:13px;height:13px;"></i> Log workout</button>
+        </div>`;
+        if (typeof initLucide === 'function') initLucide();
         return;
     }
     
@@ -8369,6 +8808,31 @@ function submitModal(type, arg) {
             showToast(`Gateway session logged: ${duration} min · Focus ${focus}`);
             if (typeof renderGatewayTimeline === 'function') renderGatewayTimeline();
             if (typeof renderGatewayStreak === 'function') renderGatewayStreak();
+            break;
+        }
+        case 'strength-pr': {
+            const weight = parseFloat(input1.value);
+            if (isNaN(weight) || weight < 1 || weight > 500) {
+                showToast('Enter a valid weight (1–500 kg)', 'error');
+                return;
+            }
+            const sel = document.getElementById('pr-lift');
+            let lift = sel ? sel.value : '';
+            if (lift === '__custom__') {
+                lift = document.getElementById('pr-custom')?.value.trim() || '';
+            }
+            if (!lift) { showToast('Choose or name a lift', 'error'); return; }
+            const reps = parseInt(document.getElementById('pr-reps')?.value, 10) || 1;
+            const notes = document.getElementById('modal-notes')?.value.trim();
+            // Detect if this is a fresh PR (heavier than the lift's previous best)
+            const prior = AppState.getStrengthPRsByLift(lift);
+            const priorBest = prior.length ? Math.max(...prior.map(p => p.weight)) : 0;
+            const isNewBest = weight > priorBest;
+            const ok = AppState.addStrengthPR({ lift, weight, reps, notes });
+            if (!ok) { showToast('Could not save PR', 'error'); return; }
+            const tag = isNewBest ? ' · NEW PR' : '';
+            showToast(`${lift}: ${weight} kg × ${reps}${tag}`, isNewBest ? 'success' : 'info');
+            if (typeof renderStrengthPRs === 'function') renderStrengthPRs(isNewBest ? lift : null);
             break;
         }
     }
@@ -9058,13 +9522,19 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPhaseTraining(currentPhase);
     }
 
-    // Handle window resize for charts
+    // Handle window resize for charts — v2.5-c: gate on offsetParent so we
+    // don't repaint hidden Progress tab canvases (saves CPU + avoids 0-width
+    // canvases corrupting on iOS).
     window.addEventListener('resize', () => {
         clearTimeout(window._resizeTimer);
         window._resizeTimer = setTimeout(() => {
-            renderWeightChart();
-            if (typeof renderFBSChart === 'function') renderFBSChart();
-            if (typeof renderBodyCompositionChart === 'function') renderBodyCompositionChart();
+            const visible = (id) => {
+                const el = document.getElementById(id);
+                return el && el.offsetParent !== null;
+            };
+            if (visible('weight-chart')) renderWeightChart();
+            if (visible('fbs-chart')    && typeof renderFBSChart === 'function')           renderFBSChart();
+            if (visible('body-comp-chart') && typeof renderBodyCompositionChart === 'function') renderBodyCompositionChart();
         }, 200);
     });
 
@@ -9499,6 +9969,409 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return r;
         };
+    }
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     v2.5-c · R3 PROGRESS NARRATIVE
+     VO2 max (Jack Daniels VDOT) · pace zones (Z1–Z5 from 5K) ·
+     ACWR training-load ratio · Strength PR list with halo · HYROX
+     per-station sparklines · canvas resize gating.
+     Reads AppState only — no mutation. Renders into pre-built HTML
+     slots in #panel-progress (Performance Insights group).
+     ════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function v25R3(){
+    'use strict';
+
+    /* ── Helpers ────────────────────────────────────────────────────────── */
+    const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // "1:14:30" or "45:20" or "5:32.5" → seconds
+    function parseTimeToSeconds(s) {
+        if (!s || typeof s !== 'string') return null;
+        s = s.trim();
+        if (!s) return null;
+        const parts = s.split(':').map(p => p.replace(/[^\d.]/g, '')).filter(p => p !== '');
+        if (!parts.length) return null;
+        const nums = parts.map(parseFloat);
+        if (nums.some(n => isNaN(n))) return null;
+        if (nums.length === 1) return nums[0];                                // ss
+        if (nums.length === 2) return nums[0] * 60 + nums[1];                  // mm:ss
+        if (nums.length === 3) return nums[0] * 3600 + nums[1] * 60 + nums[2]; // hh:mm:ss
+        return null;
+    }
+
+    function formatPace(secPerKm) {
+        if (!isFinite(secPerKm) || secPerKm <= 0) return '—';
+        const m = Math.floor(secPerKm / 60);
+        const s = Math.round(secPerKm % 60);
+        return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    // Distance per raceId (km). Returns 0 if unknown / non-distance race (HYROX).
+    function distanceForRaceId(raceId) {
+        const map = {
+            'juhu-hm': 21.0975,
+            'juhu-half': 21.0975,
+            '5k-wife': 5,
+            'hrx-10k': 10,
+            'bangalore-10k': 10,
+            'bangalore-tcsw-10k': 10,
+            'delhi-hm': 21.0975,
+            'kolkata-25k': 25,
+            'mumbai-marathon': 42.195
+        };
+        return map[raceId] || 0;
+    }
+
+    // Jack Daniels VDOT formula. Returns ml/kg/min.
+    // VDOT = -4.60 + 0.182258·v + 0.000104·v²  where v = m/min
+    // Adjusted by race-time intensity coefficient.
+    // Source: "Daniels' Running Formula" 4th ed.
+    function computeVDOT(distanceKm, timeSeconds) {
+        if (!distanceKm || !timeSeconds) return null;
+        const distanceM = distanceKm * 1000;
+        const timeMin = timeSeconds / 60;
+        const v = distanceM / timeMin; // m/min
+        const vo2 = -4.60 + 0.182258 * v + 0.000104 * v * v;
+        // Intensity coefficient (% VO2max sustainable for given time)
+        const t = timeMin;
+        const pct = 0.8 + 0.1894393 * Math.exp(-0.012778 * t)
+                        + 0.2989558 * Math.exp(-0.1932605 * t);
+        const vdot = vo2 / pct;
+        return vdot;
+    }
+
+    /* ── Find the best run race for VO2 / pace derivation ───────────────── */
+    function pickBestRunRace() {
+        const results = (AppState.raceResults || []).filter(r => {
+            const d = distanceForRaceId(r.raceId);
+            return d > 0;
+        });
+        if (!results.length) return null;
+        // Prefer 5K > 10K > 21K > 25K (shorter = better VDOT signal),
+        // and among same distance prefer most recent.
+        const priority = [5, 10, 21.0975, 25, 42.195];
+        results.sort((a, b) => {
+            const da = distanceForRaceId(a.raceId);
+            const db = distanceForRaceId(b.raceId);
+            const pa = priority.indexOf(da); const pb = priority.indexOf(db);
+            const pap = pa < 0 ? 99 : pa; const pbp = pb < 0 ? 99 : pb;
+            if (pap !== pbp) return pap - pbp;
+            return b.date.localeCompare(a.date);
+        });
+        return results[0];
+    }
+
+    /* ── (1) VO2 max card ───────────────────────────────────────────────── */
+    function renderVO2Max() {
+        const valEl    = document.getElementById('vo2max-value');
+        const ghostEl  = document.getElementById('vo2max-ghost');
+        const ctxEl    = document.getElementById('vo2max-context');
+        const srcEl    = document.getElementById('vo2max-source');
+        if (!valEl) return;
+
+        const race = pickBestRunRace();
+        if (!race) {
+            valEl.textContent = '—';
+            if (ghostEl) ghostEl.textContent = '—';
+            if (ctxEl)   ctxEl.textContent  = 'Log a 5K, 10K, or half marathon — VO2 max appears within 1 second.';
+            if (srcEl)   srcEl.textContent  = 'Awaiting first race result';
+            return;
+        }
+        const distKm = distanceForRaceId(race.raceId);
+        const timeSec = parseTimeToSeconds(race.time);
+        if (!timeSec) {
+            valEl.textContent = '—';
+            if (ctxEl) ctxEl.textContent = 'Race time format not recognised (use mm:ss or hh:mm:ss).';
+            return;
+        }
+        const vdot = computeVDOT(distKm, timeSec);
+        if (!vdot || !isFinite(vdot)) {
+            valEl.textContent = '—';
+            return;
+        }
+        const rounded = vdot.toFixed(1);
+        valEl.textContent = rounded;
+        if (ghostEl) ghostEl.textContent = Math.round(vdot);
+        // Editorial context
+        let band = '';
+        if (vdot < 35)        band = 'Foundation building.';
+        else if (vdot < 42)   band = 'Recreational fit.';
+        else if (vdot < 50)   band = 'Competitive amateur.';
+        else if (vdot < 55)   band = 'Strong amateur.';
+        else                  band = 'Elite range.';
+        const raceName = (typeof getRaceNameById === 'function')
+            ? getRaceNameById(race.raceId) : race.raceId;
+        if (ctxEl) {
+            ctxEl.innerHTML = `<strong style="color:var(--text-primary);">${band}</strong> Derived from ${distKm} km · ${escHTML(race.time)}.`;
+        }
+        if (srcEl) {
+            srcEl.textContent = `Source: ${raceName} · ${race.date}`;
+        }
+    }
+
+    /* ── (2) Pace zones (Z1–Z5) ─────────────────────────────────────────── */
+    // Daniels' training-pace coefficients as a fraction of 5K race pace.
+    // Z1 = Easy (slowest), Z5 = Repetition (fastest). Numbers are pace
+    // multipliers — bigger = slower. Range bounds come from Daniels' tables.
+    // (We anchor on 5K-equivalent pace if 5K not available; convert to "VDOT pace"
+    //  via VO2 percentage.)
+    function renderPaceZones() {
+        const list = document.getElementById('pace-zones-list');
+        if (!list) return;
+        const race = pickBestRunRace();
+        if (!race) {
+            list.innerHTML = `<p class="text-sm text-tertiary" style="padding: 14px 0;">Log a 5K or 10K race result — Z1–Z5 paces appear instantly.</p>`;
+            return;
+        }
+        const distKm = distanceForRaceId(race.raceId);
+        const timeSec = parseTimeToSeconds(race.time);
+        if (!timeSec || !distKm) {
+            list.innerHTML = `<p class="text-sm text-tertiary" style="padding: 14px 0;">Race time not parseable.</p>`;
+            return;
+        }
+        // Convert race pace to "5K-equivalent" pace using Riegel: T₂ = T₁ × (D₂/D₁)^1.06
+        const racePaceSec = timeSec / distKm;            // sec / km at race distance
+        const t5kSec = timeSec * Math.pow(5 / distKm, 1.06);
+        const pace5kSec = t5kSec / 5;                    // sec / km at 5K
+        // Daniels training-pace bands (low–high) as multiplier of 5K race pace
+        // Values calibrated against a VDOT-50 athlete (5K @ 4:30/km):
+        //   Easy 5:55–6:35, Marathon 4:55, Threshold 4:42, Interval 4:18, Repetition 4:00
+        const zones = [
+            { tag: 'Z1', label: 'Easy · long-run aerobic',    low: 1.30, high: 1.45 },
+            { tag: 'Z2', label: 'Marathon pace · steady',      low: 1.10, high: 1.18 },
+            { tag: 'Z3', label: 'Threshold · tempo',           low: 1.04, high: 1.08 },
+            { tag: 'Z4', label: 'Interval · VO2max efforts',   low: 0.96, high: 1.00 },
+            { tag: 'Z5', label: 'Repetition · neuromuscular',  low: 0.88, high: 0.93 }
+        ];
+        list.innerHTML = zones.map(z => {
+            const lo = formatPace(pace5kSec * z.low);
+            const hi = formatPace(pace5kSec * z.high);
+            return `<div class="pace-zone-row" data-zone="${z.tag}">
+                <span class="pz-tag">${z.tag}</span>
+                <span class="pz-label">${z.label}</span>
+                <span class="pz-pace">${hi}–${lo}/km</span>
+            </div>`;
+        }).join('');
+    }
+
+    /* ── (3) ACWR (acute ÷ chronic workload ratio) ──────────────────────── */
+    function workoutLoad(w) {
+        // Prefer pre-computed load; else distance × rpe; else duration/10 × rpe; else 1.
+        if (typeof w.load === 'number' && w.load > 0) return w.load;
+        const dist = parseFloat(w.distance);
+        const dur = parseFloat(w.duration);
+        const rpe = parseInt(w.rpe, 10) || 5;
+        if (!isNaN(dist) && dist > 0) return dist * rpe;
+        if (!isNaN(dur)  && dur  > 0) return (dur / 10) * rpe;
+        return rpe; // bare workout = its perceived effort
+    }
+    function renderACWR() {
+        const valEl   = document.getElementById('acwr-value');
+        const ghostEl = document.getElementById('acwr-ghost');
+        const lblEl   = document.getElementById('acwr-zone-label');
+        const ctxEl   = document.getElementById('acwr-context');
+        if (!valEl) return;
+
+        const today = new Date(); today.setHours(0,0,0,0);
+        const ws = AppState.workouts || [];
+        const cutoff7  = new Date(today); cutoff7.setDate(today.getDate() - 7);
+        const cutoff28 = new Date(today); cutoff28.setDate(today.getDate() - 28);
+        const inRange = (w, from) => {
+            const d = new Date(w.date); return !isNaN(d) && d >= from && d <= today;
+        };
+        const acute = ws.filter(w => inRange(w, cutoff7))
+                        .reduce((s, w) => s + workoutLoad(w), 0);
+        const chronicTotal = ws.filter(w => inRange(w, cutoff28))
+                               .reduce((s, w) => s + workoutLoad(w), 0);
+        const chronicAvg = chronicTotal / 4; // 4 weeks → comparable to 7d acute
+
+        if (chronicAvg <= 0 || ws.length < 4) {
+            valEl.textContent = '—';
+            valEl.removeAttribute('data-zone');
+            if (ghostEl) ghostEl.textContent = '—';
+            if (lblEl) lblEl.textContent = 'awaiting';
+            if (ctxEl) ctxEl.innerHTML = `Log workouts daily — ratio appears after roughly <strong style="color:var(--text-primary);">4 sessions in the last month</strong>.`;
+            return;
+        }
+        const ratio = acute / chronicAvg;
+        const r = ratio.toFixed(2);
+        valEl.textContent = r;
+        if (ghostEl) ghostEl.textContent = r;
+        let zone = 'sweet', label = 'sweet spot', verdict = '';
+        if      (ratio < 0.8)   { zone = 'detrain'; label = 'detraining'; verdict = 'Volume is fading. A long run or two will reset chronic load.'; }
+        else if (ratio <= 1.3)  { zone = 'sweet';   label = 'sweet spot'; verdict = 'Acute matches chronic. Adapt without injury risk.'; }
+        else if (ratio <= 1.5)  { zone = 'caution'; label = 'caution';    verdict = 'Stepping up fast. Hold steady or slip an easy day in.'; }
+        else                    { zone = 'risk';    label = 'high risk';  verdict = 'Spike zone. Pull back this week — injuries cluster here.'; }
+        valEl.setAttribute('data-zone', zone);
+        if (lblEl) lblEl.textContent = label;
+        if (ctxEl) {
+            ctxEl.innerHTML = `<strong style="color:var(--text-primary);">${verdict}</strong> 7-day load ${Math.round(acute)} vs 28-day avg ${Math.round(chronicAvg)}.`;
+        }
+    }
+
+    /* ── (4) Strength PR list ───────────────────────────────────────────── */
+    function renderStrengthPRs(freshLift) {
+        const list = document.getElementById('strength-pr-list');
+        if (!list) return;
+        const prs = (typeof AppState.getLatestPRPerLift === 'function')
+            ? AppState.getLatestPRPerLift() : [];
+        if (!prs.length) {
+            list.innerHTML = `<div class="empty-state-momentum">
+                <span class="esm-eyebrow">Bar before bone</span>
+                <span class="esm-title">Tap Log PR to track progressive overload — every kilo on the bar widens the gap from pre-diabetic.</span>
+                <button class="esm-cta" onclick="openModal('strength-pr')"><i data-lucide="medal" style="width:13px;height:13px;"></i> Log first PR</button>
+            </div>`;
+            if (typeof initLucide === 'function') initLucide();
+            return;
+        }
+        const freshKey = freshLift ? freshLift.toLowerCase() : null;
+        list.innerHTML = prs.slice(0, 6).map(pr => {
+            const isFresh = freshKey && pr.lift.toLowerCase() === freshKey;
+            const dateShort = (() => {
+                const d = new Date(pr.date);
+                return isNaN(d) ? pr.date : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            })();
+            return `<div class="pr-row${isFresh ? ' pr-fresh' : ''}">
+                <span class="pr-name">${escHTML(pr.lift)}</span>
+                <span class="pr-weight">${pr.weight}<span style="font-size:0.6em;font-weight:600;opacity:0.7;"> kg × ${pr.reps}</span></span>
+                <span class="pr-meta">${dateShort}</span>
+            </div>`;
+        }).join('');
+    }
+    // Expose for submitModal callback
+    window.renderStrengthPRs = renderStrengthPRs;
+
+    /* ── (5) HYROX per-station sparklines ───────────────────────────────── */
+    function renderHyroxSparklines() {
+        // Look for any race-card / element with data-hyrox-sparklines marker
+        const sessions = (AppState.hyroxSessions || []).slice().sort((a,b)=>a.date.localeCompare(b.date));
+        if (!sessions.length) return;
+        document.querySelectorAll('[data-hyrox-sparklines]').forEach(host => {
+            // Filter sessions for this race if specified
+            const raceId = host.getAttribute('data-hyrox-sparklines');
+            const relevant = (raceId && raceId !== 'all')
+                ? sessions.filter(s => s.raceId === raceId)
+                : sessions;
+            if (!relevant.length) return;
+            const stationKeys = [
+                ['skiErg', 'Ski Erg'],
+                ['sledPush', 'Sled Push'],
+                ['sledPull', 'Sled Pull'],
+                ['burpeeBJ', 'Burpee BJ'],
+                ['row', 'Row'],
+                ['farmersCarry', 'Farmers Carry'],
+                ['lunges', 'Sandbag Lunges'],
+                ['wallBalls', 'Wall Balls']
+            ];
+            host.innerHTML = stationKeys.map(([key, name], idx) => {
+                const seq = relevant.map(s => parseTimeToSeconds(s.stations?.[key] || ''))
+                                    .filter(v => v && isFinite(v));
+                if (!seq.length) {
+                    return `<div class="hyrox-sparkline-row">
+                        <span class="hsp-name">${name}</span>
+                        <canvas data-hsp-empty></canvas>
+                        <span class="hsp-time" style="opacity:0.5;">—</span>
+                    </div>`;
+                }
+                const last = seq[seq.length - 1];
+                const lastFmt = `${Math.floor(last/60)}:${String(Math.round(last%60)).padStart(2,'0')}`;
+                return `<div class="hyrox-sparkline-row">
+                    <span class="hsp-name">${name}</span>
+                    <canvas data-hsp-canvas data-hsp-values="${seq.join(',')}"></canvas>
+                    <span class="hsp-time">${lastFmt}</span>
+                </div>`;
+            }).join('');
+            // Paint canvases
+            host.querySelectorAll('canvas[data-hsp-canvas]').forEach(c => paintSparkline(c));
+        });
+    }
+    function paintSparkline(canvas) {
+        if (!canvas || !canvas.isConnected) return;
+        const values = (canvas.getAttribute('data-hsp-values') || '')
+            .split(',').map(parseFloat).filter(v => isFinite(v));
+        if (!values.length) return;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width <= 0) return;
+        const W = rect.width, H = rect.height;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        ctx.clearRect(0, 0, W, H);
+        // Lower = faster = better → green; higher = red.
+        // Trend: latest vs first
+        const first = values[0], last = values[values.length - 1];
+        const improved = values.length > 1 && last < first;
+        const color = improved ? '#39ff14' : (last > first ? '#ff453a' : '#ffd23f');
+        const min = Math.min(...values), max = Math.max(...values);
+        const range = (max - min) || 1;
+        const step = values.length === 1 ? 0 : W / (values.length - 1);
+        ctx.lineWidth = 1.4;
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        values.forEach((v, i) => {
+            const x = step * i;
+            const y = H - 2 - ((v - min) / range) * (H - 4);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        // Dot at end
+        const lastX = step * (values.length - 1);
+        const lastY = H - 2 - ((last - min) / range) * (H - 4);
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(lastX || 1, lastY, 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    /* ── (6) Render orchestrator ────────────────────────────────────────── */
+    function renderAll() {
+        try {
+            renderVO2Max();
+            renderPaceZones();
+            renderACWR();
+            renderStrengthPRs();
+            renderHyroxSparklines();
+        } catch(e) {
+            console.warn('[v25R3] render failed:', e);
+        }
+    }
+    window.v25RenderProgressInsights = renderAll;
+
+    /* ── Boot: render once after DCL + on every Progress tab switch ─────── */
+    const boot = () => {
+        renderAll();
+        const origSwitch = window.switchTab;
+        if (typeof origSwitch === 'function' && !origSwitch._v25R3Wrapped) {
+            window.switchTab = function(tabId) {
+                const r = origSwitch.apply(this, arguments);
+                if (tabId === 'progress') {
+                    setTimeout(renderAll, 60);
+                }
+                return r;
+            };
+            window.switchTab._v25R3Wrapped = true;
+        }
+        // Repaint sparklines on resize (debounced)
+        let rTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(rTimer);
+            rTimer = setTimeout(() => {
+                document.querySelectorAll('canvas[data-hsp-canvas]').forEach(paintSparkline);
+            }, 200);
+        });
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        // Defer slightly so AppState.load() has finished
+        setTimeout(boot, 120);
     }
 })();
 </script>
