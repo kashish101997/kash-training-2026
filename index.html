@@ -2621,6 +2621,124 @@
             }
         }
     </style>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         v2.5-b · R2 HERO WOW MOMENT · pinned scrub + ghost numerals +
+         scramble settle + aurora parallax. Motion-safe, desktop-first.
+         ════════════════════════════════════════════════════════════════════ -->
+    <style id="v25-r2-styles">
+        /* ── Ghost numeral behind the Dashboard hero ─────────────────────── */
+        .hero { position: relative; overflow: visible; }
+        .hero-ghost-numeral {
+            position: absolute;
+            top: 50%;
+            right: clamp(-40px, -4vw, -12px);
+            transform: translateY(-52%);
+            font-family: var(--v3-font-mono, 'JetBrains Mono', monospace);
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(9rem, 24vw, 26rem);
+            line-height: 0.78;
+            letter-spacing: -0.08em;
+            color: transparent;
+            background: linear-gradient(180deg,
+                oklch(0.86 0.22 142 / 0.085) 0%,
+                oklch(0.70 0.22 15 / 0.045) 55%,
+                oklch(0.20 0.05 265 / 0) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            opacity: 1;
+            will-change: transform, opacity;
+            mix-blend-mode: screen;
+        }
+        .hero-ghost-numeral-label {
+            position: absolute;
+            right: clamp(-20px, -2vw, 4px);
+            bottom: -6px;
+            font-family: var(--v3-font-mono, 'JetBrains Mono', monospace);
+            font-size: 0.58rem;
+            font-weight: 600;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: oklch(0.70 0.22 15 / 0.55);
+            white-space: nowrap;
+        }
+        .hero > *:not(.hero-ghost-numeral) { position: relative; z-index: 2; }
+        @media (max-width: 640px) {
+            .hero-ghost-numeral { font-size: clamp(7rem, 36vw, 14rem); right: -20px; opacity: 0.85; }
+        }
+
+        /* ── Desktop pin shell for the Dashboard hero ────────────────────── */
+        @media (min-width: 768px) {
+            .hero.hero-pin-stage {
+                /* Provide generous vertical real estate so the scrub has room. */
+                min-height: clamp(380px, 58vh, 580px);
+                padding-top: clamp(48px, 7vw, 92px);
+                padding-bottom: clamp(32px, 4vw, 56px);
+            }
+        }
+
+        /* ── Metric-card scroll-linked ghost numeral ─────────────────────── */
+        #panel-dashboard .metric-card { position: relative; overflow: hidden; }
+        #panel-dashboard .metric-card::before {
+            /* Existing accent-bar token remains above; this is additive */
+        }
+        #panel-dashboard .metric-card .metric-ghost {
+            position: absolute;
+            right: -10px;
+            bottom: -32px;
+            font-family: var(--v3-font-mono, monospace);
+            font-weight: 800;
+            font-size: clamp(5rem, 10vw, 8rem);
+            line-height: 0.8;
+            letter-spacing: -0.06em;
+            color: transparent;
+            background: linear-gradient(135deg,
+                currentColor 0%,
+                transparent 85%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            opacity: 0.085;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+            transform: translate(16px, 8px);
+            will-change: transform, opacity;
+        }
+        #panel-dashboard .metric-card:hover .metric-ghost {
+            opacity: 0.14;
+            transform: translate(8px, 0);
+        }
+        #panel-dashboard .metric-card > *:not(.metric-ghost) { position: relative; z-index: 2; }
+
+        /* ── Scramble wordmark: invisible-until-ready guard ──────────────── */
+        .hero-name[data-v3-scramble] { visibility: visible; }
+        .hero-name[data-v3-scramble] > span.scramble-glyph {
+            display: inline-block;
+            font-family: var(--v3-font-mono, 'JetBrains Mono', monospace);
+            font-weight: 700;
+            opacity: 0.72;
+        }
+
+        /* ── Counter scramble visual cue ─────────────────────────────────── */
+        .metric-value[data-scrambling] {
+            /* Numerals stay tabular so they don't reflow during scramble */
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ── Reduced motion: kill R2 scroll-linked work entirely ─────────── */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-ghost-numeral, #panel-dashboard .metric-card .metric-ghost {
+                transition: none !important;
+                transform: translateY(-50%) !important;
+            }
+            .hero-ghost-numeral { opacity: 0.08 !important; }
+        }
+    </style>
 </head>
 <body>
 
@@ -2790,7 +2908,11 @@
         <div class="container">
 
             <!-- Hero -->
-            <div class="hero">
+            <div class="hero hero-pin-stage" id="hero-pin-stage">
+                <!-- R2: giant ghost numeral (scroll-scrubbed; motion-safe) -->
+                <div class="hero-ghost-numeral" id="hero-ghost-numeral" aria-hidden="true">
+                    40<span class="hero-ghost-numeral-label">Days to Bangalore</span>
+                </div>
                 <div class="hero-phase-badge animate-in" id="hero-phase-badge">
                     <span class="pulse-dot"></span>
                     Phase 2 &middot; 10K Speed Block &middot; Week 5
@@ -2819,14 +2941,16 @@
             <div class="grid-5 animate-in delay-3" style="margin-bottom: 28px;">
 
                 <!-- Race Countdown -->
-                <div class="metric-card accent-pink">
+                <div class="metric-card accent-pink" style="color: var(--color-race);">
+                    <div class="metric-ghost" data-ghost-source="race-countdown" aria-hidden="true">40</div>
                     <div class="metric-label">Race Countdown</div>
                     <div class="metric-value text-pink" id="race-countdown">40</div>
                     <div class="metric-sub" id="race-countdown-sub">days to TCSW 10K</div>
                 </div>
 
                 <!-- Weight / Body Composition -->
-                <div class="metric-card accent-green">
+                <div class="metric-card accent-green" style="color: var(--color-running);">
+                    <div class="metric-ghost" data-ghost-source="weight-value" aria-hidden="true">98</div>
                     <div class="flex items-center justify-between">
                         <div>
                             <div class="metric-label">Body Composition</div>
@@ -2850,7 +2974,8 @@
                 </div>
 
                 <!-- Weekly Sessions -->
-                <div class="metric-card accent-orange">
+                <div class="metric-card accent-orange" style="color: var(--color-strength);">
+                    <div class="metric-ghost" data-ghost-source="weekly-sessions" aria-hidden="true">0</div>
                     <div class="flex items-center justify-between">
                         <div>
                             <div class="metric-label">Weekly Sessions</div>
@@ -2872,21 +2997,24 @@
                 </div>
 
                 <!-- Current Streak -->
-                <div class="metric-card accent-cyan">
+                <div class="metric-card accent-cyan" style="color: var(--color-cricket);">
+                    <div class="metric-ghost" data-ghost-source="current-streak" aria-hidden="true">0</div>
                     <div class="metric-label">Current Streak</div>
                     <div class="metric-value text-cyan" id="current-streak">0<span style="font-size: 1rem; font-weight: 500; color: var(--text-tertiary)"> days</span></div>
                     <div class="metric-sub">Keep it going!</div>
                 </div>
 
                 <!-- Weekly Training Load -->
-                <div class="metric-card" style="border-top: 2px solid var(--color-hyrox);">
+                <div class="metric-card" style="border-top: 2px solid var(--color-hyrox); color: var(--color-hyrox);">
+                    <div class="metric-ghost" data-ghost-source="weekly-load" aria-hidden="true">0</div>
                     <div class="metric-label">Weekly Load</div>
                     <div class="metric-value" style="color: var(--color-hyrox);" id="weekly-load">0</div>
                     <div class="metric-sub" id="weekly-load-trend">Log workouts to track</div>
                 </div>
 
                 <!-- Fasting Blood Sugar -->
-                <div class="metric-card" style="border-top: 2px solid #ff6b35; cursor:pointer;" onclick="openModal('fbs')" title="Log FBS (morning, fasted)">
+                <div class="metric-card" style="border-top: 2px solid #ff6b35; cursor:pointer; color: #ff6b35;" onclick="openModal('fbs')" title="Log FBS (morning, fasted)">
+                    <div class="metric-ghost" data-ghost-source="fbs-value" aria-hidden="true">—</div>
                     <div class="flex items-center justify-between">
                         <div>
                             <div class="metric-label">Fasting Blood Sugar</div>
@@ -9114,6 +9242,263 @@ document.addEventListener('DOMContentLoaded', () => {
             t.style.setProperty('--v3-mouse-x', x + '%');
             t.style.setProperty('--v3-mouse-y', y + '%');
         });
+    }
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     v2.5-b · R2 HERO WOW MOMENT
+     Adds: (1) ghost-numeral scrub bound to scroll, (2) scramble-settle
+     wordmark on first load, (3) scramble-then-settle counter physics,
+     (4) aurora parallax via background-position, (5) metric-ghost text
+     sync with live values.
+     Respects prefers-reduced-motion. iOS Safari pinning gated to
+     min-width: 768px. Does NOT touch animateTabContent ↔ sectionReveals
+     contract (Dashboard scope only, additive).
+     ════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function v25R2(){
+    'use strict';
+    const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const desktop = () => window.matchMedia('(min-width: 768px)').matches;
+
+    /* ── (1) Hero ghost numeral: bind to race-countdown live value ─────── */
+    const syncHeroGhost = () => {
+        const ghost = document.getElementById('hero-ghost-numeral');
+        const live = document.getElementById('race-countdown');
+        if (!ghost || !live) return;
+        const label = ghost.querySelector('.hero-ghost-numeral-label');
+        const labelHTML = label ? label.outerHTML : '';
+        const txt = (live.textContent || '40').trim();
+        ghost.innerHTML = txt + labelHTML;
+    };
+
+    /* ── (2) Sync metric-ghost text from each card's live metric-value ─── */
+    const syncMetricGhosts = () => {
+        document.querySelectorAll('#panel-dashboard .metric-ghost').forEach(g => {
+            const sourceId = g.getAttribute('data-ghost-source');
+            if (!sourceId) return;
+            const src = document.getElementById(sourceId);
+            if (!src) return;
+            // Extract leading numeric token (or first non-whitespace chunk)
+            const raw = (src.textContent || '').trim();
+            const m = raw.match(/^([\-—–]|\d+\.?\d*)/);
+            const display = m ? m[1] : raw.slice(0, 3);
+            if (g.textContent !== display) g.textContent = display;
+        });
+    };
+
+    /* ── (3) Hero scrub: bind hero transforms to scroll position ──────── */
+    /*    No GSAP pinning to avoid iOS Safari jank. Pure transform on a    */
+    /*    scroll listener, rAF-throttled. Releases above 768px only.      */
+    let scrubRaf = null;
+    const heroScrub = () => {
+        if (reducedMotion()) return;
+        const stage = document.getElementById('hero-pin-stage');
+        const ghost = document.getElementById('hero-ghost-numeral');
+        const name = document.querySelector('.hero-name');
+        const sub = document.getElementById('hero-sub');
+        if (!stage) return;
+        const onScroll = () => {
+            if (scrubRaf) return;
+            scrubRaf = requestAnimationFrame(() => {
+                scrubRaf = null;
+                if (!desktop()) {
+                    // Mobile: reset all transforms, let layout breathe
+                    if (ghost) { ghost.style.transform = 'translateY(-52%)'; ghost.style.opacity = ''; }
+                    if (name)  { name.style.transform = ''; }
+                    if (sub)   { sub.style.opacity = ''; }
+                    return;
+                }
+                const rect = stage.getBoundingClientRect();
+                const stageH = rect.height || 1;
+                // p = 0 at top of viewport, 1 when stage fully scrolled past top
+                const p = Math.max(0, Math.min(1, -rect.top / stageH));
+                // Ghost: slide right + fade; from opacity 1.0 → 0 across p
+                if (ghost) {
+                    const tx = p * 80; // slide further right
+                    const ty = -52 - p * 8;
+                    ghost.style.transform = `translate(${tx}px, ${ty}%)`;
+                    ghost.style.opacity = (1 - p * 1.15).toFixed(3);
+                }
+                // Name: subtle scale-down (1.0 → 0.94)
+                if (name) {
+                    const s = 1 - p * 0.06;
+                    name.style.transform = `translateZ(0) scale(${s.toFixed(3)})`;
+                }
+                // Sub fades a touch slower
+                if (sub) sub.style.opacity = (1 - p * 0.6).toFixed(3);
+            });
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        // Re-run on resize so the desktop gate re-evaluates
+        window.addEventListener('resize', onScroll, { passive: true });
+        // Initial sync
+        onScroll();
+    };
+
+    /* ── (4) Aurora parallax: nudge body background-position with scroll ─ */
+    /*    body is background-attachment: fixed, so nudging position only   */
+    /*    redraws the gradient layer. Cheap.                               */
+    let auroraRaf = null;
+    const auroraParallax = () => {
+        if (reducedMotion()) return;
+        const onScroll = () => {
+            if (auroraRaf) return;
+            auroraRaf = requestAnimationFrame(() => {
+                auroraRaf = null;
+                const y = window.scrollY || 0;
+                // Slow drift: 1px per 8px scroll. Keeps gradients alive.
+                const dy = (-y * 0.12).toFixed(1);
+                document.body.style.backgroundPosition = `0 ${dy}px, 0 ${(-y * 0.06).toFixed(1)}px, 0 ${(-y * 0.04).toFixed(1)}px`;
+            });
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+    };
+
+    /* ── (5) Scramble-settle wordmark: runs once, after heroEntrance ──── */
+    /*    Sequenced AFTER the existing reveal so A19 gradient-clip work     */
+    /*    is preserved. Scramble cycles random glyphs for ~700ms then       */
+    /*    snaps to the real char. First-load only via sessionStorage flag.  */
+    const SCRAMBLE_KEY = 'kash_v25_hero_scrambled';
+    const scrambleSettle = () => {
+        if (reducedMotion()) return;
+        try { if (sessionStorage.getItem(SCRAMBLE_KEY)) return; } catch(e){}
+        const name = document.querySelector('.hero-name');
+        if (!name) return;
+        const spans = name.querySelectorAll('span');
+        if (!spans.length) return;
+        const finals = Array.from(spans).map(s => s.textContent);
+        const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const dur = 720;
+        const start = performance.now();
+        // Mark scrambled so subsequent loads don't repeat
+        try { sessionStorage.setItem(SCRAMBLE_KEY, '1'); } catch(e){}
+
+        const tick = (now) => {
+            const t = Math.min(1, (now - start) / dur);
+            spans.forEach((s, i) => {
+                const lockAt = (i / spans.length) * 0.85; // settle left-to-right
+                if (t < lockAt) {
+                    const ch = finals[i];
+                    if (ch === '\u00A0' || ch === ' ') {
+                        s.textContent = '\u00A0';
+                    } else {
+                        s.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+                    }
+                } else {
+                    s.textContent = finals[i];
+                }
+            });
+            if (t < 1) requestAnimationFrame(tick);
+            else spans.forEach((s, i) => { s.textContent = finals[i]; });
+        };
+        // Delay so heroEntrance's translateY+fade has visibly started first
+        setTimeout(() => requestAnimationFrame(tick), 280);
+    };
+
+    /* ── (6) Counter physics: scramble-then-settle for metric values ──── */
+    /*    Replaces the existing easeOutCubic lerp with: 50% scramble       */
+    /*    digit-cycling, 50% lerp into the true value. Falls back to       */
+    /*    instant text under reduced-motion.                                */
+    const counterScramble = () => {
+        if (reducedMotion()) return;
+        const targets = document.querySelectorAll('.metric-value');
+        targets.forEach(el => {
+            if (el.dataset.v25Scrambled) return;
+            const raw = (el.textContent || '').trim();
+            const m = raw.match(/^(\d+\.?\d*)/);
+            if (!m) return;
+            const target = parseFloat(m[1]);
+            if (!isFinite(target) || target === 0) return;
+            // Don't run on already-counted (existing v3 counter handles them)
+            if (el.dataset.v3Counted === '1' && parseFloat(el.textContent) === target) {
+                el.dataset.v25Scrambled = '1';
+                return;
+            }
+            el.dataset.v25Scrambled = '1';
+            el.dataset.scrambling = '1';
+            const decimals = (m[1].split('.')[1] || '').length;
+            const suffix = raw.slice(m[0].length);
+            const initial = el.innerHTML;
+            const dur = 1100;
+            const start = performance.now();
+
+            const tick = (now) => {
+                const t = Math.min(1, (now - start) / dur);
+                let v;
+                if (t < 0.55) {
+                    // Scramble: random within ±target range
+                    const noise = Math.random() * target * 1.4;
+                    v = noise.toFixed(decimals);
+                } else {
+                    // Settle: ease into target
+                    const settleT = (t - 0.55) / 0.45;
+                    const eased = 1 - Math.pow(1 - settleT, 3);
+                    v = (target * eased).toFixed(decimals);
+                }
+                el.textContent = v + suffix.replace(/<[^>]+>/g, '');
+                if (t < 1) requestAnimationFrame(tick);
+                else {
+                    el.innerHTML = initial;
+                    el.removeAttribute('data-scrambling');
+                    // Block v3's later animateCounters from re-running on us
+                    el.dataset.v3Counted = '1';
+                    // Re-sync ghosts after the value settles
+                    syncMetricGhosts();
+                }
+            };
+            requestAnimationFrame(tick);
+        });
+    };
+
+    /* ── (7) Boot sequence ──────────────────────────────────────────────── */
+    const boot = () => {
+        syncHeroGhost();
+        syncMetricGhosts();
+        heroScrub();
+        auroraParallax();
+        // Defer scramble + counter so heroEntrance has had a frame to split
+        setTimeout(() => {
+            scrambleSettle();
+            counterScramble();
+        }, 380);
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+
+    // Keep ghosts in sync after AppState renders update metric-values.
+    // Lightweight: poll metric-value text every 1500ms when Dashboard is active.
+    let ghostPollT = null;
+    const startGhostPoll = () => {
+        if (ghostPollT) return;
+        ghostPollT = setInterval(() => {
+            const dash = document.querySelector('#panel-dashboard.active');
+            if (!dash) return;
+            syncHeroGhost();
+            syncMetricGhosts();
+        }, 1500);
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startGhostPoll);
+    } else {
+        startGhostPoll();
+    }
+
+    // On tab switch back to Dashboard, re-sync ghosts immediately.
+    const origSwitch = window.switchTab;
+    if (typeof origSwitch === 'function') {
+        window.switchTab = function(tabId) {
+            const r = origSwitch.apply(this, arguments);
+            if (tabId === 'dashboard') {
+                setTimeout(() => { syncHeroGhost(); syncMetricGhosts(); }, 80);
+            }
+            return r;
+        };
     }
 })();
 </script>
