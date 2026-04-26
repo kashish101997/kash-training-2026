@@ -1,5 +1,5 @@
 # Kash Training Platform — Deferred Roadmap
-**Version:** 2.5.0 · **Released:** April 25, 2026
+**Version:** 2.5.2 · **Released:** April 26, 2026
 **Live site:** https://kashish101997.github.io/kash-training-2026/
 **Main file:** `Kash_Annual_Training_Plan_2026.html` → synced to `index.html` → GitHub Pages
 
@@ -72,8 +72,8 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 
 ## Technical Notes
 
-### Current Architecture (v2.5.0)
-- Single `.html` file, **~11,800 lines** (post v2.5-d)
+### Current Architecture (v2.5.2)
+- Single `.html` file, **~12,440 lines** (post v2.5.2-b)
 - GitHub Pages at `kashish101997.github.io/kash-training-2026`
 - LocalStorage key: `kash_fitness_2026_v3`; sessionStorage fallback on quota errors
 - Remote data: polls `data.json` in repo root via `AppState.loadRemote()`
@@ -129,6 +129,60 @@ All v1.0, v2.0-T2 (VO2/pace/PR/ACWR), and v2.0-T3 (heatmap/measurements/badges/d
 ---
 
 ## Changelog
+
+### v2.5.2 — Apr 26, 2026 — Race-result visibility fix + May Hyrox Date Ladder
+
+> **Two-tranche ship the morning after the Bangalore TCS World 10K.**
+> Net delta: ~1,300 lines, single focused session. No new libs.
+
+**v2.5.2-a — Race-result visibility fix (commit `4928a86`)**
+
+User reported the TCS 10K result (logged via `data.json` in v2.5.1) was not visible on the page. Diagnostic identified two distinct bugs:
+
+- **Service worker cached `data.json`.** `service-worker.js` precached `data.json` in `SHELL_URLS` and served it stale-while-revalidate, hiding the fresh race result behind the empty pre-race file. **Fix:** removed `data.json` from `SHELL_URLS`; added a network-first branch in the fetch handler for paths ending in `/data.json` so it always tries network and only falls back to cache offline. Bumped `CACHE_VERSION` `'kash-v2.0.0'` → `'kash-v2.5.2'` to invalidate the existing precache on next SW activation.
+- **`refreshRaceCardPills()` missing from post-merge hooks.** v2.5.1 added 7 render functions to the `loadRemote()` post-merge hook list (`renderRaceHistory`, `renderGatewayTimeline`, etc.) but missed the function that actually flips the Race Strategy tab's `data-race-id="bangalore-tcsw-10k"` card from "UPCOMING" → "✓ COMPLETED · 1:12:13" — the single most visible artifact for the user. **Fix:** added `refreshRaceCardPills()` to the hook list at line 7674 of the main HTML.
+
+**v2.5.2-b — May Hyrox Date Ladder (Option A) (commit `5ef453b`)**
+
+User asked for a daily ladder challenge in May (1km on day 1, 31km on day 31). That math sums to 496km — a near-certain overuse-injury setup at his current 25-30 km/week base, plus it would destroy Hyrox Delhi (Jul 25) prep through concurrent-training interference. Counter-proposed **Option A**: same gamified date ladder, but day-N = N total reps of the week's featured Hyrox station, plus a laddered easy-run base. User confirmed.
+
+5-week May station rotation:
+
+| Week | Days | Station | Daily run | Long run |
+|---|---|---|---|---|
+| 1 | May 1–3 | Wall Balls | 2k | — |
+| 2 | May 4–10 | Sled Push | 3k | 5k |
+| 3 | May 11–17 | Farmers Carry | 4k | 8k |
+| 4 | May 18–24 | Burpee Broad Jumps | 5k | 12k |
+| 5 | May 25–31 | Sandbag Lunges | 6k | 16k |
+
+Total: ~140 km running + 496 station reps over 31 days. Hyrox-specific muscular endurance built progressively, half-marathon base running underneath.
+
+Implementation:
+- **State:** `AppState.hyroxLadderEntries[]` declared in default state, save payload, and `loadRemote()` mergeArr (data.json can now seed entries). Methods: `addHyroxLadderEntry(payload)` (validates dayNum 1-31 + station whitelist, dedup by `(date, station)`); `getHyroxLadderEntry(date, station)`.
+- **Config:** `window.MAY_LADDER_2026` constant — `weeks[]`, `weekFor(dayNum)`, `prescription(dayNum)` (3 sets when ≤24, 5 sets when >24 to keep set size <8), `totalReps()` = 496, `totalKm()` ≈ 140.
+- **UI:** new `.card-glass#may-ladder-card` inserted in Training tab after phase descriptions. Week-of-focus strip (5 chips, current week glows hyrox accent), today's prescription card (gradient-clipped numeral + CTA), 7-col 31-cell calendar with Mon-Sun header + 4 leading empties (May 1 2026 = Friday). Cells: `.completed` (hyrox tint + dot), `.today` (ring), `.past`/`.future` opacity. Tap or keyboard-Enter opens modal. Conic-gradient progress ring + 3 stats (days/31, reps/496, km/140).
+- **Modal:** `openModal('hyrox-ladder-day', dayNum)` — pre-filled prescription line, inputs for sets/reps/weight/runKm/RPE slider/notes, pre-fills from existing entry when editing. submitModal handler routes through `addHyroxLadderEntry()` and refreshes ladder + heatmap + habit layer.
+- **Heatmap:** `buildActivityScoreMap()` extended with `hyroxLadderEntries` — each completion bumps that day's heatmap score.
+- **Badges:** two new — `ladder-week-1` (First Rung, 7 days) and `ladder-may-31` (Stairmaster, 28-of-31 with grace). Auto-awarded via existing 1500ms polling tick.
+- **Render orchestration:** new `v25R5MayLadder` IIFE (parallel to v25R4 pattern). `switchTab` wrapped with `_v25R5Wrapped` flag so Training tab entry refreshes ladder. `Object.assign(window.switchTab, orig)` preserves prior wrap flags.
+- **CSS:** appended to `v25-r4-styles` block. Mobile breakpoint at 600px shrinks chips/cells/ring. `prefers-reduced-motion: reduce` disables all ladder transitions/transforms.
+
+Verification:
+- 13 inline scripts parse cleanly (was 12 pre-T2; +1 v25R5 IIFE).
+- 6 style blocks balanced.
+- Mobile 375px: 31-cell calendar fits without horizontal overflow.
+- All sentinels present (`may-ladder-card`, `MAY_LADDER_2026`, `hyrox-ladder-day`, `hyroxLadderEntries`, `v25RenderMayLadder`, `mayLadderCompleted`).
+
+**Deferred to v2.5.3 / v3.0:**
+- Progress photo timeline (still needs IndexedDB).
+- Apple Health JSON import modal.
+- Edit/delete UI for Progress rows.
+- WhatsApp ladder logging via Vercel webhook (data.json schema is ready).
+
+### v2.5.1 — Apr 26, 2026 — TCS 10K race result + extend loadRemote (commit `0e3bc96`)
+
+Logged Bangalore TCS World 10K result (1:12:13, splits + post-mortem) via `data.json`. Extended `loadRemote()` to merge 5 additional array types declared in the v2.0+ schema but never read: `raceResults`, `gatewaySessions`, `hyroxSessions`, `strengthPRs`, `measurements`. Added 7 post-merge render hooks (Race History, Gateway Timeline, Strength PRs, Measurements, Transformation Arc, Heatmap, Habit Layer). Service worker still served stale `data.json` and `refreshRaceCardPills()` still missing from hooks — fixed in v2.5.2-a.
 
 ### v2.5.0 — Apr 25, 2026 — Complete Visual Revamp ("Subtle Extravagant" editorial pass)
 
