@@ -7646,6 +7646,14 @@ const AppState = {
             mergeArr('injuries', (a, b) => a.date === b.date && a.area === b.area);
             mergeArr('bloodSugar', (a, b) => a.date === b.date, (a, b) => Math.abs(a.value - b.value) < 0.5);
 
+            // v2.5.1 — extend remote merge to all v2.0+/v2.5 array types so data.json
+            // can now seed raceResults / gateway / HYROX / strength PRs / measurements.
+            mergeArr('raceResults',     (a, b) => a.raceId === b.raceId);
+            mergeArr('gatewaySessions', (a, b) => a.date === b.date && (a.duration || 0) === (b.duration || 0));
+            mergeArr('hyroxSessions',   (a, b) => a.raceId === b.raceId && a.date === b.date);
+            mergeArr('strengthPRs',     (a, b) => a.date === b.date && (a.lift||'').toLowerCase() === (b.lift||'').toLowerCase());
+            mergeArr('measurements',    (a, b) => a.date === b.date);
+
             if (merged) {
                 this._isMerging = false;
                 this.save();
@@ -7653,6 +7661,14 @@ const AppState = {
                 if (typeof renderFoodLog === 'function') renderFoodLog();
                 if (typeof updateCalorieRing === 'function') updateCalorieRing();
                 if (typeof updateMacroBars === 'function') updateMacroBars();
+                // v2.5.1 — refresh the new tab surfaces so remote-merged entries appear without reload
+                if (typeof renderRaceHistory === 'function') renderRaceHistory();
+                if (typeof renderGatewayTimeline === 'function') renderGatewayTimeline();
+                if (typeof window.renderStrengthPRs === 'function') window.renderStrengthPRs();
+                if (typeof window.v25RenderMeasurements === 'function') window.v25RenderMeasurements();
+                if (typeof window.v25RenderTransformationArc === 'function') window.v25RenderTransformationArc();
+                if (typeof window.v25RenderHeatmap === 'function') window.v25RenderHeatmap();
+                if (typeof window.v25RenderHabitLayer === 'function') window.v25RenderHabitLayer();
                 if (indicator) indicator.textContent = 'Synced';
             } else {
                 if (indicator) indicator.textContent = 'Up to date';

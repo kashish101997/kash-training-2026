@@ -1,7 +1,67 @@
 {
-  "lastUpdated": null,
+  "lastUpdated": "2026-04-26T10:30:00+05:30",
   "weights": [],
-  "workouts": [],
+  "workouts": [
+    {
+      "date": "2026-04-26",
+      "name": "TCS World 10K Bangalore — Race",
+      "duration": 72,
+      "distance": 10,
+      "type": "running",
+      "notes": "Race day. Splits 5:48 / 6:13 / 6:28 / 6:48 / 9:52 / 6:52 / 8:08 / 7:56 / 6:55 / 7:13. Walked km 5 (bonk after 4km above threshold). Avg HR 178."
+    }
+  ],
   "foodLog": [],
-  "injuries": []
+  "injuries": [],
+  "raceResults": [
+    {
+      "raceId": "bangalore-tcsw-10k",
+      "date": "2026-04-26",
+      "time": "1:12:13",
+      "goalMet": false,
+      "notes": "Goal sub-65 missed (real fitness ceiling ~70 per Riegel from 35:40 5K). Beat Riegel projection by 2:11 despite km-5 bonk. Lessons: km 1 went 5:48 (42s/km too fast), HR pinned at 180+ from km 3, walked km 5. Next race: cap HR 170 first 5k, gel at km 5, even/negative split.",
+      "splits": [
+        { "km": 1,  "pace": "5:48", "paceSec": 348, "hr": 174, "elev": -8 },
+        { "km": 2,  "pace": "6:13", "paceSec": 373, "hr": 178, "elev": -15 },
+        { "km": 3,  "pace": "6:28", "paceSec": 388, "hr": 180, "elev": 4 },
+        { "km": 4,  "pace": "6:48", "paceSec": 408, "hr": 181, "elev": 1 },
+        { "km": 5,  "pace": "9:52", "paceSec": 592, "hr": 176, "elev": 16 },
+        { "km": 6,  "pace": "6:52", "paceSec": 412, "hr": 178, "elev": 7 },
+        { "km": 7,  "pace": "8:08", "paceSec": 488, "hr": 177, "elev": -1 },
+        { "km": 8,  "pace": "7:56", "paceSec": 476, "hr": 176, "elev": 3 },
+        { "km": 9,  "pace": "6:55", "paceSec": 415, "hr": 180, "elev": -3 },
+        { "km": 10, "pace": "7:13", "paceSec": 433, "hr": 181, "elev": -3 }
+      ],
+      "avgPaceSec": 433,
+      "avgHr": 178,
+      "chipTimePending": true,
+      "postMortem": {
+        "wentWrong": [
+          "Started at 5:48/km — sub-58 pace on a -8m downhill. Adrenaline + crowd surge.",
+          "First 4 km averaged 6:19/km — faster than current 5K PB pace. Aerobic system was over the line by km 3.",
+          "HR pinned at 180-181 (93-94% max) for km 3-4. That's 5K effort sustained for 10K = guaranteed late-race collapse.",
+          "Km 5 walk break (~3:20 lost vs target pace) — glycogen depletion + leg cramp; HR dropped 5 bpm confirming a stop.",
+          "Second half never recovered: km 7-8 at 8:00+ pace with HR still elevated = lactate hangover."
+        ],
+        "wentRight": [
+          "Beat Riegel 5K-to-10K projection by 2:11 (predicted 74:24, ran 72:13). Engine is fitter than the 5K time alone suggests.",
+          "Km 9-10 effort climbed despite the second-half collapse — residual fight in the tank.",
+          "No injury, no DNF, completed the distance in race conditions."
+        ],
+        "fixForNextRace": [
+          "Hard HR cap: 170 bpm for first 5km. Currently went above 175 by km 2.",
+          "First-km governor: target +10s slower than goal pace, not faster. Train this in tempo workouts.",
+          "Fuel: 30g carb 60min pre + one gel at km 5. The bonk lined up with glycogen depletion window.",
+          "Negative-split protocol: first 5k at goal pace + 5s/km, second 5k at goal pace - 5s/km.",
+          "Weight: every kg off is ~3 sec/km. 93 to 85 alone is worth ~4 min on the 10K."
+        ],
+        "realisticNextTarget": "70:00 by Bangalore Marathon prep block (Sept 2026) at current weight. Sub-65 requires 5K PB to drop to ~31:00 (currently 35:40) AND/OR weight at 82-85 kg."
+      }
+    }
+  ],
+  "bloodSugar": [],
+  "gatewaySessions": [],
+  "hyroxSessions": [],
+  "strengthPRs": [],
+  "measurements": []
 }
