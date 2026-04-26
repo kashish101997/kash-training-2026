@@ -7669,6 +7669,10 @@ const AppState = {
                 if (typeof window.v25RenderTransformationArc === 'function') window.v25RenderTransformationArc();
                 if (typeof window.v25RenderHeatmap === 'function') window.v25RenderHeatmap();
                 if (typeof window.v25RenderHabitLayer === 'function') window.v25RenderHabitLayer();
+                // v2.5.2 — flip the Race Strategy tab status pills (the most visible artifact —
+                // missing this hook is why the user never saw "COMPLETED · 1:12:13" on the card).
+                if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
+                if (typeof window.v25RenderMayLadder === 'function') window.v25RenderMayLadder();
                 if (indicator) indicator.textContent = 'Synced';
             } else {
                 if (indicator) indicator.textContent = 'Up to date';
