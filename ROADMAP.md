@@ -1,5 +1,5 @@
 # Kash Training Platform — Deferred Roadmap
-**Version:** 2.5.2 · **Released:** April 26, 2026
+**Version:** 2.5.3 · **Released:** April 28, 2026
 **Live site:** https://kashish101997.github.io/kash-training-2026/
 **Main file:** `Kash_Annual_Training_Plan_2026.html` → synced to `index.html` → GitHub Pages
 
@@ -72,8 +72,8 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 
 ## Technical Notes
 
-### Current Architecture (v2.5.2)
-- Single `.html` file, **~12,440 lines** (post v2.5.2-b)
+### Current Architecture (v2.5.3)
+- Single `.html` file, **~13,235 lines** (post v2.5.3)
 - GitHub Pages at `kashish101997.github.io/kash-training-2026`
 - LocalStorage key: `kash_fitness_2026_v3`; sessionStorage fallback on quota errors
 - Remote data: polls `data.json` in repo root via `AppState.loadRemote()`
@@ -129,6 +129,44 @@ All v1.0, v2.0-T2 (VO2/pace/PR/ACWR), and v2.0-T3 (heatmap/measurements/badges/d
 ---
 
 ## Changelog
+
+### v2.5.3 — Apr 28, 2026 — Hyrox Delhi 13-Week Build (unified Runna + Coach plan)
+
+> **Single-tranche ship combining the user's Runna 8km plan and Coach's Google Sheet
+> 5-day strength/HYROX-station program into one authoritative weekly schedule.**
+> Net delta: ~1,590 lines, single focused session. No new libs. Race target: **Hyrox Delhi · Sat Jul 25 2026**.
+
+**Source materials reconciled:**
+- Runna 8km plan (13 weeks, Apr 27 – Jul 24/25): Mon long runs, Thu quality, weekend easy.
+- Coach's Google Sheet (5-day cycle): heavy lower, lower-endurance, conditioning circuit, loaded circuit, full HYROX stations.
+- Note: Runna labels race day Fri Jul 24 (likely import quirk). Hyrox Delhi is officially Sat Jul 25 — week 13 treats Friday as final shakeout, Saturday as race.
+
+**Combined weekly template:**
+
+| Day | Source | Session |
+|---|---|---|
+| Mon | Runna | Long Run |
+| Tue | Coach | Strength A or B (alternating heavy/endurance) |
+| Wed | Coach | HYROX Brick (full stations) |
+| Thu | Runna | Run Quality (intervals/tempo/progressive) |
+| Fri | Coach | Conditioning Circuit |
+| Sat | Runna | Easy Run |
+| Sun | — | REST |
+
+**13-week ramp:** Wk 1 race recovery → Wk 2-3 Build Block 1 → Wk 4 cutback → Wk 5-7 Build Block 2 (peak volume + race-distance simulation) → Wk 8 cutback + 5K TT → Wk 9-10 Build Block 3 (peak load, 14km longest) → Wk 11 pre-taper 15km hotspot → Wk 12 taper -25% → Wk 13 race week.
+
+**Implementation (commit `01250b4`):**
+
+- **UI** — New `.card-glass#hyrox-build-card` in Training tab, ABOVE the May Date Ladder. Week navigation (prev/next + Week N/13 pill), 7-day strip with type-coded top borders (long-run hyrox, easy-run green, quality amber, strength orange, circuit cyan, race red), today's session detail card with full prescription list (run protocol OR strength exercises with name + dose), conic-gradient progress ring + 3 stats (sessions/78, km/130, days-to-Delhi countdown).
+- **Config** — `window.HYROX_BUILD_2026` constant (idempotent). 7 strength session prescriptions (STRENGTH_A, STRENGTH_B, CIRCUIT_1, CIRCUIT_3, HYROX_BRICK, RACE_TAPER_LIFT, HYROX_TECH, SHAKEOUT_RACE_WK). 13 weeks × 7 days = 91 cells. Helper methods: `dateForDay`, `getCurrentWeekIdx`, `getTodayCell`.
+- **Completion detection** — derives from existing AppState arrays (workouts, strengthPRs, hyroxLadderEntries, raceResults). NO new state. Run days check workouts. Strength/circuit/brick check strengthPRs OR hyroxLadderEntries OR a workouts entry whose name matches `/strength|circuit|brick|hyrox/`. Race day checks raceResults.raceId.
+- **CTA routing** — reuses existing modals: Run → `openWorkoutFeedbackModal(title)`; Race → `openModal('race-result', raceId)`; Strength → `openModal('strength-pr')`; Brick → `openWorkoutFeedbackModal(title)`.
+- **Render orchestration** — `v25R6HyroxBuild` IIFE. switchTab wrapped with `_v25R6Wrapped`. `v25RenderHyroxBuild()` exposed on window. Hooked into `loadRemote()` post-merge list and `submitModal('hyrox-ladder-day')` so the build ring and completion dots refresh in real time.
+- **May Date Ladder** gets a "Supplemental layer · gamification overlay" dashed-border banner at the top — clarifies it's a tracker, not the prescription.
+
+**CSS additions (appended to `v25-r4-styles`):** `.hyrox-build-card`, `.hb-week-strip`, `.hb-day-cell` with type-specific top borders, `.hb-today`, `.hb-prescription-list`, `.hb-ring`, `.hb-stats`, `.hb-supplement-banner`. Mobile breakpoint at 700px shrinks cells/ring/stats and stacks today CTA full-width. `prefers-reduced-motion: reduce` disables all transitions/transforms.
+
+**Verified:** 14 inline scripts parse cleanly (was 13 pre-T3, +1 v25R6), 6 style blocks balanced, total ~13,235 lines.
 
 ### v2.5.2 — Apr 26, 2026 — Race-result visibility fix + May Hyrox Date Ladder
 
