@@ -1,14 +1,14 @@
 {
-  "lastUpdated": "2026-04-26T10:30:00+05:30",
+  "lastUpdated": "2026-04-28T18:30:00+05:30",
   "weights": [],
   "workouts": [
     {
       "date": "2026-04-26",
       "name": "TCS World 10K Bangalore — Race",
-      "duration": 72,
+      "duration": 73,
       "distance": 10,
       "type": "running",
-      "notes": "Race day. Splits 5:48 / 6:13 / 6:28 / 6:48 / 9:52 / 6:52 / 8:08 / 7:56 / 6:55 / 7:13. Walked km 5 (bonk after 4km above threshold). Avg HR 178."
+      "notes": "Official chip: 1:12:44 · avg 7:17/km · 8.2 km/h. Mat splits: 2.5k 15:56 (6:23/km) → 5k 35:24 (segment 7:47/km) → 7.2k 52:23 (7:43/km) → 8.6k 1:02:52 → 10k 1:12:44. Front-loaded blowout (6:23 → 7:47/km drop in 2.5km), final 1.4km kicked at 7:03/km."
     }
   ],
   "foodLog": [],
@@ -17,45 +17,58 @@
     {
       "raceId": "bangalore-tcsw-10k",
       "date": "2026-04-26",
-      "time": "1:12:13",
+      "time": "1:12:44",
       "goalMet": false,
-      "notes": "Goal sub-65 missed (real fitness ceiling ~70 per Riegel from 35:40 5K). Beat Riegel projection by 2:11 despite km-5 bonk. Lessons: km 1 went 5:48 (42s/km too fast), HR pinned at 180+ from km 3, walked km 5. Next race: cap HR 170 first 5k, gel at km 5, even/negative split.",
+      "notes": "Official chip 1:12:44 (Strava-GPS was 1:12:13 — chip is authoritative; 31s diff = mat-to-mat vs press-start). Avg pace 7:17/km · 8.2 km/h · bib 6624. Goal sub-65 missed. Beat Riegel 10K projection from 35:40 5K (74:24) by 1:40 despite mid-race blowup. Strongest data point: final 1.4km at 7:03/km after walking through km 3-7 — kick is real, pacing discipline is the limiter.",
       "splits": [
-        { "km": 1,  "pace": "5:48", "paceSec": 348, "hr": 174, "elev": -8 },
-        { "km": 2,  "pace": "6:13", "paceSec": 373, "hr": 178, "elev": -15 },
-        { "km": 3,  "pace": "6:28", "paceSec": 388, "hr": 180, "elev": 4 },
-        { "km": 4,  "pace": "6:48", "paceSec": 408, "hr": 181, "elev": 1 },
-        { "km": 5,  "pace": "9:52", "paceSec": 592, "hr": 176, "elev": 16 },
-        { "km": 6,  "pace": "6:52", "paceSec": 412, "hr": 178, "elev": 7 },
-        { "km": 7,  "pace": "8:08", "paceSec": 488, "hr": 177, "elev": -1 },
-        { "km": 8,  "pace": "7:56", "paceSec": 476, "hr": 176, "elev": 3 },
-        { "km": 9,  "pace": "6:55", "paceSec": 415, "hr": 180, "elev": -3 },
-        { "km": 10, "pace": "7:13", "paceSec": 433, "hr": 181, "elev": -3 }
+        { "km": 1,  "pace": "5:48", "paceSec": 348, "hr": 174, "elev": -8,  "source": "strava-gps" },
+        { "km": 2,  "pace": "6:13", "paceSec": 373, "hr": 178, "elev": -15, "source": "strava-gps" },
+        { "km": 3,  "pace": "6:28", "paceSec": 388, "hr": 180, "elev": 4,   "source": "strava-gps" },
+        { "km": 4,  "pace": "6:48", "paceSec": 408, "hr": 181, "elev": 1,   "source": "strava-gps" },
+        { "km": 5,  "pace": "9:52", "paceSec": 592, "hr": 176, "elev": 16,  "source": "strava-gps" },
+        { "km": 6,  "pace": "6:52", "paceSec": 412, "hr": 178, "elev": 7,   "source": "strava-gps" },
+        { "km": 7,  "pace": "8:08", "paceSec": 488, "hr": 177, "elev": -1,  "source": "strava-gps" },
+        { "km": 8,  "pace": "7:56", "paceSec": 476, "hr": 176, "elev": 3,   "source": "strava-gps" },
+        { "km": 9,  "pace": "6:55", "paceSec": 415, "hr": 180, "elev": -3,  "source": "strava-gps" },
+        { "km": 10, "pace": "7:13", "paceSec": 433, "hr": 181, "elev": -3,  "source": "strava-gps" }
       ],
-      "avgPaceSec": 433,
+      "chipSplits": [
+        { "interval": "0 → 2.5km",   "cumTime": "00:15:56", "cumSec":  956, "segPace": "6:23", "segPaceSec": 383, "kmh": 9.4 },
+        { "interval": "2.5 → 5.0km", "cumTime": "00:35:24", "cumSec": 2124, "segPace": "7:47", "segPaceSec": 467, "kmh": 7.7 },
+        { "interval": "5.0 → 7.2km", "cumTime": "00:52:23", "cumSec": 3143, "segPace": "7:43", "segPaceSec": 463, "kmh": 7.8 },
+        { "interval": "7.2 → 7.5km", "cumTime": "00:54:47", "cumSec": 3287, "segPace": "8:00", "segPaceSec": 480, "kmh": 7.5 },
+        { "interval": "7.5 → 8.6km", "cumTime": "01:02:52", "cumSec": 3772, "segPace": "7:21", "segPaceSec": 441, "kmh": 8.2 },
+        { "interval": "8.6 → 10.0km","cumTime": "01:12:44", "cumSec": 4364, "segPace": "7:03", "segPaceSec": 423, "kmh": 8.5 }
+      ],
+      "avgPaceSec": 437,
+      "avgKmh": 8.2,
       "avgHr": 178,
-      "chipTimePending": true,
+      "chipTimePending": false,
+      "bib": "6624",
+      "officialResultsUrl": "https://sportstimingsolutions.in/index.php/results?q=eyJlX25hbWUiOiJUQ1MgV29ybGQgMTBLIEJlbmdhbHVydSAyMDI2IiwiZV9pZCI6OTE1NDIsImJpYk5vIjoiNjYyNCJ9",
       "postMortem": {
         "wentWrong": [
-          "Started at 5:48/km — sub-58 pace on a -8m downhill. Adrenaline + crowd surge.",
-          "First 4 km averaged 6:19/km — faster than current 5K PB pace. Aerobic system was over the line by km 3.",
-          "HR pinned at 180-181 (93-94% max) for km 3-4. That's 5K effort sustained for 10K = guaranteed late-race collapse.",
-          "Km 5 walk break (~3:20 lost vs target pace) — glycogen depletion + leg cramp; HR dropped 5 bpm confirming a stop.",
-          "Second half never recovered: km 7-8 at 8:00+ pace with HR still elevated = lactate hangover."
+          "Front-loaded blowout: 6:23/km opening 2.5km → 7:47/km next 2.5km. That's a 22% pace drop inside one 5K — textbook 5K-effort-too-early signature.",
+          "First 2.5k = 9.4 km/h; next 5k averaged 7.7 km/h. The aerobic ceiling was breached before the mat at 5K, not at km 5 as Strava-GPS suggested.",
+          "HR pinned at 178-181 from km 3 onwards (92-94% max). 10K effort lives at ~85% max for someone with this profile — was racing at 5K HR for 10K distance.",
+          "Mid-race walk (km 3-7 zone) cost ~3 minutes vs target pace.",
+          "Strava-GPS km splits are auto-paced per km with auto-pause and don't match mat splits — chip data is the truth."
         ],
         "wentRight": [
-          "Beat Riegel 5K-to-10K projection by 2:11 (predicted 74:24, ran 72:13). Engine is fitter than the 5K time alone suggests.",
-          "Km 9-10 effort climbed despite the second-half collapse — residual fight in the tank.",
-          "No injury, no DNF, completed the distance in race conditions."
+          "Final 1.4km segment ran 7:03/km — fastest pace post-bonk. Kick was genuine, not just survival.",
+          "8.6km segment kicked from 7:21 to 7:03 — negative-split FINISH. The engine returned once panic eased.",
+          "Beat Riegel 5K-to-10K projection from 35:40 5K (74:24) by 1:40. Aerobic fitness is real; pacing was the failure mode, not capacity.",
+          "No injury, no DNF, finished standing.",
+          "Chip vs Strava: 31s difference is normal start-mat-vs-press-start lag. Race execution data quality is good."
         ],
         "fixForNextRace": [
-          "Hard HR cap: 170 bpm for first 5km. Currently went above 175 by km 2.",
-          "First-km governor: target +10s slower than goal pace, not faster. Train this in tempo workouts.",
-          "Fuel: 30g carb 60min pre + one gel at km 5. The bonk lined up with glycogen depletion window.",
-          "Negative-split protocol: first 5k at goal pace + 5s/km, second 5k at goal pace - 5s/km.",
-          "Weight: every kg off is ~3 sec/km. 93 to 85 alone is worth ~4 min on the 10K."
+          "Hard pace cap on km 1: target 6:45-7:00/km, NOT 5:48. Watch face says 'too fast' until km 2.5, no exceptions.",
+          "Hard HR cap on km 1-5: 170 bpm. Walk 30 sec if it spikes above 175.",
+          "Carb fuel: 30g 60-min pre-race (banana + 1 gel), 1 gel at the 5K mat (NOT km 5 of run).",
+          "Even-split protocol: target 7:00/km × 10 = 70:00. First 5k at 7:00/km, last 5k at 7:00/km. Negative split is the goal, not the prayer.",
+          "Weight delta math: 93 → 85kg = ~24 sec/km off = ~4 min off the 10K. The diet IS the engine for sub-65."
         ],
-        "realisticNextTarget": "70:00 by Bangalore Marathon prep block (Sept 2026) at current weight. Sub-65 requires 5K PB to drop to ~31:00 (currently 35:40) AND/OR weight at 82-85 kg."
+        "realisticNextTarget": "Sub-70:00 at Vedanta Delhi Half Marathon prep block (Oct 2026) — even-paced 7:00/km × 10 with the kick actually intact instead of paying back debt. Sub-65 requires 5K PB to drop to ~31:00 (currently 35:40) AND weight at 82-85 kg — both are 6-month projects. The Hyrox Delhi prep build (Apr 27 - Jul 25) will move both needles."
       }
     }
   ],
