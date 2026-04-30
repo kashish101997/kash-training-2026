@@ -3660,6 +3660,255 @@
             .ladder-cell { min-height: 38px; font-size: 11px; }
         }
 
+        /* ── v2.5.3 — Hyrox Delhi 13-Week Build ─────────────────────── */
+        .hyrox-build-card {
+            border-left: 3px solid var(--color-hyrox);
+            margin-bottom: 24px;
+        }
+        .hb-week-nav { display: flex; align-items: center; gap: 8px; }
+        .hb-nav-btn {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background 0.18s, border-color 0.18s, color 0.18s;
+        }
+        .hb-nav-btn:hover {
+            background: color-mix(in oklch, var(--color-hyrox) 12%, transparent);
+            border-color: color-mix(in oklch, var(--color-hyrox) 35%, transparent);
+            color: var(--text-primary);
+        }
+        .hb-nav-btn i[data-lucide] { width: 16px; height: 16px; }
+        .hb-week-pill {
+            font-family: var(--font-mono, "JetBrains Mono", monospace);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: color-mix(in oklch, var(--color-hyrox) 14%, transparent);
+            border: 1px solid color-mix(in oklch, var(--color-hyrox) 35%, transparent);
+            color: var(--color-hyrox);
+            min-width: 110px; text-align: center;
+        }
+
+        .hb-week-strip {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .hb-day-cell {
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 10px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.18s, border-color 0.18s, transform 0.18s;
+            min-height: 88px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hb-day-cell:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.14); }
+        .hb-day-cell.today {
+            border-color: var(--color-hyrox);
+            box-shadow: 0 0 18px -8px color-mix(in oklch, var(--color-hyrox) 75%, transparent);
+        }
+        .hb-day-cell.completed::after {
+            content: '';
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--color-recovery, #50c878);
+            box-shadow: 0 0 6px color-mix(in oklch, var(--color-recovery, #50c878) 70%, transparent);
+        }
+        .hb-day-cell.rest { opacity: 0.5; }
+        .hb-day-cell.race {
+            background: linear-gradient(135deg, color-mix(in oklch, var(--color-hyrox) 22%, transparent), color-mix(in oklch, var(--color-race) 16%, transparent));
+            border-color: color-mix(in oklch, var(--color-hyrox) 55%, transparent);
+        }
+        .hb-day-cell.past:not(.completed):not(.rest) { opacity: 0.7; border-style: dashed; }
+        .hb-day-cell .hb-dow {
+            font-family: var(--font-mono, "JetBrains Mono", monospace);
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+        .hb-day-cell .hb-date {
+            font-family: var(--font-display, "Outfit", sans-serif);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        .hb-day-cell .hb-type {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            line-height: 1.25;
+            margin-top: 2px;
+        }
+        .hb-day-cell .hb-km {
+            font-family: var(--font-mono, "JetBrains Mono", monospace);
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+        .hb-day-cell.t-long-run { border-top: 2px solid var(--color-hyrox); }
+        .hb-day-cell.t-easy-run { border-top: 2px solid var(--color-running); }
+        .hb-day-cell.t-quality { border-top: 2px solid #ffd23f; }
+        .hb-day-cell.t-strength-a, .hb-day-cell.t-strength-b { border-top: 2px solid var(--color-strength); }
+        .hb-day-cell.t-circuit { border-top: 2px solid #00E5FF; }
+        .hb-day-cell.t-brick { border-top: 2px solid var(--color-hyrox); }
+        .hb-day-cell.t-shakeout { border-top: 2px solid #ffd23f; }
+        .hb-day-cell.t-race { border-top: 2px solid var(--color-race); }
+
+        .hb-today {
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-left: 3px solid var(--color-hyrox);
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 16px;
+        }
+        .hb-today-head {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            gap: 10px; margin-bottom: 10px;
+        }
+        .hb-today-eyebrow {
+            font-family: var(--font-mono, "JetBrains Mono", monospace);
+            font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--color-hyrox);
+        }
+        .hb-today-title {
+            font-family: var(--font-display, "Outfit", sans-serif);
+            font-size: clamp(18px, 3.2vw, 22px);
+            font-weight: 600; color: var(--text-primary);
+            line-height: 1.15;
+        }
+        .hb-today-cta {
+            padding: 9px 14px;
+            border-radius: 10px;
+            background: var(--color-hyrox);
+            color: #0a0a0c;
+            font-weight: 600;
+            font-size: 12.5px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+            transition: transform 0.18s, box-shadow 0.18s;
+            white-space: nowrap;
+        }
+        .hb-today-cta i[data-lucide] { width: 14px; height: 14px; }
+        .hb-today-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -8px color-mix(in oklch, var(--color-hyrox) 60%, transparent); }
+        .hb-today-cta.done {
+            background: rgba(80,200,120,0.16);
+            color: var(--color-recovery, #50c878);
+            border: 1px solid color-mix(in oklch, var(--color-recovery, #50c878) 45%, transparent);
+        }
+        .hb-today-detail {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+        .hb-prescription-list {
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: rgba(0,0,0,0.18);
+            border-radius: 10px;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+        }
+        .hb-prescription-list ul { list-style: none; padding-left: 0; margin: 0; }
+        .hb-prescription-list li {
+            display: flex; justify-content: space-between; gap: 8px;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.06);
+        }
+        .hb-prescription-list li:last-child { border-bottom: none; }
+        .hb-prescription-list li .ex-name { color: var(--text-primary); font-weight: 500; }
+        .hb-prescription-list li .ex-dose { font-family: var(--font-mono, "JetBrains Mono", monospace); font-size: 11px; color: var(--text-muted); }
+
+        .hb-progress {
+            display: grid;
+            grid-template-columns: 76px 1fr;
+            gap: 18px;
+            align-items: center;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .hb-ring {
+            width: 76px; height: 76px;
+            border-radius: 50%;
+            background: conic-gradient(var(--color-hyrox) calc(var(--pct) * 1%), rgba(255,255,255,0.06) 0);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .hb-ring::before {
+            content: '';
+            position: absolute;
+            inset: 7px;
+            border-radius: 50%;
+            background: var(--bg-primary, #0a0a0c);
+        }
+        .hb-ring-pct {
+            position: relative;
+            font-family: var(--font-display, "Outfit", sans-serif);
+            font-size: 16px; font-weight: 700;
+            color: var(--text-primary);
+            z-index: 1;
+        }
+        .hb-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .hb-stat { display: flex; flex-direction: column; gap: 2px; }
+        .hb-stat-num {
+            font-family: var(--font-mono, "JetBrains Mono", monospace);
+            font-size: 14px; font-weight: 600;
+            color: var(--text-primary);
+        }
+        .hb-stat-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .hb-supplement-banner {
+            display: flex; gap: 10px; align-items: center;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed rgba(255,255,255,0.10);
+            border-radius: 10px;
+            margin-bottom: 14px;
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .hb-supplement-banner i[data-lucide] { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+
+        @media (max-width: 700px) {
+            .hb-week-strip { grid-template-columns: repeat(7, 1fr); gap: 4px; }
+            .hb-day-cell { padding: 7px 5px; min-height: 78px; }
+            .hb-day-cell .hb-date { font-size: 14px; }
+            .hb-day-cell .hb-type { font-size: 9.5px; }
+            .hb-day-cell .hb-km { font-size: 9px; }
+            .hb-progress { grid-template-columns: 64px 1fr; gap: 12px; }
+            .hb-ring { width: 64px; height: 64px; }
+            .hb-stat-num { font-size: 12px; }
+            .hb-today-head { flex-direction: column; align-items: flex-start; }
+            .hb-today-cta { width: 100%; justify-content: center; }
+        }
+
         /* ── Reduced motion ──────────────────────────────────────────── */
         @media (prefers-reduced-motion: reduce) {
             .heatmap-cell { transition: none !important; }
@@ -3672,6 +3921,11 @@
             .ladder-week-chip { transition: none !important; }
             .ladder-today-cta { transition: none !important; }
             .ladder-today-cta:hover { transform: none !important; }
+            .hb-day-cell { transition: none !important; }
+            .hb-day-cell:hover { transform: none !important; }
+            .hb-nav-btn { transition: none !important; }
+            .hb-today-cta { transition: none !important; }
+            .hb-today-cta:hover { transform: none !important; }
         }
     </style>
 </head>
@@ -4793,8 +5047,46 @@
 
             </div>
 
-            <!-- v2.5.2 — May Hyrox Date Ladder (Option A) -->
+            <!-- v2.5.3 — Hyrox Delhi 13-Week Build (unified Runna + Coach's Sheet plan) -->
+            <div class="card-glass hyrox-build-card" id="hyrox-build-card" data-v3-reveal>
+                <div class="section-header">
+                    <span class="phase-eyebrow accent-hyrox"><i data-lucide="target"></i>Hyrox Delhi · 13-Week Build · Apr 27 – Jul 25</span>
+                    <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 8px;">
+                        <h3 class="section-title section-title-icon"><i data-lucide="calendar-days"></i>This Week</h3>
+                        <div class="hb-week-nav">
+                            <button class="hb-nav-btn" id="hb-prev-week" aria-label="Previous week"><i data-lucide="chevron-left"></i></button>
+                            <span class="hb-week-pill" id="hb-week-pill">Week —</span>
+                            <button class="hb-nav-btn" id="hb-next-week" aria-label="Next week"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <p class="section-kicker" style="margin-bottom: 14px;">Runna runs (Mon long · Thu quality · weekend easy) + Coach strength &amp; HYROX-station work (Tue heavy · Wed brick · Fri circuit). Tap any day for the prescription.</p>
+                </div>
+
+                <!-- 7-day strip for current week -->
+                <div class="hb-week-strip" id="hb-week-strip"></div>
+
+                <!-- Today / focused-day detail card -->
+                <div class="hb-today" id="hb-today"></div>
+
+                <!-- Build progress summary -->
+                <div class="hb-progress">
+                    <div class="hb-ring" id="hb-ring" style="--pct: 0;">
+                        <span class="hb-ring-pct" id="hb-ring-pct">0%</span>
+                    </div>
+                    <div class="hb-stats">
+                        <div class="hb-stat"><span class="hb-stat-num" id="hb-stat-sessions">0 / 78</span><span class="hb-stat-label">sessions</span></div>
+                        <div class="hb-stat"><span class="hb-stat-num" id="hb-stat-runkm">0 / 130</span><span class="hb-stat-label">km run</span></div>
+                        <div class="hb-stat"><span class="hb-stat-num" id="hb-stat-days-to-race">— d</span><span class="hb-stat-label">to Hyrox Delhi</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- v2.5.2 — May Hyrox Date Ladder (Option A) — supplemental tracker -->
             <div class="card-glass may-ladder-card" id="may-ladder-card" data-v3-reveal>
+                <div class="hb-supplement-banner">
+                    <i data-lucide="layers"></i>
+                    <span>Supplemental layer — gamification overlay tracking May completions (any session counts). The build plan above is your prescription.</span>
+                </div>
                 <div class="section-header">
                     <span class="phase-eyebrow accent-hyrox"><i data-lucide="flame"></i>Hyrox Build · May 2026</span>
                     <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 8px;">
@@ -8008,6 +8300,7 @@ const AppState = {
                 // missing this hook is why the user never saw "COMPLETED · 1:12:13" on the card).
                 if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
                 if (typeof window.v25RenderMayLadder === 'function') window.v25RenderMayLadder();
+                if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
                 if (indicator) indicator.textContent = 'Synced';
             } else {
                 if (indicator) indicator.textContent = 'Up to date';
@@ -9887,6 +10180,7 @@ function submitModal(type, arg) {
             if (!ok) { showToast('Could not save ladder entry', 'error'); return; }
             showToast(`Day ${dayNum} · ${week.stationLabel} · ${sets}×${reps}${weight ? ' @ '+weight+'kg' : ''}`, 'success');
             if (typeof window.v25RenderMayLadder === 'function') window.v25RenderMayLadder();
+            if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
             if (typeof window.v25RenderHeatmap === 'function') window.v25RenderHeatmap();
             if (typeof window.v25RenderHabitLayer === 'function') window.v25RenderHabitLayer();
             break;
@@ -12347,6 +12641,507 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('DOMContentLoaded', boot);
     } else {
         setTimeout(boot, 260);
+    }
+})();
+</script>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   v25R6 — Hyrox Delhi 13-Week Build (unified plan)
+   Combines Runna 8km plan (Mon long / Thu quality / weekend easy) with
+   Coach's Sheet (Tue heavy strength · Wed Hyrox brick · Fri circuit).
+   Race day: Sat Jul 25 2026 (Hyrox Delhi · Singles · Open).
+   ════════════════════════════════════════════════════════════════════ */
+(function v25R6HyroxBuild(){
+    'use strict';
+    if (window.HYROX_BUILD_2026) return; // idempotent
+
+    /* ─── Strength session prescriptions (from Coach's Sheet) ─── */
+    const STRENGTH_A = {
+        focus: 'Heavy Lower · Coach Day 4',
+        items: [
+            { name: 'Low Squats',        dose: '4 × 12 @ 20kg' },
+            { name: 'RDLs',              dose: '4 × 12 @ 10kg DBs' },
+            { name: 'Press-ups',         dose: '4 × max' },
+            { name: 'Treadmill sprints', dose: '5 × 30 sec' },
+            { name: 'TRX rows (single)', dose: '4 × 8 each' },
+            { name: 'Russian twists',    dose: '4 × 20 @ 10kg ball' }
+        ]
+    };
+    const STRENGTH_B = {
+        focus: 'Lower Endurance · Coach Day 2',
+        items: [
+            { name: 'Walking lunges (BW)',  dose: '1 × 20m' },
+            { name: 'Walking lunges (bar)', dose: '4 × 20m @ 20kg' },
+            { name: 'TRX rows',             dose: '4 × 10' },
+            { name: 'Wood chops (cable)',   dose: '4 × 10 each' },
+            { name: 'Arnold press',         dose: '4 × 15 @ 6kg' },
+            { name: 'Drop squats (Tabata)', dose: '8 × 20:10' },
+            { name: 'Broken burpees (Tab)', dose: '8 × 20:10' }
+        ]
+    };
+    const CIRCUIT_1 = {
+        focus: 'Conditioning Circuit · Coach Day 1',
+        items: [
+            { name: 'Negative chin-ups', dose: '5 × 5 (BW)' },
+            { name: 'Hand-release press-ups', dose: '5 × 5' },
+            { name: 'Box jumps 46cm',    dose: '5 × 5' },
+            { name: 'Sprawls (Tabata)',  dose: '4 × 20:10' },
+            { name: 'Crawl-outs (Tab)',  dose: '4 × 20:10' },
+            { name: 'Plank',             dose: 'to failure (target 55s+)' }
+        ]
+    };
+    const CIRCUIT_3 = {
+        focus: 'Loaded Circuit · Coach Day 3',
+        items: [
+            { name: 'KB swings',     dose: '4 × 15 @ 24kg' },
+            { name: 'Farmers carry', dose: '4 × 1 min @ 24kg' },
+            { name: 'Burpees',       dose: '4 × 10' },
+            { name: '300m run',      dose: '4 × 300m' },
+            { name: 'Plank',         dose: 'to failure' },
+            { name: 'Stretch',       dose: '15 min' }
+        ]
+    };
+    const HYROX_BRICK = {
+        focus: 'HYROX Brick · Coach Day 5 (full stations)',
+        items: [
+            { name: 'Ski Erg',     dose: '500m × 4' },
+            { name: 'Sled Push',   dose: '20m × 4' },
+            { name: 'Sled Pull',   dose: '20m × 4' },
+            { name: 'Wall Balls',  dose: '20 × 4' },
+            { name: 'Row',         dose: '500m × 4' },
+            { name: 'Rest',        dose: '60-90 sec between blocks' }
+        ]
+    };
+    const RACE_TAPER_LIFT = {
+        focus: 'Light maintenance · NO failure',
+        items: [
+            { name: 'Goblet squats', dose: '3 × 8 @ light' },
+            { name: 'Press-ups',     dose: '3 × 8' },
+            { name: 'TRX rows',      dose: '3 × 8' },
+            { name: 'Hip mobility',  dose: '10 min' }
+        ]
+    };
+    const HYROX_TECH = {
+        focus: 'Race Rehearsal · technique walk-through',
+        items: [
+            { name: 'Sled Push',    dose: '2 × 15m @ race load · pace check' },
+            { name: 'Wall Balls',   dose: '1 × 20 reps · target zone' },
+            { name: 'Burpee BBJ',   dose: '1 × 15 reps · landing form' },
+            { name: 'Run',          dose: '2 × 200m @ race pace' }
+        ]
+    };
+    const SHAKEOUT_RACE_WK = {
+        focus: 'Final shakeout · 20 min',
+        items: [
+            { name: 'Easy jog',         dose: '15 min Z1' },
+            { name: 'Strides',          dose: '4 × 20 sec' },
+            { name: 'Hip + ankle mob',  dose: '5 min' }
+        ]
+    };
+
+    /* ─── Run prescriptions (from Runna) ─── */
+    const r = (km, label, detail) => ({ runKm: km, runLabel: label, runDetail: detail });
+    const REST_DAY = { type: 'rest', title: 'Rest', summary: 'Active recovery — walk, mobility, Gateway. Sleep ≥7.5h.' };
+
+    /* ─── 13-week × 7-day plan (Mon-Sun) ─── */
+    /* Week 1 (Apr 27): post-race recovery; Coach work intro at low intensity. */
+    const PLAN = [
+        { weekNum: 1,  startDate: '2026-04-27', label: 'Recovery + Re-entry', days: [
+            { ...REST_DAY, title: 'Rest · race recovery' },
+            { ...REST_DAY, title: 'Mobility / walk' },
+            { type: 'easy-run', title: 'Easy Run', ...r(6.5, '6.5km Easy', 'Conversational pace · Z2 HR <165') },
+            { ...REST_DAY },
+            { type: 'quality', title: 'Rolling 400s', ...r(6.4, '6.4km · Rolling 400s', 'Warm 1.5k easy · 8 × 400m @ ~5K pace, 90s easy float between · 1.5k cool') },
+            { type: 'circuit', title: 'Light Movement Circuit', strength: CIRCUIT_1, summary: 'First gym day — learn movements, low intensity. Reduce sets if sore.' },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 2,  startDate: '2026-05-04', label: 'Build Block 1 · ramp', days: [
+            { type: 'long-run', title: 'Long Run', ...r(10, '10km Long Run', 'Steady aerobic · Z2 throughout. No surges.') },
+            { type: 'strength-a', title: 'Strength A · Heavy Lower', strength: STRENGTH_A, summary: 'Heavy lower while fresh from rest weekend.' },
+            { type: 'brick', title: 'HYROX Brick', strength: HYROX_BRICK, summary: 'First full station rotation. Focus on form > speed.' },
+            { type: 'quality', title: '400m Repeats', ...r(5.4, '5.4km · 400m Repeats', 'Warm 1k · 6 × 400m @ 5K pace, 200m jog · 1k cool. HR cap 175.') },
+            { type: 'circuit', title: 'Conditioning Circuit', strength: CIRCUIT_1, summary: 'Tabata-heavy — stay smooth, breath-paced.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(7, '7km Easy', 'Z2 · feel-good pace.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 3,  startDate: '2026-05-11', label: 'Build Block 1 · double easy', days: [
+            { type: 'long-run', title: 'Progressive Repeat Long', ...r(10, '10km Progressive Repeat', '2k easy · 4 × (1k @ MP, 1k easy float) · last block is fastest.') },
+            { type: 'strength-b', title: 'Strength B · Lower Endurance', strength: STRENGTH_B, summary: 'Higher reps, stamina focus.' },
+            { type: 'brick', title: 'HYROX Brick', strength: HYROX_BRICK, summary: 'Add 50m sled push if available. Otherwise weighted ruck stairs.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(7.5, '7.5km Easy', 'Z2 conversational.') },
+            { type: 'easy-run', title: 'Easy Run', ...r(8, '8km Easy', 'Z2 · double-easy week, mileage matters more than speed.') },
+            { type: 'circuit', title: 'Loaded Circuit', strength: CIRCUIT_3, summary: 'KB + farmers + 300m runs. Mimics late-race fatigue.' },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 4,  startDate: '2026-05-18', label: 'Cutback · absorb', days: [
+            { type: 'long-run', title: 'Long Run', ...r(7, '7km Long Run', 'Cutback week — stay strictly Z2.') },
+            { type: 'strength-a', title: 'Strength A · Heavy Lower', strength: STRENGTH_A, summary: 'Try to add 2.5kg to squat if last week felt strong.' },
+            { type: 'brick', title: 'HYROX Brick', strength: HYROX_BRICK, summary: 'Standard rotation.' },
+            { type: 'quality', title: 'Tempo 2-1', ...r(5, '5km · Tempo 2-1', '1.5k easy · 2k @ tempo (10-15s slower than 5K) · 1k easy · 1k cool. RPE 7.') },
+            { type: 'circuit', title: 'Conditioning Circuit', strength: CIRCUIT_1, summary: 'Cutback intensity — 3 sets instead of 4.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(6, '6km Easy', 'Z2 · short cutback session.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 5,  startDate: '2026-05-25', label: 'Build Block 2 · sharpen', days: [
+            { type: 'long-run', title: 'Progressive Long', ...r(10, '10km Progressive Long', 'Last 3km @ marathon pace. Negative split.') },
+            { type: 'strength-b', title: 'Strength B · Lower Endurance', strength: STRENGTH_B, summary: 'Drop set on final round if energy permits.' },
+            { type: 'brick', title: 'HYROX Brick', strength: HYROX_BRICK, summary: 'Time today — record your 4-block total.' },
+            { type: 'quality', title: '200m Repeats', ...r(7.5, '7.5km · 200m Repeats', 'Warm 1.5k · 12 × 200m @ 3K pace, 200m jog · 1.5k cool. Speed development.') },
+            { type: 'circuit', title: 'Loaded Circuit', strength: CIRCUIT_3, summary: 'Test KB swing form under fatigue.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(9, '9km Easy', 'Long-easy. Z2.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 6,  startDate: '2026-06-01', label: 'Build Block 2 · peak volume', days: [
+            { type: 'long-run', title: 'Long Run', ...r(11, '11km Long Run', 'Pure aerobic Z2. Practice race-morning fueling.') },
+            { type: 'strength-a', title: 'Strength A · Heavy Lower', strength: STRENGTH_A, summary: 'Top weight day if absorbed last week well.' },
+            { type: 'brick', title: 'HYROX Brick', strength: HYROX_BRICK, summary: 'Full intent — race-pace stations.' },
+            { type: 'quality', title: 'Rolling 300s', ...r(8.9, '8.9km · Rolling 300s', 'Warm 1.5k · 10 × 300m @ 5K pace, 100m float · 1.5k cool. Compromised running prep.') },
+            { type: 'circuit', title: 'Conditioning Circuit', strength: CIRCUIT_1, summary: 'Standard rotation.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(10, '10km Easy', 'Longest easy yet — pure Z2.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 7,  startDate: '2026-06-08', label: 'Race-distance simulation', days: [
+            { type: 'long-run', title: 'Hotspot Long Run', ...r(12, '12km Hotspot Long', 'Surges (hotspots) every 2km @ 10K pace for 400m. Mimics race fatigue management.') },
+            { type: 'strength-b', title: 'Strength B · Lower Endurance', strength: STRENGTH_B, summary: 'Rep-PR day if energy allows on lunges.' },
+            { type: 'brick', title: 'HYROX Brick · 6 stations', strength: HYROX_BRICK, summary: 'Add 1 lap of wall balls + farmers carries to get closer to race format.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(8, '8km Easy', 'Recovery from Tue/Wed loading.') },
+            { type: 'easy-run', title: 'Easy Run', ...r(9, '9km Easy', 'Double-easy week — resist temptation to push.') },
+            { type: 'circuit', title: 'Loaded Circuit', strength: CIRCUIT_3, summary: 'Standard.' },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 8,  startDate: '2026-06-15', label: 'Cutback · 5K Time Trial', days: [
+            { type: 'long-run', title: 'Long Run', ...r(7.5, '7.5km Long', 'Pure Z2 · cutback. Save the engine for Thursday.') },
+            { type: 'strength-a', title: 'Strength A · Light Heavy', strength: STRENGTH_A, summary: 'Drop weights 10% — TT is the priority this week.' },
+            { type: 'brick', title: 'HYROX Brick · light', strength: HYROX_BRICK, summary: 'Reduce to 3 rounds. No max-effort sets.' },
+            { type: 'quality', title: '5K Time Trial', ...r(6, '6km · 5K Time Trial', 'Warm 1k · 5K all-out · 0.5k cool. TARGET: sub-34. New 5K PB attempt.') },
+            { ...REST_DAY, title: 'Rest · TT recovery' },
+            { type: 'easy-run', title: 'Easy Run', ...r(7, '7km Easy', 'Shake out Thu effort.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 9,  startDate: '2026-06-22', label: 'Build Block 3 · race-specific', days: [
+            { type: 'long-run', title: 'Progressive Repeat Long', ...r(13, '13km Progressive Repeat', '3k easy · 5 × (1k @ MP, 1k easy) · longest progressive yet.') },
+            { type: 'strength-b', title: 'Strength B · Lower Endurance', strength: STRENGTH_B, summary: 'Standard.' },
+            { type: 'brick', title: 'HYROX Brick · 6 stations', strength: HYROX_BRICK, summary: 'Add Burpee Broad Jumps if not yet introduced.' },
+            { type: 'quality', title: 'Progressive Run', ...r(10, '10km Progressive', 'Each 2k slightly faster — 2k Z2 → 2k Z2-3 → 2k Z3 → 2k Z3-4 → 2k Z4.') },
+            { type: 'circuit', title: 'Conditioning Circuit', strength: CIRCUIT_1, summary: 'Standard.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(9, '9km Easy', 'Z2 · feet-up rest of day.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 10, startDate: '2026-06-29', label: 'Build Block 3 · peak load', days: [
+            { type: 'long-run', title: 'Long Run', ...r(14, '14km Long Run', 'Longest run of the build. Pure Z2 · race-morning fueling rehearsal.') },
+            { type: 'strength-a', title: 'Strength A · Heavy Lower', strength: STRENGTH_A, summary: 'Final heavy week before taper.' },
+            { type: 'brick', title: 'HYROX Brick · full sim', strength: HYROX_BRICK, summary: 'Time the 4-block total. Compare to Wk 5.' },
+            { type: 'quality', title: 'Broken Miles', ...r(10, '10km · Broken Miles', 'Warm 1.5k · 4 × (1mi @ 10K pace, 400m float) · 1.5k cool. Threshold work.') },
+            { type: 'circuit', title: 'Loaded Circuit', strength: CIRCUIT_3, summary: 'Last circuit before taper begins next phase.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(9, '9km Easy', 'Z2.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 11, startDate: '2026-07-06', label: 'Pre-taper · race rehearsal', days: [
+            { type: 'long-run', title: 'Hotspot Long', ...r(15, '15km Hotspot Long', 'Final long. 4 hotspots × 600m @ 10K pace every 3km. Fatigue management.') },
+            { type: 'strength-b', title: 'Strength B · Lower Endurance', strength: STRENGTH_B, summary: 'Last full strength session — hold weights, drop a set.' },
+            { type: 'brick', title: 'HYROX Brick · race-pace', strength: HYROX_BRICK, summary: 'Race-pace stations · transitions ≤30 sec.' },
+            { type: 'easy-run', title: 'Easy Run', ...r(8, '8km Easy', 'Z2.') },
+            { type: 'easy-run', title: 'Easy Run', ...r(9, '9km Easy', 'Z2 · last easy double.') },
+            { ...REST_DAY, title: 'Rest · pre-rehearsal' },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 12, startDate: '2026-07-13', label: 'Taper · -25% volume', days: [
+            { type: 'long-run', title: 'Long Run', ...r(12, '12km Long Run', 'Drop 20% from peak. Z2. Stay relaxed.') },
+            { type: 'strength-a', title: 'Maintenance Lift', strength: RACE_TAPER_LIFT, summary: 'Keep CNS sharp without fatigue.' },
+            { type: 'brick', title: 'Race Rehearsal', strength: HYROX_TECH, summary: 'Light station tech. NO max effort. Practice transitions.' },
+            { type: 'quality', title: 'Rolling 400s · light', ...r(7, '7km · Rolling 400s', 'Warm 1.5k · 6 × 400m @ 10K pace (NOT 5K), 200m float · 1.5k cool. Sharpening, not exhausting.') },
+            { ...REST_DAY, title: 'Rest · pre-easy' },
+            { type: 'easy-run', title: 'Easy Run', ...r(8, '8km Easy', 'Final easy run · stay loose.') },
+            { ...REST_DAY }
+        ]},
+        { weekNum: 13, startDate: '2026-07-20', label: 'Race week — Hyrox Delhi · Sat Jul 25', days: [
+            { type: 'quality', title: 'Taper 400s', ...r(7, '7km · Taper 400s', 'Warm 1.5k · 4 × 400m @ 10K pace, 400m easy · 1.5k cool. Last opener.') },
+            { type: 'strength-a', title: 'Pre-race Maintenance', strength: RACE_TAPER_LIFT, summary: 'Light weights only. Body remembers.' },
+            { type: 'brick', title: 'Tech Rehearsal · light', strength: HYROX_TECH, summary: 'Walk through stations at race load. Stop short of any fatigue.' },
+            { ...REST_DAY, title: 'Rest · 2 days out' },
+            { type: 'shakeout', title: 'Final Shakeout', strength: SHAKEOUT_RACE_WK, summary: '20-min jog + strides + 5 min mobility. Carbs +500 today.' },
+            { type: 'race', title: 'HYROX DELHI · Race Day', summary: 'Wake 4hrs pre-race. Light carb breakfast. 15-min warm-up + 3 station tech. RACE.', isRace: true, raceId: 'hyrox-delhi' },
+            { ...REST_DAY, title: 'Rest · post-race recovery' }
+        ]}
+    ];
+
+    /* ─── Compute totals ─── */
+    function totals() {
+        let sessions = 0, runKm = 0;
+        PLAN.forEach(w => w.days.forEach(d => {
+            if (d.type !== 'rest') sessions++;
+            if (d.runKm) runKm += d.runKm;
+        }));
+        return { sessions, runKm: Math.round(runKm) };
+    }
+    const TOTALS = totals();
+
+    /* ─── Public config object ─── */
+    const CFG = {
+        plan: PLAN,
+        totals: TOTALS,
+        raceDate: '2026-07-25',
+        ymd(d) { return d.toISOString().slice(0,10); },
+        dateForDay(weekIdx, dayIdx) {
+            const w = PLAN[weekIdx]; if (!w) return null;
+            const start = new Date(w.startDate);
+            const d = new Date(start); d.setDate(start.getDate() + dayIdx);
+            return CFG.ymd(d);
+        },
+        getCurrentWeekIdx() {
+            const today = new Date(); today.setHours(0,0,0,0);
+            for (let i = 0; i < PLAN.length; i++) {
+                const start = new Date(PLAN[i].startDate);
+                const end = new Date(start); end.setDate(start.getDate() + 6);
+                if (today >= start && today <= end) return i;
+            }
+            // Before plan starts → 0; after plan ends → last week
+            const firstStart = new Date(PLAN[0].startDate);
+            return today < firstStart ? 0 : PLAN.length - 1;
+        },
+        getTodayCell() {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const todayKey = CFG.ymd(today);
+            for (let wi = 0; wi < PLAN.length; wi++) {
+                for (let di = 0; di < PLAN[wi].days.length; di++) {
+                    if (CFG.dateForDay(wi, di) === todayKey) return { weekIdx: wi, dayIdx: di, day: PLAN[wi].days[di] };
+                }
+            }
+            return null;
+        }
+    };
+    window.HYROX_BUILD_2026 = CFG;
+
+    /* ─── Completion detection ─── */
+    function isDayCompleted(weekIdx, dayIdx) {
+        const day = PLAN[weekIdx]?.days[dayIdx]; if (!day) return false;
+        if (day.type === 'rest') return false; // rest days don't show as "completed"
+        const dateStr = CFG.dateForDay(weekIdx, dayIdx);
+        const isRun = ['easy-run','long-run','quality','shakeout'].includes(day.type);
+        const isStrength = ['strength-a','strength-b','circuit','brick'].includes(day.type);
+        const isRace = day.type === 'race';
+        if (isRun) return (AppState.workouts || []).some(w => w.date === dateStr && (parseFloat(w.distance) > 0 || parseFloat(w.duration) > 0));
+        if (isStrength) {
+            const hasPR = (AppState.strengthPRs || []).some(p => p.date === dateStr);
+            const hasLadder = (AppState.hyroxLadderEntries || []).some(e => e.date === dateStr);
+            const hasWorkout = (AppState.workouts || []).some(w => w.date === dateStr && /strength|circuit|brick|hyrox|squat|deadlift|coach/i.test(w.name || ''));
+            return hasPR || hasLadder || hasWorkout;
+        }
+        if (isRace) return (AppState.raceResults || []).some(r => r.raceId === day.raceId);
+        return false;
+    }
+
+    /* ─── State for week navigation ─── */
+    let viewedWeekIdx = -1;
+
+    function activeWeekIdx() {
+        return viewedWeekIdx >= 0 ? viewedWeekIdx : CFG.getCurrentWeekIdx();
+    }
+
+    /* ─── Renderers ─── */
+    function dowAbbr(dayIdx) {
+        return ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][dayIdx] || '';
+    }
+    function dateAbbr(dateStr) {
+        const d = new Date(dateStr + 'T00:00:00');
+        return d.getDate();
+    }
+
+    function renderWeekStrip() {
+        const host = document.getElementById('hb-week-strip');
+        const pill = document.getElementById('hb-week-pill');
+        if (!host) return;
+        const wi = activeWeekIdx();
+        const w = PLAN[wi];
+        if (pill) pill.textContent = `Week ${w.weekNum} / 13`;
+        const todayKey = CFG.ymd(new Date());
+        const cells = w.days.map((day, di) => {
+            const dateStr = CFG.dateForDay(wi, di);
+            const completed = isDayCompleted(wi, di);
+            const isToday = dateStr === todayKey;
+            const isPast  = dateStr < todayKey;
+            const cls = ['hb-day-cell', `t-${day.type}`];
+            if (day.type === 'rest') cls.push('rest');
+            if (completed) cls.push('completed');
+            if (isToday) cls.push('today');
+            if (isPast && !isToday) cls.push('past');
+            const km = day.runKm ? `${day.runKm}km` : (day.type === 'rest' ? '—' : '');
+            const typeLabel = (day.title || '').slice(0, 18);
+            return `<div class="${cls.join(' ')}" data-week="${wi}" data-day="${di}" role="button" tabindex="0" onclick="window.openHyroxBuildDay(${wi}, ${di})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.openHyroxBuildDay(${wi}, ${di});}" title="${(day.title||'').replace(/"/g,'&quot;')}">
+                <span class="hb-dow">${dowAbbr(di)}</span>
+                <span class="hb-date">${dateAbbr(dateStr)}</span>
+                <span class="hb-type">${typeLabel}</span>
+                <span class="hb-km">${km}</span>
+            </div>`;
+        }).join('');
+        host.innerHTML = cells;
+    }
+
+    function renderTodayCard(focusedWeekIdx, focusedDayIdx) {
+        const host = document.getElementById('hb-today');
+        if (!host) return;
+        let wi = focusedWeekIdx, di = focusedDayIdx;
+        if (wi == null || di == null) {
+            const td = CFG.getTodayCell();
+            if (td) { wi = td.weekIdx; di = td.dayIdx; }
+            else { wi = activeWeekIdx(); di = 0; }
+        }
+        const day = PLAN[wi]?.days[di];
+        if (!day) { host.innerHTML = ''; return; }
+        const dateStr = CFG.dateForDay(wi, di);
+        const dateObj = new Date(dateStr + 'T00:00:00');
+        const dateLabel = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+        const completed = isDayCompleted(wi, di);
+
+        let exercisesHTML = '';
+        if (day.strength && day.strength.items) {
+            const items = day.strength.items.map(ex => `<li><span class="ex-name">${ex.name}</span><span class="ex-dose">${ex.dose}</span></li>`).join('');
+            exercisesHTML = `<div class="hb-prescription-list"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px;">${day.strength.focus}</div><ul>${items}</ul></div>`;
+        }
+
+        let runDetailHTML = '';
+        if (day.runDetail) {
+            runDetailHTML = `<div class="hb-prescription-list"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px;">Run · ${day.runLabel || ''}</div><div style="color:var(--text-secondary);font-size:12.5px;">${day.runDetail}</div></div>`;
+        }
+
+        // CTA wiring per day type
+        let ctaLabel = 'Log Session', ctaIcon = 'circle-plus', ctaAction = `window.openHyroxBuildLog(${wi}, ${di})`, ctaCls = 'hb-today-cta';
+        if (day.type === 'rest') { ctaLabel = 'Rest day'; ctaIcon = 'moon'; ctaAction = ''; ctaCls = 'hb-today-cta done'; }
+        else if (day.type === 'race') { ctaLabel = 'Log Race Result'; ctaIcon = 'flag'; ctaAction = `openModal('race-result','${day.raceId || 'hyrox-delhi'}')`; }
+        else if (completed) { ctaLabel = 'Logged · Edit'; ctaIcon = 'check-circle-2'; ctaCls = 'hb-today-cta done'; }
+        const ctaBtn = ctaAction
+            ? `<button class="${ctaCls}" onclick="${ctaAction}"><i data-lucide="${ctaIcon}"></i>${ctaLabel}</button>`
+            : `<span class="${ctaCls}"><i data-lucide="${ctaIcon}"></i>${ctaLabel}</span>`;
+
+        host.innerHTML = `
+            <div class="hb-today-head">
+                <div>
+                    <div class="hb-today-eyebrow">${dateLabel}${completed ? ' · DONE' : ''}</div>
+                    <div class="hb-today-title">${day.title}</div>
+                </div>
+                ${ctaBtn}
+            </div>
+            ${day.summary ? `<div class="hb-today-detail">${day.summary}</div>` : ''}
+            ${runDetailHTML}
+            ${exercisesHTML}
+        `;
+        if (typeof initLucide === 'function') initLucide();
+    }
+
+    function renderProgress() {
+        const ring = document.getElementById('hb-ring');
+        const ringPct = document.getElementById('hb-ring-pct');
+        const sessEl = document.getElementById('hb-stat-sessions');
+        const kmEl = document.getElementById('hb-stat-runkm');
+        const daysEl = document.getElementById('hb-stat-days-to-race');
+        let done = 0, doneKm = 0;
+        PLAN.forEach((w, wi) => w.days.forEach((day, di) => {
+            if (isDayCompleted(wi, di)) {
+                done++;
+                if (day.runKm) doneKm += day.runKm;
+            }
+        }));
+        const total = TOTALS.sessions;
+        const pct = Math.round((done / total) * 100);
+        if (ring) ring.style.setProperty('--pct', pct);
+        if (ringPct) ringPct.textContent = `${pct}%`;
+        if (sessEl) sessEl.textContent = `${done} / ${total}`;
+        if (kmEl) kmEl.textContent = `${Math.round(doneKm)} / ${TOTALS.runKm}`;
+        if (daysEl) {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const race = new Date(CFG.raceDate + 'T00:00:00');
+            const days = Math.ceil((race - today) / 86400000);
+            daysEl.textContent = days >= 0 ? `${days} d` : 'past';
+        }
+    }
+
+    function renderAll(focusWeek, focusDay) {
+        try {
+            renderWeekStrip();
+            renderTodayCard(focusWeek, focusDay);
+            renderProgress();
+            if (typeof initLucide === 'function') initLucide();
+        } catch(e) { console.warn('[v25R6 hyrox build] render failed:', e); }
+    }
+    window.v25RenderHyroxBuild = renderAll;
+
+    /* ─── Tap handlers ─── */
+    window.openHyroxBuildDay = function(weekIdx, dayIdx) {
+        // Focus that day's prescription in the today card (without changing the strip's week)
+        if (typeof weekIdx === 'number' && weekIdx !== activeWeekIdx()) {
+            viewedWeekIdx = weekIdx;
+            renderAll(weekIdx, dayIdx);
+        } else {
+            renderTodayCard(weekIdx, dayIdx);
+        }
+        // Smooth scroll the today card into view
+        const el = document.getElementById('hb-today');
+        if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    window.openHyroxBuildLog = function(weekIdx, dayIdx) {
+        const day = PLAN[weekIdx]?.days[dayIdx]; if (!day) return;
+        // Route to the right modal based on session type
+        if (['easy-run','long-run','quality','shakeout'].includes(day.type)) {
+            // Run → workout feedback modal (existing)
+            if (typeof openWorkoutFeedbackModal === 'function') {
+                openWorkoutFeedbackModal(day.title || day.runLabel || 'Run');
+            } else if (typeof openModal === 'function') {
+                openModal('workout');
+            }
+            return;
+        }
+        if (day.type === 'race') {
+            if (typeof openModal === 'function') openModal('race-result', day.raceId || 'hyrox-delhi');
+            return;
+        }
+        if (['strength-a','strength-b','circuit'].includes(day.type)) {
+            if (typeof openModal === 'function') openModal('strength-pr');
+            return;
+        }
+        if (day.type === 'brick') {
+            // Hyrox brick — log via ladder day modal (closest existing fit)
+            // Use today's date if it's actually today; otherwise lift a workout entry
+            if (typeof openWorkoutFeedbackModal === 'function') {
+                openWorkoutFeedbackModal(day.title);
+            }
+            return;
+        }
+    };
+
+    window.hyroxBuildPrevWeek = function() {
+        const wi = activeWeekIdx();
+        if (wi > 0) { viewedWeekIdx = wi - 1; renderAll(); }
+    };
+    window.hyroxBuildNextWeek = function() {
+        const wi = activeWeekIdx();
+        if (wi < PLAN.length - 1) { viewedWeekIdx = wi + 1; renderAll(); }
+    };
+
+    /* ─── Boot + tab-switch hook ─── */
+    function boot() {
+        // Bind nav buttons
+        const prev = document.getElementById('hb-prev-week');
+        const next = document.getElementById('hb-next-week');
+        if (prev) prev.addEventListener('click', window.hyroxBuildPrevWeek);
+        if (next) next.addEventListener('click', window.hyroxBuildNextWeek);
+        renderAll();
+        if (typeof window.switchTab === 'function' && !window.switchTab._v25R6Wrapped) {
+            const orig = window.switchTab;
+            window.switchTab = function(name, ...rest) {
+                const r = orig.call(this, name, ...rest);
+                if (name === 'training') setTimeout(renderAll, 80);
+                return r;
+            };
+            Object.assign(window.switchTab, orig);
+            window.switchTab._v25R6Wrapped = true;
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        setTimeout(boot, 300);
     }
 })();
 </script>
