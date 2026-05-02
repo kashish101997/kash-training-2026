@@ -3896,6 +3896,39 @@
         }
         .hb-supplement-banner i[data-lucide] { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
 
+        /* ── HM Build goal framework (v2.5.4) ─────────────────────────── */
+        .hm-goals {
+            display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .hm-goal {
+            flex: 1; min-width: 88px; padding: 10px 12px; border-radius: 10px;
+            background: oklch(0.14 0.005 260 / 0.8);
+            border: 1px solid oklch(1 0 0 / 0.06);
+            display: flex; flex-direction: column; gap: 4px; text-align: center;
+        }
+        .hm-goal-label {
+            font-size: 10px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--text-muted);
+        }
+        .hm-goal-time {
+            font-family: var(--font-mono, "JetBrains Mono", monospace);
+            font-size: 16px; font-weight: 600; color: var(--text-primary);
+        }
+        .hm-goal-pace {
+            font-family: var(--font-mono, "JetBrains Mono", monospace);
+            font-size: 11px; color: var(--text-muted);
+        }
+        .hm-goal-c { border-top: 2px solid var(--v3-accent-run); }
+        .hm-goal-b { border-top: 2px solid #ffd23f; }
+        .hm-goal-a { border-top: 2px solid var(--v3-accent-race); }
+
+        /* New day-type accents for HM-specific sessions */
+        .hb-day-cell.t-tempo { border-top: 2px solid #ffd23f; }
+        .hb-day-cell.t-intervals { border-top: 2px solid #FF6B35; }
+        .hb-day-cell.t-recovery-run { border-top: 2px solid oklch(0.70 0.12 142); }
+        .hb-day-cell.t-hyrox-maint { border-top: 2px solid oklch(0.50 0.15 320); }
+        .hb-day-cell.t-cross-train { border-top: 2px solid #00E5FF; }
+
         @media (max-width: 700px) {
             .hb-week-strip { grid-template-columns: repeat(7, 1fr); gap: 4px; }
             .hb-day-cell { padding: 7px 5px; min-height: 78px; }
@@ -3926,6 +3959,7 @@
             .hb-nav-btn { transition: none !important; }
             .hb-today-cta { transition: none !important; }
             .hb-today-cta:hover { transform: none !important; }
+            .hm-goal { transition: none !important; }
         }
     </style>
 </head>
@@ -5077,6 +5111,47 @@
                         <div class="hb-stat"><span class="hb-stat-num" id="hb-stat-sessions">0 / 78</span><span class="hb-stat-label">sessions</span></div>
                         <div class="hb-stat"><span class="hb-stat-num" id="hb-stat-runkm">0 / 130</span><span class="hb-stat-label">km run</span></div>
                         <div class="hb-stat"><span class="hb-stat-num" id="hb-stat-days-to-race">— d</span><span class="hb-stat-label">to Hyrox Delhi</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- v2.5.4 — Vedanta Delhi Half-Marathon 12-Week Build -->
+            <div class="card-glass hm-build-card" id="hm-build-card" data-v3-reveal>
+                <div class="section-header">
+                    <span class="phase-eyebrow accent-run"><i data-lucide="map-pin"></i>Vedanta Delhi Half-Marathon · 12-Week Build · Jul 27 – Oct 18</span>
+                    <div class="flex items-center justify-between flex-wrap gap-sm" style="margin-bottom: 8px;">
+                        <h3 class="section-title section-title-icon"><i data-lucide="calendar-days"></i>This Week</h3>
+                        <div class="hb-week-nav">
+                            <button class="hb-nav-btn" id="hm-prev-week" aria-label="Previous week"><i data-lucide="chevron-left"></i></button>
+                            <span class="hb-week-pill" id="hm-week-pill">Week —</span>
+                            <button class="hb-nav-btn" id="hm-next-week" aria-label="Next week"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <p class="section-kicker" style="margin-bottom: 14px;">Post-Hyrox &rarr; HM build. Long runs Mon &middot; Tempo/intervals Wed &middot; Hyrox Mumbai (Sep 18) as mid-block race &middot; 4-week HM peak to Vedanta Delhi (Oct 18).</p>
+                </div>
+
+                <!-- Goal framework: 3 mini-cards -->
+                <div class="hm-goals" id="hm-goals">
+                    <div class="hm-goal hm-goal-c"><span class="hm-goal-label">Goal C</span><span class="hm-goal-time">Sub-2:30</span><span class="hm-goal-pace">7:06/km</span></div>
+                    <div class="hm-goal hm-goal-b"><span class="hm-goal-label">Goal B</span><span class="hm-goal-time">Sub-2:20</span><span class="hm-goal-pace">6:38/km</span></div>
+                    <div class="hm-goal hm-goal-a"><span class="hm-goal-label">Goal A</span><span class="hm-goal-time">Sub-2:10</span><span class="hm-goal-pace">6:09/km</span></div>
+                </div>
+
+                <!-- 7-day strip for current week -->
+                <div class="hb-week-strip" id="hm-week-strip"></div>
+
+                <!-- Today / focused-day detail card -->
+                <div class="hb-today" id="hm-today"></div>
+
+                <!-- Build progress summary -->
+                <div class="hb-progress">
+                    <div class="hb-ring" id="hm-ring" style="--pct: 0;">
+                        <span class="hb-ring-pct" id="hm-ring-pct">0%</span>
+                    </div>
+                    <div class="hb-stats">
+                        <div class="hb-stat"><span class="hb-stat-num" id="hm-stat-sessions">0 / 63</span><span class="hb-stat-label">sessions</span></div>
+                        <div class="hb-stat"><span class="hb-stat-num" id="hm-stat-runkm">0 / 380</span><span class="hb-stat-label">km run</span></div>
+                        <div class="hb-stat"><span class="hb-stat-num" id="hm-stat-days-to-race">&mdash; d</span><span class="hb-stat-label">to Vedanta HM</span></div>
                     </div>
                 </div>
             </div>
@@ -8301,6 +8376,7 @@ const AppState = {
                 if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
                 if (typeof window.v25RenderMayLadder === 'function') window.v25RenderMayLadder();
                 if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
+                if (typeof window.v25RenderHmBuild === 'function') window.v25RenderHmBuild();
                 if (indicator) indicator.textContent = 'Synced';
             } else {
                 if (indicator) indicator.textContent = 'Up to date';
@@ -10026,6 +10102,8 @@ function submitModal(type, arg) {
             showToast(`Workout logged: ${name}`);
             updateDashboard();
             renderCompletionGrid();
+            if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
+            if (typeof window.v25RenderHmBuild === 'function') window.v25RenderHmBuild();
             break;
         }
         case 'injury': {
@@ -10072,6 +10150,8 @@ function submitModal(type, arg) {
             showToast(`Race logged: ${time}${goalMet ? ' · Goal met!' : ''}`);
             if (typeof renderRaceHistory === 'function') renderRaceHistory();
             if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
+            if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
+            if (typeof window.v25RenderHmBuild === 'function') window.v25RenderHmBuild();
             break;
         }
         case 'hyrox-session': {
@@ -10153,6 +10233,8 @@ function submitModal(type, arg) {
             const tag = isNewBest ? ' · NEW PR' : '';
             showToast(`${lift}: ${weight} kg × ${reps}${tag}`, isNewBest ? 'success' : 'info');
             if (typeof renderStrengthPRs === 'function') renderStrengthPRs(isNewBest ? lift : null);
+            if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
+            if (typeof window.v25RenderHmBuild === 'function') window.v25RenderHmBuild();
             break;
         }
         case 'hyrox-ladder-day': {
@@ -10181,6 +10263,7 @@ function submitModal(type, arg) {
             showToast(`Day ${dayNum} · ${week.stationLabel} · ${sets}×${reps}${weight ? ' @ '+weight+'kg' : ''}`, 'success');
             if (typeof window.v25RenderMayLadder === 'function') window.v25RenderMayLadder();
             if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
+            if (typeof window.v25RenderHmBuild === 'function') window.v25RenderHmBuild();
             if (typeof window.v25RenderHeatmap === 'function') window.v25RenderHeatmap();
             if (typeof window.v25RenderHabitLayer === 'function') window.v25RenderHabitLayer();
             break;
@@ -11965,6 +12048,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'day-100',          label: 'Day 100',             icon: 'mountain',        test: () => Math.floor((Date.now() - new Date('2026-04-13').getTime()) / 86400000) >= 100 },
         { id: 'ladder-week-1',    label: 'First Rung',          icon: 'arrow-up',        test: () => mayLadderCompleted() >= 7 },
         { id: 'ladder-may-31',    label: 'Stairmaster',         icon: 'flame',           test: () => mayLadderCompleted() >= 28 },
+        { id: 'hm-first-20k',     label: 'Going Long',          icon: 'map',             test: () => (AppState.workouts || []).some(w => parseFloat(w.distance) >= 20) },
+        { id: 'hm-vedanta-finish', label: 'Half-Marathon Finisher', icon: 'medal',        test: () => (AppState.raceResults || []).some(r => r.raceId === 'vedanta-delhi-hm') },
     ];
     function mayLadderCompleted() {
         return (AppState.hyroxLadderEntries || []).filter(e => e.date && e.date.startsWith('2026-05-')).length;
@@ -13142,6 +13227,462 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('DOMContentLoaded', boot);
     } else {
         setTimeout(boot, 300);
+    }
+})();
+
+/* ═══════════════════════════════════════════════════════════════════
+   v2.5.4 — Vedanta Delhi Half-Marathon 12-Week Build  (v25R7)
+   Weeks 14-25 · Jul 27 – Oct 18 2026
+   Clones v25R6 pattern: PLAN array → renderAll → isDayCompleted →
+   switchTab wrap. Targets #hm-* elements.
+   ═══════════════════════════════════════════════════════════════════ */
+(function v25R7VedantaHmBuild() {
+    'use strict';
+
+    /* ─── Strength templates ─── */
+    const HM_STRENGTH_A = {
+        focus: 'Runner Strength — Lower Body',
+        items: [
+            { name: 'Bulgarian Split Squats', dose: '3 × 10 each leg' },
+            { name: 'Single-leg RDL',         dose: '3 × 10 each @ 10kg DB' },
+            { name: 'Hip Thrusts',            dose: '3 × 12 @ barbell' },
+            { name: 'Calf Raises (eccentric)', dose: '3 × 15 (3s down)' },
+            { name: 'Copenhagen Plank',       dose: '3 × 20s each side' },
+        ]
+    };
+    const HM_STRENGTH_B = {
+        focus: 'Runner Strength — Core & Upper',
+        items: [
+            { name: 'Dead Bugs',                dose: '3 × 10 each side' },
+            { name: 'Pallof Press',             dose: '3 × 12 each side' },
+            { name: 'Pull-ups / Lat Pulldown',  dose: '3 × 8-10' },
+            { name: 'Push-ups',                 dose: '3 × 15' },
+            { name: 'Side Plank + Hip Dip',     dose: '3 × 12 each side' },
+        ]
+    };
+    const HM_STRENGTH_LIGHT = {
+        focus: 'Maintenance — Light Full-Body',
+        items: [
+            { name: 'Goblet Squats',   dose: '2 × 12 @ light' },
+            { name: 'Single-leg RDL',  dose: '2 × 10 each' },
+            { name: 'Push-ups',        dose: '2 × 12' },
+            { name: 'Dead Bugs',       dose: '2 × 10 each side' },
+            { name: 'Calf Raises',     dose: '2 × 15' },
+        ]
+    };
+    const HYROX_MAINT = {
+        focus: 'Hyrox Station Maintenance (Mumbai prep)',
+        items: [
+            { name: 'Wall Balls',      dose: '3 × 15 @ 6kg' },
+            { name: 'Farmers Carry',   dose: '3 × 100m @ 2×16kg' },
+            { name: 'Row (Concept2)',   dose: '3 × 500m' },
+            { name: 'Burpee Broad Jumps', dose: '3 × 8' },
+        ]
+    };
+
+    /* ─── 12-week PLAN ─── */
+    const HM_PLAN = [
+        /* ── Week 14: Post-Hyrox Recovery ── */
+        {
+            weekNum: 14, startDate: '2026-07-27', label: 'Post-Hyrox Recovery',
+            days: [
+                { type: 'easy-run',  title: 'Recovery Run', runKm: 4, runLabel: '4km Easy', runDetail: 'Very easy 7:30-8:00/km · recover from Hyrox Delhi · walk breaks fine', summary: 'Gentle return to running. Listen to your body.' },
+                { type: 'rest',      title: 'Rest', summary: 'Active recovery — walk, mobility, foam roll. Sleep ≥7.5h.' },
+                { type: 'easy-run',  title: 'Easy Run', runKm: 4, runLabel: '4km Easy', runDetail: '7:30-8:00/km · Z2 HR <155 · flat route', summary: 'Keep it conversational.' },
+                { type: 'rest',      title: 'Rest', summary: 'Full rest or light walk.' },
+                { type: 'easy-run',  title: 'Easy Jog + Mobility', runKm: 3, runLabel: '3km Easy', runDetail: '8:00/km · follow with 15min mobility (hip openers, T-spine)', summary: 'Movement + mobility.' },
+                { type: 'long-run',  title: 'Long Run', runKm: 6, runLabel: '6km Easy', runDetail: '7:15-7:30/km · Z2 · first real distance post-Hyrox', summary: 'Longest run this week. Stay easy.' },
+                { type: 'rest',      title: 'Rest', summary: 'Full rest.' },
+            ]
+        },
+        /* ── Week 15: Base Rebuild ── */
+        {
+            weekNum: 15, startDate: '2026-08-03', label: 'Base Rebuild',
+            days: [
+                { type: 'long-run',   title: 'Long Run', runKm: 8, runLabel: '8km Easy', runDetail: '7:15-7:30/km · Z2 HR <160 · flat/gently rolling', summary: 'Building back. No pace pressure.' },
+                { type: 'strength-a', title: 'Runner Strength A', strength: HM_STRENGTH_A, summary: 'Lower body focus. Single-leg work + glutes + calves.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30-7:45/km · Z2 · shake out yesterday\'s lifting', summary: 'Flush the legs.' },
+                { type: 'rest',       title: 'Rest', summary: 'Active recovery — walk, foam roll.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · Z2 · flat route', summary: 'Steady aerobic volume.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 6, runLabel: '6km Easy + 4×100m strides', runDetail: '6km at 7:15/km then 4 × 100m strides (fast but relaxed, full recovery walk between)', summary: 'Strides wake up fast-twitch without fatigue.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest.' },
+            ]
+        },
+        /* ── Week 16: Build 1 ── */
+        {
+            weekNum: 16, startDate: '2026-08-10', label: 'HM Base + Hyrox Maint. 1',
+            days: [
+                { type: 'long-run',   title: 'Long Run', runKm: 12, runLabel: '12km Long', runDetail: '7:00-7:15/km · Z2 HR <165 · practice fueling (water every 4km)', summary: 'First double-digit long run in this block.' },
+                { type: 'strength-a', title: 'Runner Strength A', strength: HM_STRENGTH_A, summary: 'Lower body focus.' },
+                { type: 'tempo',      title: 'Tempo Run', runKm: 7, runLabel: '2+4+1km Tempo', runDetail: '2km warm-up (7:30) → 4km @ 6:30-6:40/km (tempo) → 1km cool-down (7:30)', summary: 'First quality session. Find your sustainable hard effort.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30-7:45/km · recovery from tempo', summary: 'Easy shake-out.' },
+                { type: 'hyrox-maint', title: 'Hyrox Maintenance', strength: HYROX_MAINT, summary: 'Light station circuit — keep sharp for Mumbai Doubles. Not a hard session.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 6, runLabel: '6km + strides', runDetail: '6km at 7:15/km + 4 × 100m strides', summary: 'End the week with some pop.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest. Hydrate well.' },
+            ]
+        },
+        /* ── Week 17: Build 2 ── */
+        {
+            weekNum: 17, startDate: '2026-08-17', label: 'HM Base + Hyrox Maint. 2',
+            days: [
+                { type: 'long-run',   title: 'Long Run', runKm: 14, runLabel: '14km Long', runDetail: '7:00-7:15/km · Z2 · carry water/gel · practice race nutrition', summary: 'Longest run yet. Settle into the rhythm.' },
+                { type: 'strength-b', title: 'Runner Strength B', strength: HM_STRENGTH_B, summary: 'Core & upper body — dead bugs, Pallof, pull-ups, push-ups.' },
+                { type: 'intervals',  title: 'Intervals', runKm: 8, runLabel: '5×800m Intervals', runDetail: '1.5km warm-up → 5 × 800m @ 5:50-6:10/km (90s jog recovery) → 1km cool-down', summary: 'Speed development. Fast but controlled.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 6, runLabel: '6km Easy', runDetail: '7:30/km · Z2 · flat · legs may be heavy from intervals', summary: 'Easy recovery run.' },
+                { type: 'hyrox-maint', title: 'Hyrox Maintenance', strength: HYROX_MAINT, summary: 'Light station work for Mumbai Doubles.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 7, runLabel: '7km + strides', runDetail: '7km at 7:15/km + 4 × 100m strides', summary: 'Aerobic volume + neuromuscular strides.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest.' },
+            ]
+        },
+        /* ── Week 18: Cutback ── */
+        {
+            weekNum: 18, startDate: '2026-08-24', label: 'Cutback Week',
+            days: [
+                { type: 'long-run',   title: 'Long Run (Easy)', runKm: 10, runLabel: '10km Easy', runDetail: '7:15-7:30/km · Z2 · relaxed · no pace targets', summary: 'Cutback week — absorb the last 2 weeks\' load.' },
+                { type: 'strength-a', title: 'Runner Strength A (Light)', strength: HM_STRENGTH_LIGHT, summary: 'Light maintenance only. Reduce sets/load by 30%.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 6, runLabel: '6km Easy', runDetail: '7:30/km · gentle · no watch-checking', summary: 'Keep moving, stay loose.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest or yoga/mobility.' },
+                { type: 'hyrox-maint', title: 'Hyrox Maintenance (Light)', strength: HYROX_MAINT, summary: 'Light touch — halve the reps from normal.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 6, runLabel: '6km + strides', runDetail: '6km at 7:15/km + 4 × 100m strides', summary: 'End cutback week feeling fresh.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest.' },
+            ]
+        },
+        /* ── Week 19: Build 3 (Pre-Mumbai peak) ── */
+        {
+            weekNum: 19, startDate: '2026-08-31', label: 'Build 3 — Pre-Mumbai Peak',
+            days: [
+                { type: 'long-run',   title: 'Long Run', runKm: 16, runLabel: '16km Long', runDetail: '7:00/km target · practice HM-like sustained effort · fuel at 8km & 12km', summary: 'Big long run. Practice race-day rhythm & nutrition.' },
+                { type: 'strength-b', title: 'Runner Strength B', strength: HM_STRENGTH_B, summary: 'Core & upper focus.' },
+                { type: 'tempo',      title: 'Tempo Run', runKm: 9, runLabel: '2+6+1km Tempo', runDetail: '2km warm-up → 6km @ 6:30/km (sustained threshold) → 1km cool-down', summary: 'Longest tempo block. Lock into goal effort.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 6, runLabel: '6km Easy', runDetail: '7:30/km · recovery', summary: 'Easy recovery.' },
+                { type: 'hyrox-maint', title: 'Hyrox Maintenance (Mumbai-specific)', strength: HYROX_MAINT, summary: 'Final Mumbai-focused session. Practice YGIG splits with Kartik if possible.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 7, runLabel: '7km + strides', runDetail: '7km at 7:15/km + 4 × 100m strides', summary: 'Volume + neuromuscular.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest.' },
+            ]
+        },
+        /* ── Week 20: Build 4 ── */
+        {
+            weekNum: 20, startDate: '2026-09-07', label: 'Build 4',
+            days: [
+                { type: 'long-run',   title: 'Long Run', runKm: 18, runLabel: '18km Long', runDetail: '7:00-7:15/km · longest pre-Mumbai · fuel every 5km · carry water', summary: 'Biggest run before Mumbai taper. Stay controlled.' },
+                { type: 'strength-a', title: 'Runner Strength A', strength: HM_STRENGTH_A, summary: 'Moderate load. Last heavy-ish lower session before Mumbai.' },
+                { type: 'intervals',  title: 'Intervals', runKm: 10.5, runLabel: '6×1km Intervals', runDetail: '1.5km warm-up → 6 × 1km @ 5:50/km (90s jog recovery) → 1km cool-down', summary: 'Speed sharpening. 1km reps teach race pace.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · gentle recovery', summary: 'Easy shake-out.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · keep legs fresh for next week\'s race', summary: 'Start easing toward Mumbai.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 6, runLabel: '6km + strides', runDetail: '6km at 7:15/km + 4 × 100m strides', summary: 'Last full training day before race week.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest.' },
+            ]
+        },
+        /* ── Week 21: Hyrox Mumbai Race Week ── */
+        {
+            weekNum: 21, startDate: '2026-09-14', label: 'Hyrox Mumbai Race Week',
+            days: [
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · Z2 · keep loose', summary: 'Light running only this week.' },
+                { type: 'shakeout',   title: 'Shakeout + Strides', runKm: 3, runLabel: '3km + 4×strides', runDetail: '3km at 7:15/km + 4 × 100m strides (fast & relaxed)', summary: 'Neuromuscular activation. Stay sharp, stay fresh.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest. Hydrate. Pack race gear.' },
+                { type: 'shakeout',   title: 'Pre-Race Shakeout', runKm: 2, runLabel: '2km + mobility', runDetail: '2km very easy + 15min mobility (hip openers, ankle circles)', summary: 'Final shakeout. Keep it minimal.' },
+                { type: 'race',       title: 'HYROX MUMBAI DOUBLES', isRace: true, raceId: 'hyrox-mumbai', runKm: 8, runLabel: '~8km within HYROX', summary: 'Race with Kartik! YGIG at each station. Run together. Trust the process. ~8km running total within HYROX format.' },
+                { type: 'rest',       title: 'Post-Race Rest', summary: 'Full rest. Walk if you feel ok. Ice bath if available.' },
+                { type: 'rest',       title: 'Rest', summary: 'Active recovery. Gentle walk. Foam roll. Sleep.' },
+            ]
+        },
+        /* ── Week 22: Post-Mumbai Recovery + HM Shift ── */
+        {
+            weekNum: 22, startDate: '2026-09-21', label: 'Post-Mumbai + HM Shift',
+            days: [
+                { type: 'recovery-run', title: 'Recovery Run', runKm: 5, runLabel: '5km Recovery', runDetail: '7:45-8:00/km · very easy · walk if needed · assess how body feels', summary: 'Gentle return. No Hyrox station work anymore — pure running focus from here.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 6, runLabel: '6km Easy', runDetail: '7:15-7:30/km · Z2 · flat route', summary: 'Building back after Mumbai.' },
+                { type: 'strength-a', title: 'Runner Strength A (Light)', strength: HM_STRENGTH_LIGHT, summary: 'Light return to strength. Reduced volume.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · Z2', summary: 'Steady state aerobic.' },
+                { type: 'long-run',   title: 'Long Run', runKm: 14, runLabel: '14km Long', runDetail: '7:00-7:15/km · test legs post-Hyrox · practice race nutrition', summary: 'Key test: can you hold 7:00-7:15/km for 14km 3 days after Hyrox?' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest. This was a big week for post-race recovery.' },
+            ]
+        },
+        /* ── Week 23: HM Peak (longest run) ── */
+        {
+            weekNum: 23, startDate: '2026-09-28', label: 'HM Peak — Longest Run',
+            days: [
+                { type: 'long-run',   title: 'LONG RUN — Race Rehearsal', runKm: 20, runLabel: '20km Long Run', runDetail: '7:00-7:10/km · HM dress rehearsal · race gear · fuel at 8/12/16km · practice even pacing', summary: '★ KEY SESSION ★ Longest run of the block. Practice everything: pacing, nutrition, gear, mental cues. This IS race day minus the bib.' },
+                { type: 'strength-b', title: 'Runner Strength B (Light)', strength: HM_STRENGTH_LIGHT, summary: 'Very light maintenance only. Don\'t add fatigue.' },
+                { type: 'tempo',      title: 'Tempo Run — Goal Pace', runKm: 11, runLabel: '2+8+1km Goal Pace Tempo', runDetail: '2km warm-up → 8km @ 6:35-6:45/km (Goal B HM pace) → 1km cool-down', summary: 'The money session. 8km at race pace. If you nail this, sub-2:20 is real.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · recovery from tempo', summary: 'Recovery day.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · Z2', summary: 'Aerobic volume.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 6, runLabel: '6km + strides', runDetail: '6km at 7:15/km + 6 × 100m strides', summary: 'Close the peak week feeling smooth.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest after the biggest week.' },
+            ]
+        },
+        /* ── Week 24: Pre-Taper ── */
+        {
+            weekNum: 24, startDate: '2026-10-05', label: 'Pre-Taper',
+            days: [
+                { type: 'long-run',   title: 'Last Long Run', runKm: 16, runLabel: '16km Long', runDetail: '7:00/km · last long run before race · steady and confident · fuel practice', summary: 'Final long run. You\'ve done the work — this is a confidence run.' },
+                { type: 'intervals',  title: 'Sharpening Intervals', runKm: 8, runLabel: '4×1km Intervals', runDetail: '1.5km warm-up → 4 × 1km @ 5:50/km (90s jog recovery) → 1km cool-down', summary: 'Last speed session. Short and sharp — quality over quantity.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · recovery', summary: 'Easy recovery.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest.' },
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:30/km · Z2 · gentle', summary: 'Light volume.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 5, runLabel: '5km + strides', runDetail: '5km at 7:15/km + 4 × 100m strides', summary: 'Last real training day. You\'re ready.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest. Taper begins.' },
+            ]
+        },
+        /* ── Week 25: HM Taper + Race ── */
+        {
+            weekNum: 25, startDate: '2026-10-12', label: 'Taper + RACE DAY',
+            days: [
+                { type: 'easy-run',   title: 'Easy Run', runKm: 5, runLabel: '5km Easy', runDetail: '7:15-7:30/km · last moderate-distance run · stay relaxed', summary: 'Taper week. Trust the training. You will feel restless — that\'s the taper talking.' },
+                { type: 'easy-run',   title: 'Easy Run + Strides', runKm: 4, runLabel: '4km + 6×strides', runDetail: '4km at 7:15/km + 6 × 100m strides (goal pace feel)', summary: 'Strides at race pace to stay sharp. Nothing hard.' },
+                { type: 'shakeout',   title: 'Race Pace Feel', runKm: 3, runLabel: '3km Shakeout', runDetail: '1km easy → 1km at 6:38/km (Goal B pace) → 1km easy. Just feel the pace.', summary: 'Lock in race pace. Body should feel springy.' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest. Lay out race gear. Check weather. Hydrate. Carb-load dinner (rice + lean protein).' },
+                { type: 'rest',       title: 'Rest', summary: 'Full rest. Light walk ok. Sleep early. Pre-race meal: familiar, carb-rich, low-fiber.' },
+                { type: 'shakeout',   title: 'Race Eve Shakeout', runKm: 2, runLabel: '2km + mobility', runDetail: '2km very easy (8:00/km) + 10min mobility. Pick up bib. Visualize the race.', summary: 'Keep it under 15 minutes. Bib pickup. Mentally rehearse your pacing plan.' },
+                { type: 'race',       title: 'VEDANTA DELHI HALF-MARATHON', isRace: true, raceId: 'vedanta-delhi-hm', runKm: 21.1, runLabel: '21.1km Race', summary: '★ A-RACE ★ Even-split protocol: Goal B = 6:38/km × 21.1 = sub-2:20. First 5km at 6:45 (bank nothing). Middle 10km at 6:35. Last 6km — unleash the kick. HR cap 175 for first 10km. Fuel: gel at 8km & 15km. You trained for this.' },
+            ]
+        },
+    ];
+
+    /* ─── Config object ─── */
+    const TOTALS = { sessions: 63, runKm: 380 };
+    const CFG = {
+        plan: HM_PLAN,
+        totals: TOTALS,
+        raceDate: '2026-10-18',
+        ymd: function(d) {
+            var mm = d.getMonth() + 1;
+            var dd = d.getDate();
+            return d.getFullYear() + '-' + (mm < 10 ? '0' : '') + mm + '-' + (dd < 10 ? '0' : '') + dd;
+        },
+        dateForDay: function(weekIdx, dayIdx) {
+            var start = new Date(HM_PLAN[weekIdx].startDate + 'T00:00:00');
+            start.setDate(start.getDate() + dayIdx);
+            return this.ymd(start);
+        },
+        getCurrentWeekIdx: function() {
+            var today = this.ymd(new Date());
+            for (var i = 0; i < HM_PLAN.length; i++) {
+                var ws = HM_PLAN[i].startDate;
+                var we = new Date(ws + 'T00:00:00');
+                we.setDate(we.getDate() + 6);
+                if (today >= ws && today <= this.ymd(we)) return i;
+            }
+            if (today < HM_PLAN[0].startDate) return 0;
+            return HM_PLAN.length - 1;
+        },
+        getTodayCell: function() {
+            var today = this.ymd(new Date());
+            for (var wi = 0; wi < HM_PLAN.length; wi++) {
+                for (var di = 0; di < 7; di++) {
+                    if (this.dateForDay(wi, di) === today) return { weekIdx: wi, dayIdx: di, day: HM_PLAN[wi].days[di] };
+                }
+            }
+            return null;
+        }
+    };
+    window.VEDANTA_HM_BUILD_2026 = CFG;
+
+    /* ─── Completion detection (reuses existing AppState arrays) ─── */
+    function isDayCompleted(weekIdx, dayIdx) {
+        var day = HM_PLAN[weekIdx] && HM_PLAN[weekIdx].days[dayIdx];
+        if (!day) return false;
+        if (day.type === 'rest') return false;
+        var dateStr = CFG.dateForDay(weekIdx, dayIdx);
+        var isRun = ['easy-run','long-run','tempo','intervals','recovery-run','shakeout'].indexOf(day.type) !== -1;
+        var isStrength = ['strength-a','strength-b','hyrox-maint'].indexOf(day.type) !== -1;
+        var isRace = day.type === 'race';
+        if (isRun) return (AppState.workouts || []).some(function(w) {
+            return w.date === dateStr && (parseFloat(w.distance) > 0 || parseFloat(w.duration) > 0);
+        });
+        if (isStrength) {
+            var hasPR = (AppState.strengthPRs || []).some(function(p) { return p.date === dateStr; });
+            var hasLadder = (AppState.hyroxLadderEntries || []).some(function(e) { return e.date === dateStr; });
+            var hasWorkout = (AppState.workouts || []).some(function(w) {
+                return w.date === dateStr && /strength|circuit|hyrox|squat|deadlift|hip|plank|coach/i.test(w.name || '');
+            });
+            return hasPR || hasLadder || hasWorkout;
+        }
+        if (isRace) return (AppState.raceResults || []).some(function(r) { return r.raceId === day.raceId; });
+        return false;
+    }
+
+    /* ─── Render helpers ─── */
+    var viewedWeekIdx = null;
+    var DOWS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    function activeWeekIdx() { return viewedWeekIdx !== null ? viewedWeekIdx : CFG.getCurrentWeekIdx(); }
+
+    function renderWeekStrip() {
+        var el = document.getElementById('hm-week-strip'); if (!el) return;
+        var wi = activeWeekIdx();
+        var week = HM_PLAN[wi]; if (!week) return;
+        var todayStr = CFG.ymd(new Date());
+        // Update pill
+        var pill = document.getElementById('hm-week-pill');
+        if (pill) pill.textContent = 'Week ' + week.weekNum + ' · ' + week.label;
+        var cells = '';
+        for (var di = 0; di < 7; di++) {
+            var day = week.days[di];
+            var dateStr = CFG.dateForDay(wi, di);
+            var dateNum = parseInt(dateStr.slice(8), 10);
+            var completed = isDayCompleted(wi, di);
+            var isToday = dateStr === todayStr;
+            var isPast = dateStr < todayStr;
+            var cls = 'hb-day-cell t-' + day.type;
+            if (completed) cls += ' completed';
+            if (isToday) cls += ' today';
+            if (isPast && !completed && day.type !== 'rest') cls += ' past';
+            if (day.type === 'rest') cls += ' rest';
+            if (day.type === 'race') cls += ' race';
+            var km = day.runKm ? day.runKm + 'km' : '—';
+            var typeLabel = (day.runLabel || day.title || '').slice(0, 18);
+            cells += '<div class="' + cls + '" onclick="window.openHmBuildDay(' + wi + ',' + di + ')" role="listitem" tabindex="0" aria-label="' + DOWS[di] + ' ' + dateNum + ' – ' + (day.title || '') + '">';
+            cells += '<span class="hb-dow">' + DOWS[di] + '</span>';
+            cells += '<span class="hb-date">' + dateNum + '</span>';
+            cells += '<span class="hb-type">' + escHTML(typeLabel) + '</span>';
+            cells += '<span class="hb-km">' + km + '</span>';
+            cells += '</div>';
+        }
+        el.innerHTML = cells;
+    }
+
+    function renderTodayCard(focusWeek, focusDay) {
+        var el = document.getElementById('hm-today'); if (!el) return;
+        var wi = (typeof focusWeek === 'number') ? focusWeek : activeWeekIdx();
+        var di = (typeof focusDay === 'number') ? focusDay : (function() {
+            var tc = CFG.getTodayCell();
+            if (tc && tc.weekIdx === wi) return tc.dayIdx;
+            return 0;
+        })();
+        var day = HM_PLAN[wi] && HM_PLAN[wi].days[di]; if (!day) { el.innerHTML = ''; return; }
+        var dateStr = CFG.dateForDay(wi, di);
+        var dateObj = new Date(dateStr + 'T00:00:00');
+        var longDate = dateObj.toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' });
+        var completed = isDayCompleted(wi, di);
+        var ctaLabel = 'Log Session', ctaIcon = 'circle-plus';
+        if (day.type === 'rest') { ctaLabel = 'Rest day'; ctaIcon = 'moon'; }
+        else if (day.type === 'race') { ctaLabel = 'Log Race'; ctaIcon = 'flag'; }
+        if (completed) { ctaLabel = 'Done'; ctaIcon = 'check-circle-2'; }
+        var html = '<div class="hb-today-head">';
+        html += '<div><div class="hb-today-eyebrow">' + escHTML(longDate) + '</div>';
+        html += '<div class="hb-today-title">' + escHTML(day.title) + '</div></div>';
+        html += '<button class="hb-today-cta' + (completed ? ' done' : '') + '" onclick="window.openHmBuildLog(' + wi + ',' + di + ')"' + (day.type === 'rest' && !completed ? ' disabled' : '') + '>';
+        html += '<i data-lucide="' + ctaIcon + '"></i> ' + ctaLabel + '</button></div>';
+        html += '<div class="hb-today-detail">';
+        if (day.summary) html += '<p style="margin:0 0 8px;color:var(--text-secondary);font-size:13px;line-height:1.5;">' + escHTML(day.summary) + '</p>';
+        if (day.runDetail) html += '<p style="margin:0 0 8px;font-family:var(--font-mono,monospace);font-size:12px;color:var(--text-muted);">' + escHTML(day.runDetail) + '</p>';
+        if (day.strength && day.strength.items) {
+            html += '<div class="hb-prescription-list"><div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">' + escHTML(day.strength.focus) + '</div><ul>';
+            day.strength.items.forEach(function(item) {
+                html += '<li><span class="ex-name">' + escHTML(item.name) + '</span> <span class="ex-dose">' + escHTML(item.dose) + '</span></li>';
+            });
+            html += '</ul></div>';
+        }
+        html += '</div>';
+        el.innerHTML = html;
+    }
+
+    function renderProgress() {
+        var done = 0, doneKm = 0, total = 0;
+        for (var wi = 0; wi < HM_PLAN.length; wi++) {
+            for (var di = 0; di < 7; di++) {
+                var day = HM_PLAN[wi].days[di];
+                if (day.type === 'rest') continue;
+                total++;
+                if (isDayCompleted(wi, di)) {
+                    done++;
+                    if (day.runKm) doneKm += day.runKm;
+                }
+            }
+        }
+        var pct = total > 0 ? Math.round(done / total * 100) : 0;
+        var ring = document.getElementById('hm-ring');
+        var ringPct = document.getElementById('hm-ring-pct');
+        if (ring) ring.style.setProperty('--pct', pct);
+        if (ringPct) ringPct.textContent = pct + '%';
+        var sSessions = document.getElementById('hm-stat-sessions');
+        var sRunkm = document.getElementById('hm-stat-runkm');
+        var sDays = document.getElementById('hm-stat-days-to-race');
+        if (sSessions) sSessions.textContent = done + ' / ' + TOTALS.sessions;
+        if (sRunkm) sRunkm.textContent = Math.round(doneKm) + ' / ' + TOTALS.runKm;
+        if (sDays) {
+            var raceDate = new Date(CFG.raceDate + 'T00:00:00');
+            var today = new Date(); today.setHours(0,0,0,0);
+            var diff = Math.ceil((raceDate - today) / 86400000);
+            sDays.textContent = (diff >= 0 ? diff : 0) + ' d';
+        }
+    }
+
+    function renderAll(focusWeek, focusDay) {
+        try {
+            renderWeekStrip();
+            renderTodayCard(focusWeek, focusDay);
+            renderProgress();
+            if (typeof initLucide === 'function') initLucide();
+        } catch(e) { console.warn('[v25R7 hm build] render failed:', e); }
+    }
+    window.v25RenderHmBuild = renderAll;
+
+    /* ─── Tap handlers ─── */
+    window.openHmBuildDay = function(weekIdx, dayIdx) {
+        if (typeof weekIdx === 'number' && weekIdx !== activeWeekIdx()) {
+            viewedWeekIdx = weekIdx;
+            renderAll(weekIdx, dayIdx);
+        } else {
+            renderTodayCard(weekIdx, dayIdx);
+        }
+        var el = document.getElementById('hm-today');
+        if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    window.openHmBuildLog = function(weekIdx, dayIdx) {
+        var day = HM_PLAN[weekIdx] && HM_PLAN[weekIdx].days[dayIdx]; if (!day) return;
+        if (['easy-run','long-run','tempo','intervals','recovery-run','shakeout'].indexOf(day.type) !== -1) {
+            if (typeof openWorkoutFeedbackModal === 'function') {
+                openWorkoutFeedbackModal(day.title || day.runLabel || 'Run');
+            } else if (typeof openModal === 'function') {
+                openModal('workout');
+            }
+            return;
+        }
+        if (day.type === 'race') {
+            if (typeof openModal === 'function') openModal('race-result', day.raceId || 'vedanta-delhi-hm');
+            return;
+        }
+        if (['strength-a','strength-b','hyrox-maint'].indexOf(day.type) !== -1) {
+            if (typeof openModal === 'function') openModal('strength-pr');
+            return;
+        }
+    };
+
+    window.hmBuildPrevWeek = function() {
+        var wi = activeWeekIdx();
+        if (wi > 0) { viewedWeekIdx = wi - 1; renderAll(); }
+    };
+    window.hmBuildNextWeek = function() {
+        var wi = activeWeekIdx();
+        if (wi < HM_PLAN.length - 1) { viewedWeekIdx = wi + 1; renderAll(); }
+    };
+
+    /* ─── Boot + tab-switch hook ─── */
+    function boot() {
+        var prev = document.getElementById('hm-prev-week');
+        var next = document.getElementById('hm-next-week');
+        if (prev) prev.addEventListener('click', window.hmBuildPrevWeek);
+        if (next) next.addEventListener('click', window.hmBuildNextWeek);
+        renderAll();
+        if (typeof window.switchTab === 'function' && !window.switchTab._v25R7Wrapped) {
+            var orig = window.switchTab;
+            window.switchTab = function(name) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                var r = orig.apply(this, [name].concat(args));
+                if (name === 'training') setTimeout(renderAll, 90);
+                return r;
+            };
+            Object.assign(window.switchTab, orig);
+            window.switchTab._v25R7Wrapped = true;
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        setTimeout(boot, 350);
     }
 })();
 </script>

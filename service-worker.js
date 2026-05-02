@@ -3,7 +3,7 @@
  * cache-first for fonts & CDNs.
  * Bump CACHE_VERSION to force clients to pull fresh assets.
  */
-const CACHE_VERSION = 'kash-v2.5.2';
+const CACHE_VERSION = 'kash-v2.5.4';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
 const BASE = '/kash-training-2026/';

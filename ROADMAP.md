@@ -1,5 +1,5 @@
 # Kash Training Platform — Deferred Roadmap
-**Version:** 2.5.3 · **Released:** April 28, 2026
+**Version:** 2.5.4 · **Released:** May 1, 2026
 **Live site:** https://kashish101997.github.io/kash-training-2026/
 **Main file:** `Kash_Annual_Training_Plan_2026.html` → synced to `index.html` → GitHub Pages
 
@@ -72,8 +72,8 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 
 ## Technical Notes
 
-### Current Architecture (v2.5.3)
-- Single `.html` file, **~13,235 lines** (post v2.5.3)
+### Current Architecture (v2.5.4)
+- Single `.html` file, **~13,773 lines** (post v2.5.4)
 - GitHub Pages at `kashish101997.github.io/kash-training-2026`
 - LocalStorage key: `kash_fitness_2026_v3`; sessionStorage fallback on quota errors
 - Remote data: polls `data.json` in repo root via `AppState.loadRemote()`
@@ -129,6 +129,35 @@ All v1.0, v2.0-T2 (VO2/pace/PR/ACWR), and v2.0-T3 (heatmap/measurements/badges/d
 ---
 
 ## Changelog
+
+### v2.5.4 — May 1, 2026 — Vedanta Delhi Half-Marathon 12-Week Build
+
+> **Post-Hyrox Delhi → Vedanta Delhi HM training block (Jul 27 – Oct 18).
+> 12-week periodization with Hyrox Mumbai as intermediate race, progressive
+> long-run build to 20km, tempo/interval sharpening, and 1-week taper.**
+
+**Features:**
+- New `#hm-build-card` on Training tab — same week-strip / day-card / progress-ring pattern as Hyrox Build
+- A/B/C goal framework (Sub-2:30 floor / Sub-2:20 target / Sub-2:10 stretch) with visual mini-cards
+- 12-week `HM_PLAN` array with detailed daily prescriptions: 5 training blocks, 84 days, 63 sessions, ~380 km running
+- Block 1 (Weeks 14-15): Post-Hyrox recovery — easy runs only
+- Block 2 (Weeks 16-20): HM base build + Hyrox Mumbai maintenance — progressive long runs 12→18km, tempo/intervals, station upkeep
+- Block 3 (Week 21): Hyrox Mumbai race week — taper + Doubles with Kartik (Sep 18)
+- Block 4 (Weeks 22-24): HM peak — 20km race rehearsal long run, 8km goal-pace tempo, sharpening intervals
+- Block 5 (Week 25): Taper + Vedanta Delhi HM race (Oct 18)
+- Runner-specific strength templates: `HM_STRENGTH_A` (lower), `HM_STRENGTH_B` (core/upper), `HM_STRENGTH_LIGHT` (maintenance)
+- Hyrox maintenance template for Mumbai Doubles prep (weeks 16-21 only)
+- 2 new badges: "Going Long" (first 20km+ run), "Half-Marathon Finisher" (Vedanta Delhi HM completed)
+- v25R7 IIFE with `switchTab` wrap (`_v25R7Wrapped`), completion detection from existing AppState arrays
+- Render hooks wired to workout / strength-pr / race-result submit modals + loadRemote post-merge
+
+**New CSS:** `.hm-goals` / `.hm-goal` / `.hm-goal-*` goal framework cards; new day-type accents for `.t-tempo`, `.t-intervals`, `.t-recovery-run`, `.t-hyrox-maint`, `.t-cross-train`
+
+**Service worker:** `CACHE_VERSION` bumped to `kash-v2.5.4`
+
+**Lines added:** ~538 (IIFE ~420, CSS ~30, HTML card ~40, hooks/badges ~48)
+
+---
 
 ### v2.5.3 — Apr 28, 2026 — Hyrox Delhi 13-Week Build (unified Runna + Coach plan)
 
