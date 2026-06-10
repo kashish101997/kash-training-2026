@@ -3,10 +3,10 @@
  * cache-first for fonts & CDNs.
  * Bump CACHE_VERSION to force clients to pull fresh assets.
  */
-const CACHE_VERSION = 'kash-v2.5.4';
+const CACHE_VERSION = 'kash-v3.0.0';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
-const BASE = '/kash-training-2026/';
+const BASE = '/'; // v3.0: Vercel serves at domain root (was /kash-training-2026/ on GitHub Pages)
 
 // Files that make up the app shell — cache on install.
 // data.json intentionally excluded — it's the live remote-sync file and must

@@ -2,8 +2,8 @@
   "name": "Kash · Training Platform 2026",
   "short_name": "Kash 2026",
   "description": "Annual training plan — running, HYROX, cricket, Dharma, 100-day body comp arc",
-  "start_url": "/kash-training-2026/",
-  "scope": "/kash-training-2026/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#18181b",
@@ -29,19 +29,19 @@
     {
       "name": "Log Weight",
       "short_name": "Weight",
-      "url": "/kash-training-2026/#panel-dashboard?action=log-weight",
+      "url": "/#panel-dashboard?action=log-weight",
       "icons": [{ "src": "icon.svg", "sizes": "any" }]
     },
     {
       "name": "Log FBS",
       "short_name": "FBS",
-      "url": "/kash-training-2026/#panel-dashboard?action=log-fbs",
+      "url": "/#panel-dashboard?action=log-fbs",
       "icons": [{ "src": "icon.svg", "sizes": "any" }]
     },
     {
       "name": "Progress",
       "short_name": "Progress",
-      "url": "/kash-training-2026/#panel-progress",
+      "url": "/#panel-progress",
       "icons": [{ "src": "icon.svg", "sizes": "any" }]
     }
   ]

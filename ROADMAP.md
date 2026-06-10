@@ -1,7 +1,7 @@
 # Kash Training Platform — Deferred Roadmap
-**Version:** 2.5.4 · **Released:** May 1, 2026
-**Live site:** https://kashish101997.github.io/kash-training-2026/
-**Main file:** `Kash_Annual_Training_Plan_2026.html` → synced to `index.html` → GitHub Pages
+**Version:** 3.0.0 · **Released:** Jun 10, 2026
+**Live site:** https://kash-training-2026.vercel.app/ (migrating from https://kashish101997.github.io/kash-training-2026/)
+**Main file:** `Kash_Annual_Training_Plan_2026.html` → synced to `index.html` → Vercel (git-integrated)
 
 ## Versioning Convention
 
@@ -19,7 +19,7 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 ## P1 — Critical (Do These First)
 
 ### 1. WhatsApp → Vercel → Platform Sync (Wasender Integration)
-> **Only remaining v1.0 item. Awaiting Vercel account + WhatsApp sandbox. Not blocking — paste-into-Apple-Health and CSV export cover the manual path in v2.5.**
+> **Deferred from v3.0.0 per user. The hard infrastructure shipped in v3.0.0 — Vercel functions (`/api`), `lib/github.js` commit helper, and the data.json write path are live for the Strava webhook. WhatsApp now only needs `api/whatsapp-webhook.js` (signature verify + phone allowlist + message parser + WaSender reply) plugged into the same pipeline.**
 
 **What:** Log weight, workouts, food, FBS, gateway sessions, strength PRs, measurements by texting a WhatsApp number. Data auto-appears on the platform without opening the app.
 **Why:** Daily friction is the enemy. Logging should be as fast as a WhatsApp message.
@@ -129,6 +129,43 @@ All v1.0, v2.0-T2 (VO2/pace/PR/ACWR), and v2.0-T3 (heatmap/measurements/badges/d
 ---
 
 ## Changelog
+
+### v3.0.0 — Jun 10, 2026 — Strava Sync + Vercel Migration
+
+> **The platform goes live on Vercel and starts ingesting runs from Strava
+> automatically. Two sync paths: the official Strava MCP connector +
+> `/sync-strava` skill (session-driven), and a Strava webhook → Vercel
+> function → GitHub commit pipeline (fully automatic). WhatsApp/WaSender
+> integration deferred — its infrastructure (Vercel `/api`, GitHub commit
+> helper) shipped here.**
+
+**Strava ingestion:**
+- `.claude/skills/sync-strava/SKILL.md` — session sync: MCP pull → map to workouts schema → two-way dedupe ((date,name) + same-date ±0.3km) → commit+push
+- `lib/strava.js` — token refresh (rotation-aware), `getActivity()`, shared activity→workout mapper
+- `api/strava-webhook.js` — GET hub.challenge verification, POST activity-create handler with athlete-ID guard
+- `lib/github.js` — `commitDataJson()` via GitHub Contents API with SHA-conflict retry
+- `data.json` gains `lastStravaSync` meta; Strava entries tagged `source: 'strava'`
+
+**Vercel migration:**
+- `vercel.json` — cleanUrls, `Cache-Control: no-store` for data.json, `no-cache` for service-worker.js
+- `manifest.json` — `start_url`/`scope`/shortcut URLs moved from `/kash-training-2026/` to `/`
+- `service-worker.js` — `CACHE_VERSION` → `kash-v3.0.0`, `BASE` → `/`
+- `og:url` → `https://kash-training-2026.vercel.app/`
+
+**Backup lifeboat (origin-move safety):**
+- `v25ExportJSON()` — full AppState (18 keys incl. dharmaChecks) as downloadable JSON; "Backup" pill in hero + Cmd+K entry
+- `v25ImportJSON()` — file picker → `mergeBackup()` mirroring loadRemote's per-array dedupe keys; dharmaChecks per-date merge (local wins); fires full render-hook list
+
+**Migration runbook (do in order):**
+1. On the phone/browser with history: open the OLD site (github.io) → tap **Backup** pill → save `kash-backup-YYYY-MM-DD.json`
+2. Open the NEW site (vercel.app) → Cmd+K (long-press logo on mobile) → **Import backup (JSON)** → pick the file
+3. Verify heatmap, streaks, dharma checkboxes match the old origin
+4. Install the PWA from the new origin (Add to Home Screen); delete the old icon
+5. Only after verification: disable GitHub Pages (repo Settings → Pages → Source: None)
+
+**Env vars (Vercel project settings):** `GITHUB_TOKEN`, `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`, `STRAVA_VERIFY_TOKEN`, `STRAVA_ATHLETE_ID`
+
+---
 
 ### v2.5.4 — May 1, 2026 — Vedanta Delhi Half-Marathon 12-Week Build
 

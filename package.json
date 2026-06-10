@@ -1,0 +1,10 @@
+{
+  "name": "kash-training-2026",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Kash Training Platform — static PWA + Vercel functions for Strava ingestion",
+  "engines": {
+    "node": ">=20"
+  }
+}

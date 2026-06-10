@@ -24,7 +24,7 @@
     <meta property="og:title" content="Kash · Training Platform 2026">
     <meta property="og:description" content="28M → 78kg. Running, HYROX, cricket, Dharma. Live training log over the 100-day arc.">
     <meta property="og:image" content="icon.svg">
-    <meta property="og:url" content="https://kashish101997.github.io/kash-training-2026/">
+    <meta property="og:url" content="https://kash-training-2026.vercel.app/">
     <meta property="og:site_name" content="Kash 2026">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kash · Training Platform 2026">
@@ -4147,6 +4147,9 @@
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366" style="vertical-align:-2px;margin-right:3px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492l4.614-1.47A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-2.16 0-4.16-.686-5.798-1.853l-.416-.302-2.735.871.89-2.647-.332-.44A9.72 9.72 0 012.25 12 9.75 9.75 0 0112 2.25 9.75 9.75 0 0121.75 12 9.75 9.75 0 0112 21.75z"/></svg>
                         WhatsApp <span id="whatsapp-status">Connected</span>
                     </span>
+                    <button class="pill pill-sm" onclick="if(window.v25ExportJSON)v25ExportJSON()" title="Download a full JSON backup of all logged data (importable via Cmd+K → Import backup)" style="background:rgba(167,139,250,0.1);color:var(--color-dharma,#a78bfa);border:1px solid rgba(167,139,250,0.25);font-size:0.6rem;cursor:pointer;font-family:inherit;">
+                        <i data-lucide="download" style="width:11px;height:11px;vertical-align:-2px;margin-right:3px;"></i>Backup
+                    </button>
                     <span class="pill pill-sm" style="background:rgba(255,107,44,0.1);color:var(--color-strength);border:1px solid rgba(255,107,44,0.2);font-size:0.6rem;">Runna Plan Active</span>
                     <span class="pill pill-sm" style="background:rgba(34,211,238,0.1);color:var(--color-travel);border:1px solid rgba(34,211,238,0.25);font-size:0.6rem;">Plan v3 &middot; Apr 13 – Jul 21</span>
                 </div>
@@ -12288,6 +12291,139 @@ document.addEventListener('DOMContentLoaded', () => {
     window.v25ExportCSV = exportCSV;
 
     /* ───────────────────────────────────────────────────────────────────
+       (7b) v3.0 JSON BACKUP — EXPORT / IMPORT
+       The localStorage lifeboat for the GitHub Pages → Vercel origin move.
+       Export mirrors AppState.save()'s payload; import mirrors loadRemote()'s
+       per-array dedupe keys, then fires the same render hooks.
+       ─────────────────────────────────────────────────────────────────── */
+    function exportJSON() {
+        const state = {
+            weights: AppState.weights || [],
+            workouts: AppState.workouts || [],
+            injuries: AppState.injuries || [],
+            meals: AppState.meals || [],
+            foodLog: AppState.foodLog || [],
+            bloodSugar: AppState.bloodSugar || [],
+            raceResults: AppState.raceResults || [],
+            gatewaySessions: AppState.gatewaySessions || [],
+            hyroxSessions: AppState.hyroxSessions || [],
+            strengthPRs: AppState.strengthPRs || [],
+            measurements: AppState.measurements || [],
+            milestoneBadges: AppState.milestoneBadges || [],
+            prCelebrationsSeen: AppState.prCelebrationsSeen || [],
+            hyroxLadderEntries: AppState.hyroxLadderEntries || [],
+            dharmaChecks: AppState.dharmaChecks || {},
+            currentPhase: AppState.currentPhase,
+            trainingView: AppState.trainingView,
+            settings: AppState.settings
+        };
+        const payload = {
+            version: 'kash-backup-1',
+            exportedAt: new Date().toISOString(),
+            origin: location.origin + location.pathname,
+            state
+        };
+        const today = ymd(new Date());
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `kash-backup-${today}.json`;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 200);
+        if (typeof showToast === 'function') showToast('Backup JSON exported', 'success');
+    }
+
+    function mergeBackup(raw) {
+        const s = raw && (raw.state || raw);
+        if (!s || typeof s !== 'object' || (!Array.isArray(s.workouts) && !Array.isArray(s.weights))) {
+            if (typeof showToast === 'function') showToast('Not a valid Kash backup file', 'warn');
+            return;
+        }
+        let added = 0;
+        const mergeArr = (key, isDup) => {
+            const local = AppState[key] = AppState[key] || [];
+            (Array.isArray(s[key]) ? s[key] : []).forEach(item => {
+                if (item && !local.some(l => isDup(l, item))) { local.push(item); added++; }
+            });
+            if (local.length && local[0] && local[0].date) {
+                local.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+            }
+        };
+        // Dedupe keys mirror loadRemote() — keep the two in sync.
+        mergeArr('weights',            (a, b) => a.date === b.date && Math.abs((a.value || 0) - (b.value || 0)) < 0.01);
+        mergeArr('workouts',           (a, b) => a.date === b.date && a.name === b.name);
+        mergeArr('foodLog',            (a, b) => a.date === b.date && a.name === b.name && a.time === b.time);
+        mergeArr('injuries',           (a, b) => a.date === b.date && a.area === b.area);
+        mergeArr('bloodSugar',         (a, b) => a.date === b.date);
+        mergeArr('raceResults',        (a, b) => a.raceId === b.raceId);
+        mergeArr('gatewaySessions',    (a, b) => a.date === b.date && (a.duration || 0) === (b.duration || 0));
+        mergeArr('hyroxSessions',      (a, b) => a.raceId === b.raceId && a.date === b.date);
+        mergeArr('strengthPRs',        (a, b) => a.date === b.date && (a.lift || '').toLowerCase() === (b.lift || '').toLowerCase());
+        mergeArr('measurements',       (a, b) => a.date === b.date);
+        mergeArr('hyroxLadderEntries', (a, b) => a.date === b.date && a.station === b.station);
+        mergeArr('meals',              (a, b) => JSON.stringify(a) === JSON.stringify(b));
+        ['milestoneBadges', 'prCelebrationsSeen'].forEach(k => {
+            AppState[k] = Array.from(new Set([...(AppState[k] || []), ...(Array.isArray(s[k]) ? s[k] : [])]));
+        });
+        // dharmaChecks: per-date merge — imported fills gaps, local wins on conflict.
+        if (s.dharmaChecks && typeof s.dharmaChecks === 'object') {
+            AppState.dharmaChecks = AppState.dharmaChecks || {};
+            Object.keys(s.dharmaChecks).forEach(d => {
+                AppState.dharmaChecks[d] = Object.assign({}, s.dharmaChecks[d], AppState.dharmaChecks[d] || {});
+            });
+        }
+        ['currentPhase', 'trainingView', 'settings'].forEach(k => {
+            if (s[k] !== undefined && (AppState[k] === undefined || AppState[k] === null)) AppState[k] = s[k];
+        });
+        AppState.save();
+        // Same render-hook list as loadRemote()
+        try {
+            if (typeof updateDashboard === 'function') updateDashboard();
+            if (typeof renderFoodLog === 'function') renderFoodLog();
+            if (typeof updateCalorieRing === 'function') updateCalorieRing();
+            if (typeof updateMacroBars === 'function') updateMacroBars();
+            if (typeof renderRaceHistory === 'function') renderRaceHistory();
+            if (typeof renderGatewayTimeline === 'function') renderGatewayTimeline();
+            if (typeof window.renderStrengthPRs === 'function') window.renderStrengthPRs();
+            if (typeof window.v25RenderMeasurements === 'function') window.v25RenderMeasurements();
+            if (typeof window.v25RenderTransformationArc === 'function') window.v25RenderTransformationArc();
+            if (typeof window.v25RenderHeatmap === 'function') window.v25RenderHeatmap();
+            if (typeof window.v25RenderHabitLayer === 'function') window.v25RenderHabitLayer();
+            if (typeof refreshRaceCardPills === 'function') refreshRaceCardPills();
+            if (typeof window.v25RenderMayLadder === 'function') window.v25RenderMayLadder();
+            if (typeof window.v25RenderHyroxBuild === 'function') window.v25RenderHyroxBuild();
+            if (typeof window.v25RenderHmBuild === 'function') window.v25RenderHmBuild();
+        } catch (e) { console.warn('[importJSON] render refresh failed:', e); }
+        if (typeof showToast === 'function') {
+            showToast(added > 0 ? `Backup imported — ${added} new entries merged` : 'Backup imported — already up to date', 'success');
+        }
+    }
+
+    function importJSON() {
+        const inp = document.createElement('input');
+        inp.type = 'file';
+        inp.accept = 'application/json,.json';
+        inp.style.display = 'none';
+        inp.onchange = () => {
+            const f = inp.files && inp.files[0];
+            if (!f) { inp.remove(); return; }
+            const reader = new FileReader();
+            reader.onload = () => {
+                try { mergeBackup(JSON.parse(reader.result)); }
+                catch (e) { if (typeof showToast === 'function') showToast('Could not parse backup file', 'warn'); }
+                inp.remove();
+            };
+            reader.readAsText(f);
+        };
+        document.body.appendChild(inp);
+        inp.click();
+    }
+    window.v25ExportJSON = exportJSON;
+    window.v25ImportJSON = importJSON;
+    window.v25MergeBackup = mergeBackup; // programmatic import path (paste/automation)
+
+    /* ───────────────────────────────────────────────────────────────────
        (8) Cmd+K COMMAND PALETTE
        ─────────────────────────────────────────────────────────────────── */
     function buildPaletteIndex() {
@@ -12305,6 +12441,8 @@ document.addEventListener('DOMContentLoaded', () => {
         idx.push({ label: 'Log Gateway session', tag: 'log', action: () => openModal('gateway-session') });
         // Actions
         idx.push({ label: 'Export all data as CSV', tag: 'action', action: () => exportCSV() });
+        idx.push({ label: 'Export backup (JSON)', tag: 'action', action: () => exportJSON() });
+        idx.push({ label: 'Import backup (JSON)', tag: 'action', action: () => importJSON() });
         idx.push({ label: 'Copy this week\'s digest', tag: 'action', action: () => copyDigest() });
         // Workouts (recent 30)
         (AppState.workouts || []).slice(-30).forEach(w => {
@@ -12967,27 +13105,25 @@ document.addEventListener('DOMContentLoaded', () => {
         plan: PLAN,
         totals: TOTALS,
         raceDate: '2026-07-25',
-        ymd(d) { return d.toISOString().slice(0,10); },
+        ymd(d) { var mm = d.getMonth() + 1; var dd = d.getDate(); return d.getFullYear() + '-' + (mm < 10 ? '0' : '') + mm + '-' + (dd < 10 ? '0' : '') + dd; },
         dateForDay(weekIdx, dayIdx) {
             const w = PLAN[weekIdx]; if (!w) return null;
-            const start = new Date(w.startDate);
+            const start = new Date(w.startDate + 'T00:00:00');
             const d = new Date(start); d.setDate(start.getDate() + dayIdx);
             return CFG.ymd(d);
         },
         getCurrentWeekIdx() {
-            const today = new Date(); today.setHours(0,0,0,0);
+            const today = CFG.ymd(new Date());
             for (let i = 0; i < PLAN.length; i++) {
-                const start = new Date(PLAN[i].startDate);
-                const end = new Date(start); end.setDate(start.getDate() + 6);
-                if (today >= start && today <= end) return i;
+                const ws = PLAN[i].startDate;
+                const we = new Date(ws + 'T00:00:00');
+                we.setDate(we.getDate() + 6);
+                if (today >= ws && today <= CFG.ymd(we)) return i;
             }
-            // Before plan starts → 0; after plan ends → last week
-            const firstStart = new Date(PLAN[0].startDate);
-            return today < firstStart ? 0 : PLAN.length - 1;
+            return today < PLAN[0].startDate ? 0 : PLAN.length - 1;
         },
         getTodayCell() {
-            const today = new Date(); today.setHours(0,0,0,0);
-            const todayKey = CFG.ymd(today);
+            const todayKey = CFG.ymd(new Date());
             for (let wi = 0; wi < PLAN.length; wi++) {
                 for (let di = 0; di < PLAN[wi].days.length; di++) {
                     if (CFG.dateForDay(wi, di) === todayKey) return { weekIdx: wi, dayIdx: di, day: PLAN[wi].days[di] };
