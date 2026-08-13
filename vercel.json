@@ -1,10 +1,49 @@
 {
   "cleanUrls": true,
+  "crons": [
+    { "path": "/api/cron/integration-retry", "schedule": "15 2 * * *" },
+    { "path": "/api/cron/whoop-reconcile", "schedule": "45 3 * * *" },
+    { "path": "/api/cron/push-reminders", "schedule": "30 1 * * *" }
+  ],
+  "rewrites": [
+    { "source": "/preview", "destination": "/index.html" },
+    { "source": "/legacy", "destination": "/legacy.html" },
+    { "source": "/api/sync/pull", "destination": "/api/index?route=sync-pull" },
+    { "source": "/api/sync/push", "destination": "/api/index?route=sync-push" },
+    { "source": "/api/training/catalog", "destination": "/api/index?route=training-catalog" },
+    { "source": "/api/training/enrollment", "destination": "/api/index?route=training-enrollment" },
+    { "source": "/api/whoop/connect", "destination": "/api/index?route=whoop-connect" },
+    { "source": "/api/whoop/callback", "destination": "/api/index?route=whoop-callback" },
+    { "source": "/api/whoop/disconnect", "destination": "/api/index?route=whoop-disconnect" },
+    { "source": "/api/whoop/status", "destination": "/api/index?route=whoop-status" },
+    { "source": "/api/whoop/sync", "destination": "/api/index?route=whoop-sync" },
+    { "source": "/api/whoop/webhook", "destination": "/api/index?route=whoop-webhook" },
+    { "source": "/api/strava/connect", "destination": "/api/index?route=strava-connect" },
+    { "source": "/api/strava/callback", "destination": "/api/index?route=strava-callback" },
+    { "source": "/api/strava/disconnect", "destination": "/api/index?route=strava-disconnect" },
+    { "source": "/api/strava/upload", "destination": "/api/index?route=strava-upload" },
+    { "source": "/api/strava/status", "destination": "/api/index?route=strava-status" },
+    { "source": "/api/strava/webhook", "destination": "/api/index?route=strava-webhook" },
+    { "source": "/api/cron/integration-retry", "destination": "/api/index?route=cron-integration-retry" },
+    { "source": "/api/cron/whoop-reconcile", "destination": "/api/index?route=cron-whoop-reconcile" }
+    ,{ "source": "/api/health/shortcut", "destination": "/api/index?route=health-shortcut" }
+    ,{ "source": "/api/push/subscription", "destination": "/api/index?route=push-subscription" }
+    ,{ "source": "/api/cron/push-reminders", "destination": "/api/index?route=cron-push-reminders" }
+  ],
   "headers": [
     {
       "source": "/data.json",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store" }
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "X-Kash-Migration-Fallback", "value": "read-only" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "no-referrer" }
       ]
     },
     {

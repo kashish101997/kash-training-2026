@@ -1,6 +1,6 @@
 # Kash Training Platform — Deferred Roadmap
-**Version:** 3.0.0 · **Released:** Jun 10, 2026
-**Live site:** https://kash-training-2026.vercel.app/ (migrating from https://kashish101997.github.io/kash-training-2026/)
+**Version:** 5.0.0 · **Source implementation:** Aug 11, 2026
+**Private deployment target:** https://kash-training-2026.vercel.app/ (redeploy pending private Neon configuration)
 **Main file:** `Kash_Annual_Training_Plan_2026.html` → synced to `index.html` → Vercel (git-integrated)
 
 ## Versioning Convention
@@ -19,7 +19,9 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 ## P1 — Critical (Do These First)
 
 ### 1. WhatsApp → Vercel → Platform Sync (Wasender Integration)
-> **Deferred from v3.0.0 per user. The hard infrastructure shipped in v3.0.0 — Vercel functions (`/api`), `lib/github.js` commit helper, and the data.json write path are live for the Strava webhook. WhatsApp now only needs `api/whatsapp-webhook.js` (signature verify + phone allowlist + message parser + WaSender reply) plugged into the same pipeline.**
+> **Still deferred.** The v3 GitHub write helper and mutable `data.json` path were removed in v4.
+> Any future WhatsApp integration must authenticate, validate, and write encrypted sync mutations to
+> private Neon; it must not restore repository writes.
 
 **What:** Log weight, workouts, food, FBS, gateway sessions, strength PRs, measurements by texting a WhatsApp number. Data auto-appears on the platform without opening the app.
 **Why:** Daily friction is the enemy. Logging should be as fast as a WhatsApp message.
@@ -29,10 +31,10 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 - Full merge logic handles duplicates, sources, timestamps, with `_isMerging` flag preventing mid-merge `save()` overwrites (v2.0-a)
 
 **What's needed:**
-1. **Vercel serverless function** — receives Wasender webhook POST, parses natural language ("97.2 kg", "ran 8km today", "deadlift 140 kg x3", "waist 88 cm", "fbs 98", "gateway 25 min focus 10"), writes to `data.json` in repo via GitHub API
+1. **Vercel serverless function** — receives a signed Wasender webhook POST, parses the supported commands, and emits private Neon sync mutations
 2. **Wasender account** — free tier, connect a WhatsApp number, point webhook to Vercel URL
 3. **NLP parser** in the Vercel function — regex patterns for all 11 data types now in `AppState`
-4. **GitHub token** — stored as Vercel env var, used to commit `data.json` updates via GitHub API
+4. **Account mapping and replay protection** — durable event IDs, rate limits, and an audit record
 
 **Estimated effort:** 1 session (~3-4 hours)
 **Reference:** `AppState.loadRemote()` at ~line 6011 in main file
@@ -72,11 +74,13 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 
 ## Technical Notes
 
-### Current Architecture (v2.5.4)
+### Current Architecture (v5.0 source)
 - Single `.html` file, **~13,773 lines** (post v2.5.4)
-- GitHub Pages at `kashish101997.github.io/kash-training-2026`
+- Password-free single-user Vercel PWA backed by encrypted Neon records
 - LocalStorage key: `kash_fitness_2026_v3`; sessionStorage fallback on quota errors
-- Remote data: polls `data.json` in repo root via `AppState.loadRemote()`
+- Remote data: cursor-based authenticated sync; `data.json` is a read-only migration fallback
+- Official WHOOP v2 OAuth/API for processed recovery, sleep, cycle, body, and workout summaries
+- Signed WHOOP v2 webhooks plus hourly reconciliation; no direct Bluetooth or live HR transport
 - GSAP 3.12.5 + ScrollTrigger + **Lucide UMD** (ShadCN-style icons) for animations & iconography
 - **PWA-capable** — `manifest.json`, `service-worker.js`, iOS smart-banner, OG/Twitter meta
 - Two animation systems with strict boundary: `animateTabContent()` owns `#panel-dashboard`; `sectionReveals()` owns the other 7 tabs (deduped via `__v3: true` + `data-v3-reveal`)
@@ -110,7 +114,7 @@ The changelog lives at the bottom of this file — grep `## Changelog` to find h
 POST /api/log
 Body: { type: 'weight'|'workout'|'food'|'fbs'|'gateway'|'pr'|'measurement', raw: 'whatsapp message text' }
 Response: { ok: true, entry: { date, value, ... } }
-Action: commits updated data.json to GitHub via octokit
+Action: validates and inserts an idempotent encrypted Neon mutation
 ```
 
 ---
@@ -119,7 +123,7 @@ Action: commits updated data.json to GitHub via octokit
 
 | # | Feature | Priority | Effort | Status |
 |---|---|---|---|---|
-| 1 | WhatsApp + Vercel webhook | P1 Critical | 1 session | Backend not built — only remaining v1.0 item |
+| 1 | WhatsApp + Vercel webhook | P1 Critical | 1 session | Deferred; must use private sync, never GitHub writes |
 | 2 | Progress Photo Timeline (IndexedDB) | P2 Deferred | 1 session | Cut from R4; v2.5.1 |
 | 3 | Apple Health JSON Import | P2 Deferred | ~2 hours | Cut from R4; v2.5.1 |
 | 4 | Edit/Delete UI for Progress rows | P2 Deferred | ~3 hours | Cut from R4; v2.5.1 |
@@ -129,6 +133,31 @@ All v1.0, v2.0-T2 (VO2/pace/PR/ACWR), and v2.0-T3 (heatmap/measurements/badges/d
 ---
 
 ## Changelog
+
+### v5.0.1 — Aug 13, 2026 — Password-free personal deployment
+
+- Removed the password screen, browser sessions, and sign-out controls at the owner's request.
+- Retained the single internal account, encrypted Neon records, OAuth token encryption, and
+  same-origin checks for state-changing browser requests.
+
+### v5.0.0 — Aug 11, 2026 — Official WHOOP web app pivot
+
+- Made the Vercel PWA the only maintained product and archived the native prototype.
+- Replaced direct-band protocol work with official WHOOP OAuth, encrypted rotating tokens, v2 data
+  import, signed v2 webhooks, durable retries, and hourly reconciliation.
+- Added a source-aware WHOOP dashboard for recovery, day strain, sleep, RHR, HRV, respiration,
+  weight, and recent workout summaries. Pending/unscorable values remain unavailable.
+- Removed native device pairing from the web sync path. Documented that continuous HR, battery,
+  routes, band controls, body writes, and direct HealthKit access are unavailable to a web app.
+
+### v4.0.0 — Aug 6, 2026 — Archived native companion prototype
+
+- Added the iOS 17+ Whoop 5.0/MG companion, local GRDB store, HealthKit bridge, training catalog,
+  widgets/Live Activities, and privacy-gated companion features.
+- Replaced mutable public `data.json` and GitHub commits with authenticated cursor sync and encrypted
+  Neon entities. `lib/github.js` was removed; the fallback is read-only and migration-only.
+- Replaced the v3 Strava webhook pipeline with encrypted rotating OAuth tokens, durable events,
+  retries, and explicit summary-only uploads.
 
 ### v3.0.0 — Jun 10, 2026 — Strava Sync + Vercel Migration
 
@@ -163,7 +192,7 @@ All v1.0, v2.0-T2 (VO2/pace/PR/ACWR), and v2.0-T3 (heatmap/measurements/badges/d
 4. Install the PWA from the new origin (Add to Home Screen); delete the old icon
 5. Only after verification: disable GitHub Pages (repo Settings → Pages → Source: None)
 
-**Env vars (Vercel project settings):** `GITHUB_TOKEN`, `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`, `STRAVA_VERIFY_TOKEN`, `STRAVA_ATHLETE_ID`
+**Historical v3 env vars (superseded by v4):** `GITHUB_TOKEN`, `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`, `STRAVA_VERIFY_TOKEN`, `STRAVA_ATHLETE_ID`
 
 ---
 

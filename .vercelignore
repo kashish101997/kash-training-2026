@@ -1,0 +1,18 @@
+ios/
+PrivateTrainingContent/
+Tools/
+test/
+fixtures/
+tmp/
+*.pdf
+*.sqlite*
+*.gpx
+*.fit
+*.tcx
+backups/
+data.json
+sh 2026"
+Kash_Annual_Training_Plan_2026.html
+README.md
+ROADMAP.md
+.env*

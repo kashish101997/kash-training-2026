@@ -1,9 +1,21 @@
 {
   "name": "kash-training-2026",
-  "version": "3.0.0",
+  "version": "6.0.0",
   "private": true,
   "type": "module",
-  "description": "Kash Training Platform — static PWA + Vercel functions for Strava ingestion",
+  "description": "Kash OS phone-first personal health PWA with official WHOOP and Strava integrations",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check app/main.js && node --check app/models.js && node --check app/services.js && node --check app/state.js && node --test test/*.test.js",
+    "db:migrate": "node Tools/migrate.mjs",
+    "catalog:build": "python3 Tools/TrainingCatalogBuilder/build_catalog.py",
+    "catalog:import": "node Tools/import-training-catalog.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "@vercel/functions": "^2.2.12",
+    "web-push": "^3.6.7"
+  },
   "engines": {
     "node": ">=20"
   }

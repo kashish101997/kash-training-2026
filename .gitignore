@@ -1,0 +1,38 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.vercel/
+node_modules/
+coverage/
+
+# Local Xcode/signing state
+DerivedData/
+*.xcuserstate
+xcuserdata/
+ios/KashStrap/Config/Local.xcconfig
+ios/KashStrap/KashStrap.xcodeproj/
+
+# Private purchased plans and generated content never enter the public repository.
+*.pdf
+ios/KashStrap/PrivateTrainingContent/
+ios/KashStrap/KashStrap/Resources/TrainingCatalog.generated.json
+PrivateTrainingContent/
+private-training-build/
+training-source-audit.json
+
+# Local health/device exports and protocol captures.
+*.fit
+*.tcx
+*.gpx
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.whoopcapture
+backups/
+
+# Existing private editor artifacts.
+.claude/launch.json
+.claude/training_data_draft.js
+.vercel
+.env*
