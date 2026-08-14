@@ -26,12 +26,37 @@ async function boot() {
   bindShell();
   applyRoute(routeFromLocation(), false);
   handleLaunchAction();
+  handleOAuthResult();
   renderAll();
   setupMotion();
   setupPullToRefresh();
   setupSheetDrag();
   registerServiceWorker();
   await refreshAll({ quiet: true });
+}
+
+function handleOAuthResult() {
+  const parameters = new URLSearchParams(location.search);
+  const result = parameters.get('whoop');
+  if (!result) return;
+  const reason = parameters.get('reason') || '';
+  const messages = {
+    whoop_access_denied: 'WHOOP access was not approved.',
+    whoop_invalid_scope: 'WHOOP rejected a requested permission. Check the app scopes in the WHOOP developer dashboard.',
+    invalid_oauth_state: 'The WHOOP connection expired. Please tap Connect and try again.',
+    missing_authorization_code: 'WHOOP did not return an authorization code. Please try connecting again.',
+    whoop_offline_scope_not_granted: 'WHOOP did not grant background refresh access. Enable the offline scope and reconnect.',
+    provider_invalid_client: 'WHOOP rejected this app’s client credentials. Check the Vercel client ID and secret.',
+    provider_invalid_grant: 'WHOOP rejected the authorization code. Please reconnect from Settings.',
+    provider_invalid_redirect_uri: 'WHOOP rejected the callback URL. Register the exact Kash OS callback in the developer dashboard.',
+    server_not_configured: 'The WHOOP connection is not fully configured on Vercel.',
+    profile_fetch_failed: 'WHOOP connected, but the first profile sync failed. Please reconnect.',
+  };
+  const message = result === 'connected'
+    ? 'WHOOP connected. Importing recovery, sleep and workouts…'
+    : messages[reason] || `WHOOP connection failed${reason ? ` · ${reason.replaceAll('_', ' ')}` : ''}.`;
+  setTimeout(() => toast(message), 120);
+  history.replaceState(null, '', `${location.pathname}${location.hash || ''}`);
 }
 
 function handleLaunchAction() {

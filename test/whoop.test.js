@@ -3,8 +3,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   mapBodyMeasurement, mapCycle, mapRecovery, mapSleep, mapWhoopWorkout,
-  verifyWhoopWebhookSignature,
+  safeWhoopOAuthReason, verifyWhoopWebhookSignature,
 } from '../lib/whoop.js';
+
+test('reduces WHOOP OAuth failures to safe user-facing reason codes', () => {
+  assert.equal(safeWhoopOAuthReason(new Error('whoop_oauth_401:invalid_client')), 'provider_invalid_client');
+  assert.equal(safeWhoopOAuthReason(new Error('whoop_invalid_scope')), 'whoop_invalid_scope');
+  assert.equal(safeWhoopOAuthReason(new Error('secret-token-value')), 'unexpected_oauth_error');
+});
 
 test('maps an official WHOOP workout to a route-free web summary', () => {
   const result = mapWhoopWorkout({

@@ -1,5 +1,9 @@
-import { json, method } from '../../lib/http.js';
-import { consumeWhoopOAuthState, exchangeWhoopAuthorizationCode } from '../../lib/whoop.js';
+import { method } from '../../lib/http.js';
+import {
+  consumeWhoopOAuthState,
+  exchangeWhoopAuthorizationCode,
+  safeWhoopOAuthReason,
+} from '../../lib/whoop.js';
 
 export default async function handler(req, res) {
   if (!method(req, res, ['GET'])) return;
@@ -10,6 +14,8 @@ export default async function handler(req, res) {
     await exchangeWhoopAuthorizationCode(state.account_id, String(req.query.code || ''));
     return res.redirect(302, '/?whoop=connected');
   } catch (error) {
-    return json(res, error.status || 400, { error: error.message });
+    const reason = safeWhoopOAuthReason(error);
+    console.error('[whoop-oauth-callback]', reason);
+    return res.redirect(302, `/?whoop=error&reason=${encodeURIComponent(reason)}`);
   }
 }
