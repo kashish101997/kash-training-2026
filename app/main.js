@@ -1,5 +1,5 @@
 import { HealthShortcut, PushReminders, Strava, Training, Whoop, entitiesOf, entityRevision, pullAllChanges, pushEntity } from './services.js';
-import { dailyBrief, localDay, metricEnvelope, practiceStreak, recoveryColor, whoopMetrics } from './models.js';
+import { applyPlanAdjustments, dailyBrief, localDay, metricEnvelope, practiceStreak, recoveryColor, whoopMetrics } from './models.js';
 import { loadState, mergeRemoteState, saveState } from './state.js';
 
 const app = {
@@ -72,6 +72,12 @@ function bindShell() {
   window.addEventListener('hashchange', () => applyRoute(routeFromLocation(), false));
   window.addEventListener('online', () => { app.online = true; updateConnectivity(); refreshAll({ quiet: true }); });
   window.addEventListener('offline', () => { app.online = false; updateConnectivity(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && app.online) refreshAll({ quiet: true });
+  });
+  setInterval(() => {
+    if (document.visibilityState === 'visible' && app.online) refreshAll({ quiet: true });
+  }, 120_000);
   $('#library-search')?.addEventListener('input', event => renderLibrary(event.target.value));
   updateConnectivity();
 }
@@ -302,14 +308,16 @@ function allScheduledSessions() {
       result.push({ ...session, planID: plan.id, planTitle: plan.title, weekTitle: week.title, scheduledDate: String(scheduled).slice(0,10) });
     }
   }
-  return result.sort((a,b) => a.scheduledDate.localeCompare(b.scheduledDate));
+  const adjustments = entitiesOf(app.snapshot, 'plan_adjustment').map(entity => entity.data);
+  return applyPlanAdjustments(result, adjustments).sort((a,b) => a.scheduledDate.localeCompare(b.scheduledDate));
 }
 
 function sessionCard(session, compact = false) {
   const completionID = `${session.planID}:${session.id}:${session.scheduledDate}`;
   const complete = entitiesOf(app.snapshot, 'plan_completion').some(item => item.data.sessionID === session.id && item.data.completed !== false);
   const distance = number(session.distanceMeters); const duration = number(session.durationSeconds);
-  return `<article class="card session-card" data-reveal><div class="session-accent"></div><div class="session-body"><p class="card-kicker">${escapeHTML(session.scheduledDate ? formatDate(session.scheduledDate) : 'TODAY')} · ${escapeHTML(session.planTitle || 'TRAINING')}</p><h3>${escapeHTML(session.title || 'Planned session')}</h3><div class="session-meta">${session.modality ? `<span class="mini-chip">${escapeHTML(session.modality)}</span>` : ''}${distance ? `<span class="mini-chip">${(distance/1000).toFixed(1)} km</span>` : ''}${duration ? `<span class="mini-chip">${Math.round(duration/60)} min</span>` : ''}${session.intensity ? `<span class="mini-chip">${escapeHTML(session.intensity)}</span>` : ''}</div>${compact ? '' : `<p style="color:var(--muted);font-size:.7rem;line-height:1.55;margin:0 0 16px">${escapeHTML(String(session.instructions || '').slice(0,240))}</p>`}<div class="button-row"><button class="${complete ? 'secondary-button' : 'primary-button'}" type="button" data-action="complete-session" data-session-id="${escapeHTML(session.id)}" data-plan-id="${escapeHTML(session.planID)}" data-date="${escapeHTML(session.scheduledDate)}" data-completion-id="${escapeHTML(completionID)}" ${complete ? 'disabled' : ''}>${complete ? 'Completed' : 'Mark complete'}</button>${!compact ? '<button class="secondary-button" type="button" data-route="train">Plan</button>' : ''}</div></div></article>`;
+  const moved = session.originalScheduledDate && session.originalScheduledDate !== session.scheduledDate;
+  return `<article class="card session-card" data-reveal><div class="session-accent"></div><div class="session-body"><p class="card-kicker">${escapeHTML(session.scheduledDate ? formatDate(session.scheduledDate) : 'TODAY')} · ${escapeHTML(session.planTitle || 'TRAINING')}</p><h3>${escapeHTML(session.title || 'Planned session')}</h3><div class="session-meta">${session.modality ? `<span class="mini-chip">${escapeHTML(session.modality)}</span>` : ''}${distance ? `<span class="mini-chip">${(distance/1000).toFixed(1)} km</span>` : ''}${duration ? `<span class="mini-chip">${Math.round(duration/60)} min</span>` : ''}${session.intensity ? `<span class="mini-chip">${escapeHTML(session.intensity)}</span>` : ''}${moved ? '<span class="mini-chip">GENESIS MOVE</span>' : ''}</div>${moved ? `<p style="color:var(--lime);font-size:.68rem;margin:0 0 10px">Moved from ${escapeHTML(formatDate(session.originalScheduledDate))}${session.planAdjustment?.reason ? ` · ${escapeHTML(session.planAdjustment.reason)}` : ''}</p>` : ''}${compact ? '' : `<p style="color:var(--muted);font-size:.7rem;line-height:1.55;margin:0 0 16px">${escapeHTML(String(session.instructions || '').slice(0,240))}</p>`}<div class="button-row"><button class="${complete ? 'secondary-button' : 'primary-button'}" type="button" data-action="complete-session" data-session-id="${escapeHTML(session.id)}" data-plan-id="${escapeHTML(session.planID)}" data-date="${escapeHTML(session.scheduledDate)}" data-completion-id="${escapeHTML(completionID)}" ${complete ? 'disabled' : ''}>${complete ? 'Completed' : 'Mark complete'}</button>${!compact ? '<button class="secondary-button" type="button" data-route="train">Plan</button>' : ''}</div></div></article>`;
 }
 
 function measurementRow(item) {

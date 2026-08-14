@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AVAILABILITY, dailyBrief, localDay, metricEnvelope, practiceStreak } from '../app/models.js';
+import { AVAILABILITY, applyPlanAdjustments, dailyBrief, localDay, metricEnvelope, practiceStreak } from '../app/models.js';
 import { DEFAULT_PRACTICES, mergeRemoteState, migrateLegacy } from '../app/state.js';
 
 test('metric envelope never invents unavailable values', () => {
@@ -56,4 +56,25 @@ test('remote legacy weight values remain visible as body measurements', () => {
   assert.equal(merged.measurements.length, 1);
   assert.equal(merged.measurements[0].weightKilograms, 95.75);
   assert.equal(merged.measurements[0].timestamp, '2026-04-20T06:00:00');
+});
+
+test('accepted Genesis adjustments move stable plan sessions without rewriting their identity', () => {
+  const sessions = [{ id: 'session-7', planID: 'hyrox-2026', scheduledDate: '2026-08-17', title: 'Intervals' }];
+  const adjusted = applyPlanAdjustments(sessions, [{
+    id: 'plan-adjustment:hyrox-2026:session-7', planID: 'hyrox-2026', sessionID: 'session-7',
+    originalDate: '2026-08-17', scheduledDate: '2026-08-19', reason: 'Recovery', updatedAt: '2026-08-14T12:00:00Z',
+  }]);
+  assert.equal(adjusted[0].id, 'session-7');
+  assert.equal(adjusted[0].scheduledDate, '2026-08-19');
+  assert.equal(adjusted[0].originalScheduledDate, '2026-08-17');
+  assert.equal(sessions[0].scheduledDate, '2026-08-17');
+});
+
+test('inactive or malformed plan adjustments leave the source schedule unchanged', () => {
+  const sessions = [{ id: 'session-8', planID: 'hyrox-2026', scheduledDate: '2026-08-20' }];
+  const adjusted = applyPlanAdjustments(sessions, [
+    { planID: 'hyrox-2026', sessionID: 'session-8', scheduledDate: 'tomorrow' },
+    { planID: 'hyrox-2026', sessionID: 'session-8', scheduledDate: '2026-08-22', active: false },
+  ]);
+  assert.deepEqual(adjusted, sessions);
 });

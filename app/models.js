@@ -75,6 +75,28 @@ export function practiceStreak(completions, practiceID, today = new Date()) {
   return streak;
 }
 
+export function applyPlanAdjustments(sessions, adjustments) {
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  const latestBySession = new Map();
+  for (const adjustment of adjustments || []) {
+    if (!adjustment || adjustment.active === false || !datePattern.test(String(adjustment.scheduledDate || ''))) continue;
+    const key = `${adjustment.planID || ''}:${adjustment.sessionID || ''}`;
+    if (key === ':') continue;
+    const current = latestBySession.get(key);
+    if (!current || String(adjustment.updatedAt || '') >= String(current.updatedAt || '')) latestBySession.set(key, adjustment);
+  }
+  return (sessions || []).map(session => {
+    const adjustment = latestBySession.get(`${session.planID || ''}:${session.id || ''}`);
+    if (!adjustment || adjustment.scheduledDate === session.scheduledDate) return session;
+    return {
+      ...session,
+      originalScheduledDate: session.scheduledDate,
+      scheduledDate: adjustment.scheduledDate,
+      planAdjustment: adjustment,
+    };
+  });
+}
+
 export function recoveryColor(score) {
   if (score == null) return '#70766d';
   if (score < 34) return '#ff5b5b';
