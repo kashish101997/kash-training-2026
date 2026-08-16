@@ -1,5 +1,5 @@
 /* Kash OS service worker — private APIs are network-only; the UI shell is offline-capable. */
-const VERSION = 'kash-os-v6.0.4';
+const VERSION = 'kash-os-v6.1.1';
 const SHELL = `${VERSION}-shell`;
 const STATIC = `${VERSION}-static`;
 const SHELL_URLS = [

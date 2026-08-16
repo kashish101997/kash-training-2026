@@ -8,8 +8,8 @@
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#10110f",
-  "theme_color": "#10110f",
+  "background_color": "#0a0e16",
+  "theme_color": "#0a0e16",
   "categories": ["health", "fitness", "lifestyle", "sports"],
   "lang": "en-IN",
   "dir": "ltr",
@@ -22,6 +22,6 @@
   "shortcuts": [
     { "name": "Log body measurement", "short_name": "Log body", "url": "/#/today?action=log-measurement", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
     { "name": "Log blood glucose", "short_name": "Log glucose", "url": "/#/today?action=log-glucose", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Today's training", "short_name": "Train", "url": "/#/train", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+    { "name": "Today's training", "short_name": "Plan", "url": "/#/plan", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }

@@ -12,6 +12,8 @@ const app = {
   catalogError: null,
   online: navigator.onLine,
   refreshing: false,
+  planWeek: null,
+  expandedSession: localDay(),
 };
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -117,6 +119,7 @@ function renderAll() {
   renderTrain();
   renderProgress();
   renderLibrary($('#library-search')?.value || '');
+  renderSync();
   requestAnimationFrame(() => {
     setupMotion();
     const ring = $('.metric-ring');
@@ -142,30 +145,24 @@ function renderToday() {
   const weight = number(latestMeasurement?.weightKilograms ?? latestMeasurement?.weight ?? latestMeasurement?.kg);
   const glucose = number(sorted(app.state.bloodSugar, item => item.timestamp || item.date)[0]?.value ?? sorted(app.state.bloodSugar, item => item.timestamp || item.date)[0]?.mgDl);
   const refreshTime = app.whoop?.lastSyncedAt || app.state.lastRefreshAt;
+  const raceDays = daysToRace();
 
   target.classList.remove('skeleton-screen');
   target.innerHTML = `
-    <section class="health-hero" aria-label="Today's recovery">
-      <div class="hero-topline"><span>${escapeHTML(greeting())}, Kashish</span><span class="freshness">${escapeHTML(relativeTime(refreshTime))}</span></div>
-      <div class="ring-stage">
-        <svg class="metric-ring" viewBox="0 0 224 224" style="--ring-color:${recoveryColor(score)};--ring-offset:${offset}">
-          <circle class="track" cx="112" cy="112" r="96"></circle><circle class="value" cx="112" cy="112" r="96"></circle>
-        </svg>
-        <div class="ring-copy"><div>${score == null ? '<span class="metric-number unavailable">—</span>' : `<span class="metric-number">${Math.round(score)}</span><span class="metric-unit">%</span>`}</div><div class="metric-label">Recovery</div></div>
-        <div class="orbit-metric strain"><strong>${metricValue(metrics.strain, 1)}</strong><span>Day strain · /21</span></div>
-        <div class="orbit-metric sleep"><strong>${metricValue(metrics.sleep, 0)}</strong><span>Sleep performance</span></div>
+    <header class="today-intro" data-reveal><p class="eyebrow">${escapeHTML(new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase())}</p><h2>${escapeHTML(greeting())},<br>Kash.</h2></header>
+    <article class="race-tile neu-raised" data-reveal><div><p class="card-kicker">HYROX MUMBAI · 18 SEP</p><strong>${raceDays}</strong><span>days to race</span></div><div class="race-glyph" aria-hidden="true">K<span>•</span></div></article>
+    <section class="whoop-glass card" aria-label="WHOOP recovery" data-reveal>
+      <div class="whoop-head"><div><p class="card-kicker">WHOOP · PROCESSED SYNC</p><h3>Daily recovery</h3></div><span class="freshness">${escapeHTML(relativeTime(refreshTime))}</span></div>
+      <div class="whoop-layout">
+        <div class="ring-stage compact-ring"><svg class="metric-ring" viewBox="0 0 224 224" style="--ring-color:${recoveryColor(score)};--ring-offset:${offset}"><circle class="track" cx="112" cy="112" r="96"></circle><circle class="value" cx="112" cy="112" r="96"></circle></svg><div class="ring-copy"><div>${score == null ? '<span class="metric-number unavailable">—</span>' : `<span class="metric-number">${Math.round(score)}</span><span class="metric-unit">%</span>`}</div><div class="metric-label">Recovery</div></div></div>
+        <div class="whoop-stats"><div class="inset-stat"><strong>${metricValue(metrics.sleep, 0)}</strong><span>Sleep</span></div><div class="inset-stat"><strong>${metricValue(metrics.strain, 1)}</strong><span>Strain</span></div><div class="inset-stat"><strong>${metricValue(metrics.hrv, 0)}</strong><span>HRV ms</span></div><div class="inset-stat"><strong>${metricValue(metrics.rhr, 0)}</strong><span>RHR bpm</span></div></div>
       </div>
     </section>
     <article class="card brief-card ${brief.level === 'unavailable' ? 'is-quiet' : ''}" data-reveal>
       <p class="card-kicker">TODAY'S READ · ${escapeHTML(brief.level)}</p><h3>${escapeHTML(brief.title)}</h3><p>${escapeHTML(brief.body)}</p><div class="brief-rule">${escapeHTML(brief.rule)}</div>
     </article>
-    <div class="metric-strip" data-reveal>
-      <div class="small-metric"><strong>${metricValue(metrics.hrv, 0)}</strong><span>HRV · ms</span></div>
-      <div class="small-metric"><strong>${metricValue(metrics.rhr, 0)}</strong><span>Resting HR</span></div>
-      <div class="small-metric"><strong>${metricValue(metrics.respiration, 1)}</strong><span>Respiration</span></div>
-    </div>
     <div class="section-heading"><h3>Today’s training</h3><button type="button" data-route="train">View plan</button></div>
-    ${session ? sessionCard(session) : `<article class="card empty-state" data-reveal><strong>No scheduled session found</strong>Your active catalog has no session mapped to ${today}. Recovery advice remains available.</article>`}
+    ${session ? sessionCard(session, { open: true, today: true }) : `<article class="card empty-state" data-reveal><strong>No scheduled session found</strong>Your active catalog has no session mapped to ${today}. Recovery advice remains available.</article>`}
     <div class="section-heading"><h3>Daily Dharma</h3><button type="button" data-action="edit-practices">Edit</button></div>
     <article class="card" data-reveal><div class="practice-list">${activePractices.map(practice => {
       const isDone = completed.has(practice.id);
@@ -175,7 +172,7 @@ function renderToday() {
     <div class="quick-grid" data-reveal>
       ${quickAction('measurement', '↕', 'Body')}${quickAction('glucose', '⌁', 'Glucose')}${quickAction('meal', '◌', 'Meal')}${quickAction('journal', '✦', 'Journal')}
     </div>
-    <div class="section-heading"><h3>Latest body signal</h3><button type="button" data-route="progress">History</button></div>
+    <div class="section-heading"><h3>Latest body signal</h3><button type="button" data-route="progress">Pulse</button></div>
     <article class="card list-row" data-reveal><div><h3>${weight == null ? 'No body measurement yet' : `${weight.toFixed(1)} kg`}</h3><p>${latestMeasurement ? `${formatDate(latestMeasurement.timestamp || latestMeasurement.date)} · ${escapeHTML(latestMeasurement.source || 'Kash OS')}` : 'Log it here or import it with the Health Shortcut.'}</p></div><div class="value-pair"><strong>${glucose == null ? '—' : Math.round(glucose)}</strong><span>mg/dL</span></div></article>
   `;
 }
@@ -185,15 +182,33 @@ function renderTrain() {
   if (!target) return;
   const activeIDs = new Set((app.catalog.enrollments || []).filter(value => value.active).map(value => value.planID));
   const activePlans = (app.catalog.plans || []).filter(plan => activeIDs.has(plan.id));
-  const sessions = upcomingSessions(14);
-  const raceDate = new Date('2026-09-18T00:00:00+05:30');
-  const days = Math.max(0, Math.ceil((raceDate - new Date()) / 86_400_000));
+  const allSessions = allScheduledSessions();
+  const weekMap = new Map();
+  allSessions.forEach(session => {
+    const key = `${session.planID}:${session.weekTitle || 'Schedule'}`;
+    if (!weekMap.has(key)) weekMap.set(key, { key, title: session.weekTitle || 'Schedule', sessions: [] });
+    weekMap.get(key).sessions.push(session);
+  });
+  const weeks = [...weekMap.values()];
+  const today = localDay();
+  const currentWeek = weeks.find(week => week.sessions.some(session => session.scheduledDate === today)) || weeks.find(week => week.sessions.some(session => session.scheduledDate >= today)) || weeks.at(-1);
+  if (!app.planWeek || !weekMap.has(app.planWeek)) app.planWeek = currentWeek?.key || weeks[0]?.key || null;
+  if (app.expandedSession === today) app.expandedSession = allSessions.find(session => session.scheduledDate === today)?.id || null;
+  const selectedWeek = weekMap.get(app.planWeek) || currentWeek;
+  const sessions = selectedWeek?.sessions || [];
+  const days = daysToRace();
+  const completions = entitiesOf(app.snapshot, 'plan_completion').filter(item => item.data.completed !== false);
   $('#train-countdown').textContent = days ? `${days} days` : 'Race day';
   target.innerHTML = `
-    <article class="card countdown-card" data-reveal><div><p class="card-kicker">HYROX MUMBAI · 18 SEP</p><strong>${days}</strong><div class="label">days to race day</div></div><span class="status-chip">PLAN V2</span></article>
+    <div class="plan-progress" data-reveal><span>${completions.length} of ${allSessions.length} sessions complete</span><div><i style="--progress:${Math.min(100, allSessions.length ? completions.length / allSessions.length * 100 : 0)}%"></i></div></div>
     ${activePlans.length > 1 ? `<article class="card collision-warning" data-reveal><strong>${activePlans.length} active plans are stacking.</strong><br>Review the combined schedule before adding intensity or moving sessions.</article>` : ''}
-    <div class="section-heading"><h3>Next 14 days</h3><span>${sessions.length} sessions</span></div>
-    <div class="activity-list">${sessions.length ? sessions.map(session => sessionCard(session, true)).join('') : '<article class="card empty-state"><strong>No scheduled sessions</strong>Enroll in a plan below.</article>'}</div>
+    <div class="week-scroller" aria-label="Training weeks">${weeks.map((week, index) => `<button class="week-chip ${week.key === app.planWeek ? 'is-active' : ''}" type="button" data-action="select-plan-week" data-week-key="${escapeHTML(week.key)}"><span>W${index + 1}</span>${escapeHTML(week.title.replace(/^Week\s*/i, ''))}</button>`).join('')}</div>
+    ${selectedWeek ? `<article class="week-focus glass-flat" data-reveal><p class="card-kicker">${escapeHTML(selectedWeek.title)}</p><strong>${escapeHTML(formatDate(selectedWeek.sessions[0]?.scheduledDate))} → ${escapeHTML(formatDate(selectedWeek.sessions.at(-1)?.scheduledDate))}</strong><span>${selectedWeek.sessions.length} planned sessions · tap any card for full details</span></article>` : ''}
+    <div class="activity-list detailed-plan">${sessions.length ? sessions.map(session => sessionCard(session, { open: app.expandedSession === session.id })).join('') : '<article class="card empty-state"><strong>No scheduled sessions</strong>Enroll in a plan below.</article>'}</div>
+    <div class="section-heading"><h3>Race guardrails</h3><span>Non-negotiable</span></div>
+    <article class="card guardrail-list" data-reveal><p><b>01</b>Niggle → drop finishers. Keep the priority run.</p><p><b>02</b>Never stack heavy legs before a quality run.</p><p><b>03</b>Protein within one hour of the Saturday session.</p><p><b>04</b>Threshold reps stay controlled; watch rep-two fade.</p></article>
+    <div class="section-heading"><h3>Race-day targets</h3><span>Delhi 2:54 → Mumbai</span></div>
+    <article class="card target-table" data-reveal><div><span>Runs · 8 km</span><s>1:13:10</s><b>~1:05</b></div><div><span>Wall balls</span><s>24:42</s><b>12–14m</b></div><div><span>Roxzone</span><s>11:10</s><b>~5m</b></div><div class="total"><span>Total</span><s>2:54</s><b>2:25–2:35</b></div></article>
     <div class="section-heading"><h3>Training catalog</h3><span>${(app.catalog.plans || []).length} plans</span></div>
     <div class="plan-list">${(app.catalog.plans || []).length ? (app.catalog.plans || []).map(plan => `<article class="plan-card" data-active="${activeIDs.has(plan.id)}" data-reveal><div><h3>${escapeHTML(plan.title)}</h3><p>${(plan.weeks || []).length} weeks · ${(plan.weeks || []).reduce((sum, week) => sum + (week.sessions || []).length, 0)} sessions · ${escapeHTML(Array.isArray(plan.modality) ? plan.modality.join(' / ') : plan.modality || 'multi-sport')}</p></div><button class="${activeIDs.has(plan.id) ? 'secondary-button' : 'primary-button'}" type="button" data-action="toggle-plan" data-plan-id="${escapeHTML(plan.id)}" data-active="${activeIDs.has(plan.id)}">${activeIDs.has(plan.id) ? 'Active' : 'Enroll'}</button></article>`).join('') : `<article class="card empty-state"><strong>${escapeHTML(app.catalogError || 'No plans imported')}</strong>${app.catalogError ? 'The server could not load the encrypted catalog.' : 'Import the private training catalog to continue.'}<div style="margin-top:14px"><button class="secondary-button" type="button" data-action="refresh-app">Try again</button></div></article>`}</div>
   `;
@@ -202,12 +217,14 @@ function renderTrain() {
 function renderProgress() {
   const target = $('#progress-content');
   if (!target) return;
+  const metrics = whoopMetrics(app.whoop || {});
   const measurements = sorted(app.state.measurements, item => item.timestamp || item.date);
   const weights = measurements.map(item => number(item.weightKilograms ?? item.weight ?? item.kg)).filter(value => value != null).slice(0, 12).reverse();
   const activities = sorted(app.state.workouts, item => item.startedAt || item.date).slice(0, 12);
   const glucose = sorted(app.state.bloodSugar, item => item.timestamp || item.date).slice(0, 8);
   const max = Math.max(...weights, 1); const min = Math.min(...weights, max);
   target.innerHTML = `
+    <article class="pulse-hero card" data-reveal><div class="pulse-score" style="--pulse-color:${recoveryColor(metrics.recovery.value)}"><strong>${metricValue(metrics.recovery, 0)}</strong><span>Recovery</span></div><div class="pulse-copy"><p class="card-kicker">WHOOP · ${escapeHTML(relativeTime(app.whoop?.lastSyncedAt))}</p><h3>Your readiness signals</h3><div class="pulse-grid"><span><b>${metricValue(metrics.hrv, 0)}</b>HRV ms</span><span><b>${metricValue(metrics.rhr, 0)}</b>RHR</span><span><b>${metricValue(metrics.sleep, 0)}</b>Sleep</span><span><b>${metricValue(metrics.strain, 1)}</b>Strain</span></div></div></article>
     <article class="card chart-card" data-reveal><p class="card-kicker">BODY WEIGHT · LAST ${weights.length || 0}</p><div class="chart">${weights.length ? weights.map(value => `<span class="chart-bar" style="--bar:${25 + ((value - min) / Math.max(1, max - min)) * 70}%" title="${value.toFixed(1)} kg"></span>`).join('') : '<div class="chart-empty">Log weight to start the trend.</div>'}</div></article>
     <div class="section-heading"><h3>Measurements</h3><span>${measurements.length} records</span></div>
     <div class="measurement-list">${measurements.length ? measurements.slice(0, 8).map(item => measurementRow(item)).join('') : emptyRow('No measurements', 'Add a body reading or run the Health Shortcut.')}</div>
@@ -229,7 +246,30 @@ function renderLibrary(query = '') {
     { id: 'dharma', title: 'Dharma source library', meta: 'Long-form practices and Gita material', body: 'The complete original Dharma material remains here; Today uses only your editable micro-practices.', href: '/legacy.html#panel-dharma' },
     { id: 'reports', title: 'Legacy reports & analytics', meta: 'Deep tables and historical dashboards', body: 'Open the previous detailed progress surface when you need the full historical tables.', href: '/legacy.html#panel-progress' },
   ].filter(item => `${item.title} ${item.meta} ${item.body}`.toLowerCase().includes(query.trim().toLowerCase()));
-  target.innerHTML = groups.length ? `<div class="library-list">${groups.map(item => `<details class="library-group" data-reveal><summary><div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.meta)}</p></div><span>＋</span></summary><div class="library-body">${escapeHTML(item.body)}<br><a href="${item.href}">Open reference archive →</a></div></details>`).join('')}</div>` : '<div class="empty-state"><strong>No matching reference</strong>Try a broader search.</div>';
+  target.innerHTML = groups.length ? `<article class="life-banner card" data-reveal><p class="card-kicker">THE WHOLE SYSTEM</p><h3>Train the body.<br><span>Steady the mind.</span></h3><p>Fuel, Dharma, racing and research—kept close without cluttering the day.</p></article><div class="life-tabs" data-reveal><span>Fuel</span><span>Stack</span><span>Dharma</span><span>Body</span></div><div class="library-list">${groups.map((item, index) => `<details class="library-group" data-reveal><summary><div class="library-index">${String(index + 1).padStart(2, '0')}</div><div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.meta)}</p></div><span>＋</span></summary><div class="library-body">${escapeHTML(item.body)}<br><a href="${item.href}">Open reference archive →</a></div></details>`).join('')}</div>` : '<div class="empty-state"><strong>No matching reference</strong>Try a broader search.</div>';
+}
+
+function renderSync() {
+  const target = $('#sync-content');
+  if (!target) return;
+  const whoopConnected = Boolean(app.whoop?.connected);
+  const stravaConnected = Boolean(app.strava?.connected);
+  target.innerHTML = `
+    <article class="sync-orbit card" data-reveal><div class="orbit-core">K<span>•</span></div><span class="orbit-node whoop">W</span><span class="orbit-node strava">S</span><span class="orbit-node health">♥</span><p>${whoopConnected && stravaConnected ? 'Your health system is connected.' : 'Connect every signal to one private operating view.'}</p></article>
+    <div class="section-heading"><h3>Connections</h3><span>${[whoopConnected, stravaConnected].filter(Boolean).length} online</span></div>
+    <div class="settings-list">
+      ${integrationRow('WHOOP', whoopConnected, whoopConnected ? `Processed recovery, sleep and workouts · ${relativeTime(app.whoop?.lastSyncedAt)}` : 'Official API · processed data, not live HR', whoopConnected ? 'whoop-sync' : 'whoop-connect', whoopConnected ? 'Sync now' : 'Connect')}
+      ${integrationRow('STRAVA', stravaConnected, stravaConnected ? 'Webhook activity sync is active' : 'Import activities and share approved workouts', stravaConnected ? 'strava-disconnect' : 'strava-connect', stravaConnected ? 'Disconnect' : 'Connect')}
+      <div class="settings-row"><div><span class="connection-logo health-logo">♥</span><h3>APPLE HEALTH</h3><p>User-run Shortcut for body and glucose values</p></div><a class="secondary-button" href="${HealthShortcut.setupURL}">Set up</a></div>
+      <div class="settings-row"><div><span class="connection-logo genesis-logo">G</span><h3>GENESIS COACH</h3><p>Workout logs and accepted schedule changes sync through Neon</p></div><span class="connection-state is-online">LINKED</span></div>
+    </div>
+    <div class="section-heading"><h3>Device & data</h3><button type="button" data-open="settings">All settings</button></div>
+    <div class="sync-actions" data-reveal><button class="neu-btn" type="button" data-action="enable-notifications">Reminders</button><button class="neu-btn" type="button" data-action="health-write">Write Health</button><button class="neu-btn" type="button" data-action="export-data">Export</button></div>
+    <article class="card public-warning" data-reveal><p class="card-kicker">PUBLIC PERSONAL APP</p><strong>No password is enabled.</strong><p>Anyone with this URL can view or modify the synced data, as explicitly configured.</p></article>`;
+}
+
+function integrationRow(name, connected, copy, action, label) {
+  return `<div class="settings-row"><div><span class="connection-logo ${name.toLowerCase()}-logo">${name[0]}</span><h3>${name}</h3><p>${escapeHTML(copy)}</p></div><button class="${connected ? 'secondary-button' : 'primary-button'}" type="button" data-action="${action}">${label}</button></div>`;
 }
 
 function handleClick(event) {
@@ -247,6 +287,8 @@ function handleClick(event) {
   if (action === 'toggle-practice') togglePractice(event.target.closest('[data-practice-id]').dataset.practiceId);
   if (action === 'edit-practices') openPracticeEditor();
   if (action === 'toggle-plan') togglePlan(event.target.closest('[data-plan-id]'));
+  if (action === 'select-plan-week') { app.planWeek = event.target.closest('[data-week-key]').dataset.weekKey; app.expandedSession = null; renderTrain(); setupMotion(); }
+  if (action === 'toggle-session-details') { const id = event.target.closest('[data-session-id]').dataset.sessionId; app.expandedSession = app.expandedSession === id ? null : id; app.route === 'today' ? renderToday() : renderTrain(); setupMotion(); }
   if (action === 'complete-session') completeSession(event.target.closest('[data-session-id]'));
   if (action === 'whoop-connect') location.assign(Whoop.connectURL);
   if (action === 'whoop-sync') syncWhoop();
@@ -267,10 +309,10 @@ async function handleSubmit(event) {
 }
 
 function applyRoute(route, updateHash = true) {
-  const aliases = { dashboard: 'today', training: 'train', diet: 'library', cricket: 'library', 'race-strategy': 'library', race: 'library', dharma: 'today', travel: 'library', settings: 'today' };
-  const valid = ['today', 'train', 'progress', 'library'];
+  const aliases = { dashboard: 'today', training: 'train', plan: 'train', pulse: 'progress', life: 'library', diet: 'library', cricket: 'library', 'race-strategy': 'library', race: 'library', dharma: 'today', travel: 'library', settings: 'sync', connect: 'sync' };
+  const valid = ['today', 'train', 'progress', 'library', 'sync'];
   app.route = valid.includes(aliases[route] || route) ? (aliases[route] || route) : 'today';
-  const headerLabels = { today: 'TODAY', train: 'TRAINING', progress: 'HEALTH TRENDS', library: 'REFERENCE' };
+  const headerLabels = { today: 'PERSONAL HEALTH OS', train: 'THE PLAN', progress: 'PULSE', library: 'LIFE', sync: 'CONNECTIONS' };
   $('#today-label').textContent = headerLabels[app.route];
   const updateScreen = () => {
     $$('.screen').forEach(screen => { const active = screen.dataset.screen === app.route; screen.hidden = !active; screen.classList.toggle('is-active', active); });
@@ -312,12 +354,45 @@ function allScheduledSessions() {
   return applyPlanAdjustments(result, adjustments).sort((a,b) => a.scheduledDate.localeCompare(b.scheduledDate));
 }
 
-function sessionCard(session, compact = false) {
+function sessionCard(session, options = {}) {
+  if (typeof options === 'boolean') options = { compact: options };
   const completionID = `${session.planID}:${session.id}:${session.scheduledDate}`;
   const complete = entitiesOf(app.snapshot, 'plan_completion').some(item => item.data.sessionID === session.id && item.data.completed !== false);
   const distance = number(session.distanceMeters); const duration = number(session.durationSeconds);
   const moved = session.originalScheduledDate && session.originalScheduledDate !== session.scheduledDate;
-  return `<article class="card session-card" data-reveal><div class="session-accent"></div><div class="session-body"><p class="card-kicker">${escapeHTML(session.scheduledDate ? formatDate(session.scheduledDate) : 'TODAY')} · ${escapeHTML(session.planTitle || 'TRAINING')}</p><h3>${escapeHTML(session.title || 'Planned session')}</h3><div class="session-meta">${session.modality ? `<span class="mini-chip">${escapeHTML(session.modality)}</span>` : ''}${distance ? `<span class="mini-chip">${(distance/1000).toFixed(1)} km</span>` : ''}${duration ? `<span class="mini-chip">${Math.round(duration/60)} min</span>` : ''}${session.intensity ? `<span class="mini-chip">${escapeHTML(session.intensity)}</span>` : ''}${moved ? '<span class="mini-chip">GENESIS MOVE</span>' : ''}</div>${moved ? `<p style="color:var(--lime);font-size:.68rem;margin:0 0 10px">Moved from ${escapeHTML(formatDate(session.originalScheduledDate))}${session.planAdjustment?.reason ? ` · ${escapeHTML(session.planAdjustment.reason)}` : ''}</p>` : ''}${compact ? '' : `<p style="color:var(--muted);font-size:.7rem;line-height:1.55;margin:0 0 16px">${escapeHTML(String(session.instructions || '').slice(0,240))}</p>`}<div class="button-row"><button class="${complete ? 'secondary-button' : 'primary-button'}" type="button" data-action="complete-session" data-session-id="${escapeHTML(session.id)}" data-plan-id="${escapeHTML(session.planID)}" data-date="${escapeHTML(session.scheduledDate)}" data-completion-id="${escapeHTML(completionID)}" ${complete ? 'disabled' : ''}>${complete ? 'Completed' : 'Mark complete'}</button>${!compact ? '<button class="secondary-button" type="button" data-route="train">Plan</button>' : ''}</div></div></article>`;
+  const open = options.open === true;
+  const details = sessionDetails(session);
+  const day = new Date(`${session.scheduledDate}T12:00:00`);
+  const kind = modalityMeta(session.modality, session.intensity);
+  return `<article class="card session-card detailed-session ${open ? 'is-open' : ''} ${complete ? 'is-complete' : ''}" style="--session-color:${kind.color}" data-reveal>
+    <button class="session-toggle" type="button" data-action="toggle-session-details" data-session-id="${escapeHTML(session.id)}" aria-expanded="${open}">
+      <span class="date-tile"><small>${escapeHTML(day.toLocaleDateString([], { weekday: 'short' }).toUpperCase())}</small><b>${day.getDate()}</b></span>
+      <span class="session-summary"><span class="card-kicker">${escapeHTML(kind.icon)} ${escapeHTML(String(session.modality || 'training').toUpperCase())}${options.today ? ' · TODAY' : ''}</span><strong>${escapeHTML(session.title || 'Planned session')}</strong><span>${escapeHTML(session.planTitle || session.weekTitle || 'Training plan')}</span></span>
+      <span class="session-chevron">⌄</span>
+    </button>
+    <div class="session-details" ${open ? '' : 'hidden'}>
+      <div class="session-meta">${distance ? `<span class="mini-chip">${(distance/1000).toFixed(1)} km</span>` : ''}${duration ? `<span class="mini-chip">${Math.round(duration/60)} min</span>` : ''}${session.intensity ? `<span class="mini-chip">${escapeHTML(session.intensity)}</span>` : ''}${moved ? '<span class="mini-chip genesis-chip">GENESIS MOVE</span>' : ''}${complete ? '<span class="mini-chip done-chip">DONE ✓</span>' : ''}</div>
+      ${moved ? `<div class="coach-note"><b>Genesis adjusted this session</b><span>Moved from ${escapeHTML(formatDate(session.originalScheduledDate))}${session.planAdjustment?.reason ? ` · ${escapeHTML(session.planAdjustment.reason)}` : ''}</span></div>` : ''}
+      <ol class="workout-detail-list">${details.map((detail, index) => `<li><span>${String(index + 1).padStart(2, '0')}</span><div><strong>${escapeHTML(detail.name)}</strong>${detail.target ? `<p>${escapeHTML(detail.target)}</p>` : ''}</div></li>`).join('')}</ol>
+      ${session.instructions && !session.segments?.length ? `<p class="session-instructions">${escapeHTML(session.instructions)}</p>` : ''}
+      <div class="button-row"><button class="${complete ? 'secondary-button' : 'primary-button'}" type="button" data-action="complete-session" data-session-id="${escapeHTML(session.id)}" data-plan-id="${escapeHTML(session.planID)}" data-date="${escapeHTML(session.scheduledDate)}" data-completion-id="${escapeHTML(completionID)}" ${complete ? 'disabled' : ''}>${complete ? 'Completed' : 'Mark complete'}</button>${options.today ? '<button class="secondary-button" type="button" data-route="train">Full plan</button>' : ''}</div>
+    </div>
+  </article>`;
+}
+
+function sessionDetails(session) {
+  if (Array.isArray(session.segments) && session.segments.length) return session.segments.map(segment => ({ name: segment.instructions || segment.kind || 'Segment', target: segment.target || [segment.repetitions && `${segment.repetitions} reps`, segment.distanceMeters && `${segment.distanceMeters} m`, segment.durationSeconds && `${Math.round(segment.durationSeconds / 60)} min`].filter(Boolean).join(' · ') }));
+  return String(session.instructions || '').split(/\s*[·•]\s*|\n+/).map(value => value.trim()).filter(Boolean).map(value => { const [name, ...target] = value.split(':'); return { name, target: target.join(':').trim() }; });
+}
+
+function modalityMeta(modality = '', intensity = '') {
+  const key = `${modality} ${intensity}`.toLowerCase();
+  if (key.includes('race')) return { color: '#d8ff3e', icon: '🏁' };
+  if (key.includes('rest')) return { color: '#8a93a6', icon: '◐' };
+  if (key.includes('run')) return { color: '#7df0a7', icon: '↗' };
+  if (key.includes('strength')) return { color: '#ffb26b', icon: '◆' };
+  if (key.includes('mobility')) return { color: '#6be8d8', icon: '◌' };
+  return { color: '#ff5c7a', icon: '⚡' };
 }
 
 function measurementRow(item) {
@@ -521,6 +596,7 @@ function metricValue(metric, decimals) { return metric?.value == null ? '—' : 
 function greeting() { const hour = new Date().getHours(); return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'; }
 function formatDate(value) { if (!value) return 'Date unavailable'; const parsed = new Date(String(value).length === 10 ? `${value}T12:00:00` : value); return Number.isNaN(parsed.getTime()) ? String(value) : parsed.toLocaleDateString([], { day: 'numeric', month: 'short', year: parsed.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' }); }
 function relativeTime(value) { if (!value) return 'not synced yet'; const time = new Date(value).getTime(); if (!Number.isFinite(time)) return 'not synced yet'; const minutes = Math.max(0, Math.round((Date.now() - time) / 60_000)); return minutes < 1 ? 'just now' : minutes < 60 ? `${minutes}m ago` : minutes < 1440 ? `${Math.round(minutes/60)}h ago` : `${Math.round(minutes/1440)}d ago`; }
+function daysToRace() { return Math.max(0, Math.ceil((new Date('2026-09-18T06:00:00+05:30') - new Date()) / 86_400_000)); }
 function sorted(values, getter) { return [...(values || [])].sort((a,b) => new Date(getter(b) || 0) - new Date(getter(a) || 0)); }
 function dateWithOffset(start, offset) { const date = new Date(start); date.setDate(date.getDate() + offset); return localDay(date); }
 function urlBase64Bytes(value) { const padding = '='.repeat((4 - value.length % 4) % 4); const binary = atob((value + padding).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(binary, char => char.charCodeAt(0)); }
