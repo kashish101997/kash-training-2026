@@ -8,7 +8,7 @@ import { applyMutation } from '../../lib/sync-store.js';
 export default async function handler(req, res) {
   if (!method(req, res, ['GET'])) return;
   try {
-    if (process.env.CRON_SECRET && req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) return json(res, 401, { error: 'unauthorized' });
+    if (!process.env.CRON_SECRET || req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) return json(res, 401, { error: 'unauthorized' });
     if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) return json(res, 200, { sent: 0, skipped: 'vapid_not_configured' });
     webpush.setVapidDetails(process.env.VAPID_SUBJECT || 'mailto:kash-os@localhost', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
     const sql = await db();

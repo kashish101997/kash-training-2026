@@ -5,6 +5,8 @@
 - The four primary destinations are thumb reachable from a fixed bottom navigation bar.
 - Today displays unavailable WHOOP values honestly and never derives a value from missing inputs.
 - HYROX Mumbai remains active with 6 weeks, 34 sessions, and race day on 18 September 2026.
+- The training API and UI expose only the HYROX Mumbai plan; archived catalog plans cannot be enrolled.
+- Daily Dharma contains no retired Gita-verse template locally or in the encrypted change feed.
 - Body measurements, glucose, journals, meals, workouts, injuries, practices, and completions use encrypted sync entities.
 - The app has no horizontal overflow at 320, 375, 393, or 430 CSS pixels.
 - Reduced motion disables decorative transitions and ring animation.

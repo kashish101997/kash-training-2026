@@ -1,6 +1,8 @@
-import { HealthShortcut, PushReminders, Strava, Training, Whoop, entitiesOf, entityRevision, pullAllChanges, pushEntity } from './services.js';
-import { applyPlanAdjustments, dailyBrief, localDay, metricEnvelope, practiceStreak, recoveryColor, whoopMetrics } from './models.js';
-import { loadState, mergeRemoteState, saveState } from './state.js';
+import { HealthShortcut, PushReminders, Strava, Training, Whoop, deleteEntity, entitiesOf, entityRevision, pullAllChanges, pushEntity } from './services.js';
+import { applyPlanAdjustments, dailyBrief, localDay, practiceStreak, recoveryColor, whoopMetrics, workoutDetails } from './models.js';
+import { isRetiredPractice, loadState, mergeRemoteState, saveState } from './state.js';
+
+const PRIMARY_PLAN_ID = 'hyrox-current';
 
 const app = {
   route: 'today',
@@ -66,11 +68,13 @@ function handleLaunchAction() {
   const action = new URLSearchParams(fragment).get('action');
   if (action === 'log-measurement') setTimeout(() => openLogForm('measurement'), 80);
   if (action === 'log-glucose') setTimeout(() => openLogForm('glucose'), 80);
+  if (['settings', 'connect'].includes(routeFromLocation())) setTimeout(() => openSettings(), 80);
 }
 
 function bindShell() {
   document.addEventListener('click', handleClick);
   document.addEventListener('submit', handleSubmit);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !$('#sheet-layer').hidden) closeSheet(); });
   window.addEventListener('hashchange', () => applyRoute(routeFromLocation(), false));
   window.addEventListener('online', () => { app.online = true; updateConnectivity(); refreshAll({ quiet: true }); });
   window.addEventListener('offline', () => { app.online = false; updateConnectivity(); });
@@ -97,15 +101,22 @@ async function refreshAll({ quiet = false } = {}) {
   if (snapshotResult.status === 'fulfilled') {
     app.snapshot = snapshotResult.value;
     app.state = mergeRemoteState(app.state, app.snapshot.entities);
+    await retireRemovedPractices();
     saveState(app.state);
   }
   if (whoopResult.status === 'fulfilled') app.whoop = whoopResult.value;
-  if (catalogResult.status === 'fulfilled') { app.catalog = catalogResult.value; app.catalogError = null; }
+  if (catalogResult.status === 'fulfilled') {
+    app.catalog = {
+      plans: (catalogResult.value.plans || []).filter(plan => plan.id === PRIMARY_PLAN_ID),
+      enrollments: (catalogResult.value.enrollments || []).filter(enrollment => enrollment.planID === PRIMARY_PLAN_ID),
+    };
+    app.catalogError = app.catalog.plans.length ? null : 'HYROX plan unavailable';
+  }
   else app.catalogError = catalogResult.reason?.message || 'Training catalog unavailable';
   if (stravaResult.status === 'fulfilled') app.strava = stravaResult.value;
-  app.state.lastRefreshAt = nowISO();
+  if ([snapshotResult, whoopResult, catalogResult, stravaResult].some(result => result.status === 'fulfilled')) app.state.lastRefreshAt = nowISO();
   saveState(app.state);
-  const failed = [snapshotResult, whoopResult, catalogResult].filter(result => result.status === 'rejected');
+  const failed = [snapshotResult, whoopResult, catalogResult, stravaResult].filter(result => result.status === 'rejected');
   $('#sync-dot').dataset.state = failed.length ? 'error' : 'online';
   renderAll();
   app.refreshing = false;
@@ -114,12 +125,23 @@ async function refreshAll({ quiet = false } = {}) {
   if (!quiet && failed.length) toast('Some sources are unavailable. Cached data is still shown.');
 }
 
+async function retireRemovedPractices() {
+  const retired = entitiesOf(app.snapshot, 'practice_template').filter(entity => isRetiredPractice({ ...entity.data, id: entity.id }));
+  if (!retired.length) return;
+  const results = await Promise.allSettled(retired.map(entity => deleteEntity('practice_template', entity.id, entity.revision)));
+  results.forEach((result, index) => {
+    if (result.status !== 'fulfilled') return;
+    const entity = retired[index];
+    app.snapshot.entities.delete(`practice_template:${entity.id}`);
+    app.snapshot.revisions.set(`practice_template:${entity.id}`, Number(result.value?.results?.[0]?.revision || entity.revision + 1));
+  });
+}
+
 function renderAll() {
   renderToday();
   renderTrain();
   renderProgress();
   renderLibrary($('#library-search')?.value || '');
-  renderSync();
   requestAnimationFrame(() => {
     setupMotion();
     const ring = $('.metric-ring');
@@ -145,12 +167,10 @@ function renderToday() {
   const weight = number(latestMeasurement?.weightKilograms ?? latestMeasurement?.weight ?? latestMeasurement?.kg);
   const glucose = number(sorted(app.state.bloodSugar, item => item.timestamp || item.date)[0]?.value ?? sorted(app.state.bloodSugar, item => item.timestamp || item.date)[0]?.mgDl);
   const refreshTime = app.whoop?.lastSyncedAt || app.state.lastRefreshAt;
-  const raceDays = daysToRace();
 
   target.classList.remove('skeleton-screen');
   target.innerHTML = `
     <header class="today-intro" data-reveal><p class="eyebrow">${escapeHTML(new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase())}</p><h2>${escapeHTML(greeting())},<br>Kash.</h2></header>
-    <article class="race-tile neu-raised" data-reveal><div><p class="card-kicker">HYROX MUMBAI · 18 SEP</p><strong>${raceDays}</strong><span>days to race</span></div><div class="race-glyph" aria-hidden="true">K<span>•</span></div></article>
     <section class="whoop-glass card" aria-label="WHOOP recovery" data-reveal>
       <div class="whoop-head"><div><p class="card-kicker">WHOOP · PROCESSED SYNC</p><h3>Daily recovery</h3></div><span class="freshness">${escapeHTML(relativeTime(refreshTime))}</span></div>
       <div class="whoop-layout">
@@ -172,7 +192,7 @@ function renderToday() {
     <div class="quick-grid" data-reveal>
       ${quickAction('measurement', '↕', 'Body')}${quickAction('glucose', '⌁', 'Glucose')}${quickAction('meal', '◌', 'Meal')}${quickAction('journal', '✦', 'Journal')}
     </div>
-    <div class="section-heading"><h3>Latest body signal</h3><button type="button" data-route="progress">Pulse</button></div>
+    <div class="section-heading"><h3>Latest body signal</h3><button type="button" data-route="progress">History</button></div>
     <article class="card list-row" data-reveal><div><h3>${weight == null ? 'No body measurement yet' : `${weight.toFixed(1)} kg`}</h3><p>${latestMeasurement ? `${formatDate(latestMeasurement.timestamp || latestMeasurement.date)} · ${escapeHTML(latestMeasurement.source || 'Kash OS')}` : 'Log it here or import it with the Health Shortcut.'}</p></div><div class="value-pair"><strong>${glucose == null ? '—' : Math.round(glucose)}</strong><span>mg/dL</span></div></article>
   `;
 }
@@ -180,8 +200,6 @@ function renderToday() {
 function renderTrain() {
   const target = $('#train-content');
   if (!target) return;
-  const activeIDs = new Set((app.catalog.enrollments || []).filter(value => value.active).map(value => value.planID));
-  const activePlans = (app.catalog.plans || []).filter(plan => activeIDs.has(plan.id));
   const allSessions = allScheduledSessions();
   const weekMap = new Map();
   allSessions.forEach(session => {
@@ -197,20 +215,14 @@ function renderTrain() {
   const selectedWeek = weekMap.get(app.planWeek) || currentWeek;
   const sessions = selectedWeek?.sessions || [];
   const days = daysToRace();
-  const completions = entitiesOf(app.snapshot, 'plan_completion').filter(item => item.data.completed !== false);
+  const sessionIDs = new Set(allSessions.map(session => session.id));
+  const completions = entitiesOf(app.snapshot, 'plan_completion').filter(item => item.data.planID === PRIMARY_PLAN_ID && item.data.completed !== false && sessionIDs.has(item.data.sessionID));
   $('#train-countdown').textContent = days ? `${days} days` : 'Race day';
   target.innerHTML = `
-    <div class="plan-progress" data-reveal><span>${completions.length} of ${allSessions.length} sessions complete</span><div><i style="--progress:${Math.min(100, allSessions.length ? completions.length / allSessions.length * 100 : 0)}%"></i></div></div>
-    ${activePlans.length > 1 ? `<article class="card collision-warning" data-reveal><strong>${activePlans.length} active plans are stacking.</strong><br>Review the combined schedule before adding intensity or moving sessions.</article>` : ''}
-    <div class="week-scroller" aria-label="Training weeks">${weeks.map((week, index) => `<button class="week-chip ${week.key === app.planWeek ? 'is-active' : ''}" type="button" data-action="select-plan-week" data-week-key="${escapeHTML(week.key)}"><span>W${index + 1}</span>${escapeHTML(week.title.replace(/^Week\s*/i, ''))}</button>`).join('')}</div>
+    <article class="training-summary card" data-reveal><div><p class="card-kicker">CURRENT BLOCK</p><strong>${days}</strong><span>days to HYROX Mumbai</span></div><div><p class="card-kicker">PROGRESS</p><strong>${completions.length}<small> / ${allSessions.length}</small></strong><span>sessions complete</span></div><div class="plan-progress"><div><i style="--progress:${Math.min(100, allSessions.length ? completions.length / allSessions.length * 100 : 0)}%"></i></div></div></article>
+    <div class="week-scroller" aria-label="Training weeks">${weeks.map((week, index) => `<button class="week-chip ${week.key === app.planWeek ? 'is-active' : ''}" type="button" data-action="select-plan-week" data-week-key="${escapeHTML(week.key)}"><span>W${index + 1}</span>${escapeHTML(week.title.replace(/^Week\s*\d+\s*[·.-]?\s*/i, ''))}</button>`).join('')}</div>
     ${selectedWeek ? `<article class="week-focus glass-flat" data-reveal><p class="card-kicker">${escapeHTML(selectedWeek.title)}</p><strong>${escapeHTML(formatDate(selectedWeek.sessions[0]?.scheduledDate))} → ${escapeHTML(formatDate(selectedWeek.sessions.at(-1)?.scheduledDate))}</strong><span>${selectedWeek.sessions.length} planned sessions · tap any card for full details</span></article>` : ''}
-    <div class="activity-list detailed-plan">${sessions.length ? sessions.map(session => sessionCard(session, { open: app.expandedSession === session.id })).join('') : '<article class="card empty-state"><strong>No scheduled sessions</strong>Enroll in a plan below.</article>'}</div>
-    <div class="section-heading"><h3>Race guardrails</h3><span>Non-negotiable</span></div>
-    <article class="card guardrail-list" data-reveal><p><b>01</b>Niggle → drop finishers. Keep the priority run.</p><p><b>02</b>Never stack heavy legs before a quality run.</p><p><b>03</b>Protein within one hour of the Saturday session.</p><p><b>04</b>Threshold reps stay controlled; watch rep-two fade.</p></article>
-    <div class="section-heading"><h3>Race-day targets</h3><span>Delhi 2:54 → Mumbai</span></div>
-    <article class="card target-table" data-reveal><div><span>Runs · 8 km</span><s>1:13:10</s><b>~1:05</b></div><div><span>Wall balls</span><s>24:42</s><b>12–14m</b></div><div><span>Roxzone</span><s>11:10</s><b>~5m</b></div><div class="total"><span>Total</span><s>2:54</s><b>2:25–2:35</b></div></article>
-    <div class="section-heading"><h3>Training catalog</h3><span>${(app.catalog.plans || []).length} plans</span></div>
-    <div class="plan-list">${(app.catalog.plans || []).length ? (app.catalog.plans || []).map(plan => `<article class="plan-card" data-active="${activeIDs.has(plan.id)}" data-reveal><div><h3>${escapeHTML(plan.title)}</h3><p>${(plan.weeks || []).length} weeks · ${(plan.weeks || []).reduce((sum, week) => sum + (week.sessions || []).length, 0)} sessions · ${escapeHTML(Array.isArray(plan.modality) ? plan.modality.join(' / ') : plan.modality || 'multi-sport')}</p></div><button class="${activeIDs.has(plan.id) ? 'secondary-button' : 'primary-button'}" type="button" data-action="toggle-plan" data-plan-id="${escapeHTML(plan.id)}" data-active="${activeIDs.has(plan.id)}">${activeIDs.has(plan.id) ? 'Active' : 'Enroll'}</button></article>`).join('') : `<article class="card empty-state"><strong>${escapeHTML(app.catalogError || 'No plans imported')}</strong>${app.catalogError ? 'The server could not load the encrypted catalog.' : 'Import the private training catalog to continue.'}<div style="margin-top:14px"><button class="secondary-button" type="button" data-action="refresh-app">Try again</button></div></article>`}</div>
+    <div class="activity-list detailed-plan">${sessions.length ? sessions.map(session => sessionCard(session, { open: app.expandedSession === session.id })).join('') : `<article class="card empty-state"><strong>${escapeHTML(app.catalogError || 'No HYROX sessions available')}</strong>The single active training block could not be loaded.<div style="margin-top:14px"><button class="secondary-button" type="button" data-action="refresh-app">Try again</button></div></article>`}</div>
   `;
 }
 
@@ -246,30 +258,7 @@ function renderLibrary(query = '') {
     { id: 'dharma', title: 'Dharma source library', meta: 'Long-form practices and Gita material', body: 'The complete original Dharma material remains here; Today uses only your editable micro-practices.', href: '/legacy.html#panel-dharma' },
     { id: 'reports', title: 'Legacy reports & analytics', meta: 'Deep tables and historical dashboards', body: 'Open the previous detailed progress surface when you need the full historical tables.', href: '/legacy.html#panel-progress' },
   ].filter(item => `${item.title} ${item.meta} ${item.body}`.toLowerCase().includes(query.trim().toLowerCase()));
-  target.innerHTML = groups.length ? `<article class="life-banner card" data-reveal><p class="card-kicker">THE WHOLE SYSTEM</p><h3>Train the body.<br><span>Steady the mind.</span></h3><p>Fuel, Dharma, racing and research—kept close without cluttering the day.</p></article><div class="life-tabs" data-reveal><span>Fuel</span><span>Stack</span><span>Dharma</span><span>Body</span></div><div class="library-list">${groups.map((item, index) => `<details class="library-group" data-reveal><summary><div class="library-index">${String(index + 1).padStart(2, '0')}</div><div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.meta)}</p></div><span>＋</span></summary><div class="library-body">${escapeHTML(item.body)}<br><a href="${item.href}">Open reference archive →</a></div></details>`).join('')}</div>` : '<div class="empty-state"><strong>No matching reference</strong>Try a broader search.</div>';
-}
-
-function renderSync() {
-  const target = $('#sync-content');
-  if (!target) return;
-  const whoopConnected = Boolean(app.whoop?.connected);
-  const stravaConnected = Boolean(app.strava?.connected);
-  target.innerHTML = `
-    <article class="sync-orbit card" data-reveal><div class="orbit-core">K<span>•</span></div><span class="orbit-node whoop">W</span><span class="orbit-node strava">S</span><span class="orbit-node health">♥</span><p>${whoopConnected && stravaConnected ? 'Your health system is connected.' : 'Connect every signal to one private operating view.'}</p></article>
-    <div class="section-heading"><h3>Connections</h3><span>${[whoopConnected, stravaConnected].filter(Boolean).length} online</span></div>
-    <div class="settings-list">
-      ${integrationRow('WHOOP', whoopConnected, whoopConnected ? `Processed recovery, sleep and workouts · ${relativeTime(app.whoop?.lastSyncedAt)}` : 'Official API · processed data, not live HR', whoopConnected ? 'whoop-sync' : 'whoop-connect', whoopConnected ? 'Sync now' : 'Connect')}
-      ${integrationRow('STRAVA', stravaConnected, stravaConnected ? 'Webhook activity sync is active' : 'Import activities and share approved workouts', stravaConnected ? 'strava-disconnect' : 'strava-connect', stravaConnected ? 'Disconnect' : 'Connect')}
-      <div class="settings-row"><div><span class="connection-logo health-logo">♥</span><h3>APPLE HEALTH</h3><p>User-run Shortcut for body and glucose values</p></div><a class="secondary-button" href="${HealthShortcut.setupURL}">Set up</a></div>
-      <div class="settings-row"><div><span class="connection-logo genesis-logo">G</span><h3>GENESIS COACH</h3><p>Workout logs and accepted schedule changes sync through Neon</p></div><span class="connection-state is-online">LINKED</span></div>
-    </div>
-    <div class="section-heading"><h3>Device & data</h3><button type="button" data-open="settings">All settings</button></div>
-    <div class="sync-actions" data-reveal><button class="neu-btn" type="button" data-action="enable-notifications">Reminders</button><button class="neu-btn" type="button" data-action="health-write">Write Health</button><button class="neu-btn" type="button" data-action="export-data">Export</button></div>
-    <article class="card public-warning" data-reveal><p class="card-kicker">PUBLIC PERSONAL APP</p><strong>No password is enabled.</strong><p>Anyone with this URL can view or modify the synced data, as explicitly configured.</p></article>`;
-}
-
-function integrationRow(name, connected, copy, action, label) {
-  return `<div class="settings-row"><div><span class="connection-logo ${name.toLowerCase()}-logo">${name[0]}</span><h3>${name}</h3><p>${escapeHTML(copy)}</p></div><button class="${connected ? 'secondary-button' : 'primary-button'}" type="button" data-action="${action}">${label}</button></div>`;
+  target.innerHTML = groups.length ? `<div class="library-list">${groups.map((item, index) => `<details class="library-group" data-reveal><summary><div class="library-index">${String(index + 1).padStart(2, '0')}</div><div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.meta)}</p></div><span>＋</span></summary><div class="library-body">${escapeHTML(item.body)}<br><a href="${item.href}">Open reference archive →</a></div></details>`).join('')}</div>` : '<div class="empty-state"><strong>No matching reference</strong>Try a broader search.</div>';
 }
 
 function handleClick(event) {
@@ -286,7 +275,6 @@ function handleClick(event) {
   if (action === 'choose-log') openLogForm(event.target.closest('[data-log-kind]').dataset.logKind);
   if (action === 'toggle-practice') togglePractice(event.target.closest('[data-practice-id]').dataset.practiceId);
   if (action === 'edit-practices') openPracticeEditor();
-  if (action === 'toggle-plan') togglePlan(event.target.closest('[data-plan-id]'));
   if (action === 'select-plan-week') { app.planWeek = event.target.closest('[data-week-key]').dataset.weekKey; app.expandedSession = null; renderTrain(); setupMotion(); }
   if (action === 'toggle-session-details') { const id = event.target.closest('[data-session-id]').dataset.sessionId; app.expandedSession = app.expandedSession === id ? null : id; app.route === 'today' ? renderToday() : renderTrain(); setupMotion(); }
   if (action === 'complete-session') completeSession(event.target.closest('[data-session-id]'));
@@ -309,10 +297,10 @@ async function handleSubmit(event) {
 }
 
 function applyRoute(route, updateHash = true) {
-  const aliases = { dashboard: 'today', training: 'train', plan: 'train', pulse: 'progress', life: 'library', diet: 'library', cricket: 'library', 'race-strategy': 'library', race: 'library', dharma: 'today', travel: 'library', settings: 'sync', connect: 'sync' };
-  const valid = ['today', 'train', 'progress', 'library', 'sync'];
+  const aliases = { dashboard: 'today', training: 'train', plan: 'train', pulse: 'progress', life: 'library', diet: 'library', cricket: 'library', 'race-strategy': 'library', race: 'library', dharma: 'today', travel: 'library', settings: 'today', connect: 'today' };
+  const valid = ['today', 'train', 'progress', 'library'];
   app.route = valid.includes(aliases[route] || route) ? (aliases[route] || route) : 'today';
-  const headerLabels = { today: 'PERSONAL HEALTH OS', train: 'THE PLAN', progress: 'PULSE', library: 'LIFE', sync: 'CONNECTIONS' };
+  const headerLabels = { today: 'PERSONAL HEALTH OS', train: 'HYROX TRAINING', progress: 'HEALTH TRENDS', library: 'REFERENCE' };
   $('#today-label').textContent = headerLabels[app.route];
   const updateScreen = () => {
     $$('.screen').forEach(screen => { const active = screen.dataset.screen === app.route; screen.hidden = !active; screen.classList.toggle('is-active', active); });
@@ -331,18 +319,13 @@ function routeFromLocation() {
 }
 
 function todaySessions() { return sessionsForDay(localDay()); }
-function upcomingSessions(days) {
-  const start = new Date(); start.setHours(0,0,0,0);
-  const end = new Date(start); end.setDate(end.getDate() + days);
-  return allScheduledSessions().filter(item => { const date = new Date(`${item.scheduledDate}T00:00:00`); return date >= start && date < end; }).slice(0, 24);
-}
 function sessionsForDay(day) { return allScheduledSessions().filter(item => item.scheduledDate === day); }
 function allScheduledSessions() {
   const active = new Map((app.catalog.enrollments || []).filter(item => item.active).map(item => [item.planID, item]));
   const result = [];
   for (const plan of app.catalog.plans || []) {
-    if (!active.has(plan.id)) continue;
-    const enrollment = active.get(plan.id);
+    if (plan.id !== PRIMARY_PLAN_ID) continue;
+    const enrollment = active.get(plan.id) || { planID: plan.id, active: true, startDate: plan.fixedStartDate || null };
     const start = new Date(enrollment.startDate || plan.fixedStartDate || new Date());
     start.setMinutes(start.getMinutes() + start.getTimezoneOffset());
     for (const week of plan.weeks || []) for (const session of week.sessions || []) {
@@ -361,7 +344,7 @@ function sessionCard(session, options = {}) {
   const distance = number(session.distanceMeters); const duration = number(session.durationSeconds);
   const moved = session.originalScheduledDate && session.originalScheduledDate !== session.scheduledDate;
   const open = options.open === true;
-  const details = sessionDetails(session);
+  const details = workoutDetails(session);
   const day = new Date(`${session.scheduledDate}T12:00:00`);
   const kind = modalityMeta(session.modality, session.intensity);
   return `<article class="card session-card detailed-session ${open ? 'is-open' : ''} ${complete ? 'is-complete' : ''}" style="--session-color:${kind.color}" data-reveal>
@@ -378,11 +361,6 @@ function sessionCard(session, options = {}) {
       <div class="button-row"><button class="${complete ? 'secondary-button' : 'primary-button'}" type="button" data-action="complete-session" data-session-id="${escapeHTML(session.id)}" data-plan-id="${escapeHTML(session.planID)}" data-date="${escapeHTML(session.scheduledDate)}" data-completion-id="${escapeHTML(completionID)}" ${complete ? 'disabled' : ''}>${complete ? 'Completed' : 'Mark complete'}</button>${options.today ? '<button class="secondary-button" type="button" data-route="train">Full plan</button>' : ''}</div>
     </div>
   </article>`;
-}
-
-function sessionDetails(session) {
-  if (Array.isArray(session.segments) && session.segments.length) return session.segments.map(segment => ({ name: segment.instructions || segment.kind || 'Segment', target: segment.target || [segment.repetitions && `${segment.repetitions} reps`, segment.distanceMeters && `${segment.distanceMeters} m`, segment.durationSeconds && `${Math.round(segment.durationSeconds / 60)} min`].filter(Boolean).join(' · ') }));
-  return String(session.instructions || '').split(/\s*[·•]\s*|\n+/).map(value => value.trim()).filter(Boolean).map(value => { const [name, ...target] = value.split(':'); return { name, target: target.join(':').trim() }; });
 }
 
 function modalityMeta(modality = '', intensity = '') {
@@ -461,10 +439,11 @@ async function togglePractice(practiceID) {
 }
 
 function openPracticeEditor() {
-  openSheet(`<div class="sheet-head"><div><h2>Daily Dharma</h2><p>Keep three to five practices small enough to repeat.</p></div></div><form id="practice-form"><div class="form-grid">${app.state.practices.map((practice,index) => `<div class="field full"><label>Practice ${index+1}</label><input name="title-${index}" value="${escapeHTML(practice.title)}" required></div><div class="field"><label>Minutes</label><input name="minutes-${index}" type="number" min="1" max="60" value="${Number(practice.minutes || 5)}"></div><input type="hidden" name="id-${index}" value="${escapeHTML(practice.id)}">`).join('')}<div class="field full"><label>Add another (optional)</label><input name="new-title" placeholder="Short daily practice"></div></div><div class="form-actions"><button class="secondary-button" type="button" data-action="close-sheet">Cancel</button><button class="primary-button" type="submit">Save practices</button></div></form>`);
+  openSheet(`<div class="sheet-head"><div><h2>Daily Dharma</h2><p>Keep up to five practices small enough to repeat.</p></div></div><form id="practice-form"><div class="form-grid">${app.state.practices.map((practice,index) => `<div class="field full"><label>Practice ${index+1}</label><input name="title-${index}" value="${escapeHTML(practice.title)}" required></div><div class="field"><label>Minutes</label><input name="minutes-${index}" type="number" min="1" max="60" value="${Number(practice.minutes || 5)}"></div><input type="hidden" name="id-${index}" value="${escapeHTML(practice.id)}">`).join('')}<div class="field full"><label>Add another (optional)</label><input name="new-title" placeholder="Short daily practice"></div></div><div class="form-actions"><button class="secondary-button" type="button" data-action="close-sheet">Cancel</button><button class="primary-button" type="submit">Save practices</button></div></form>`);
 }
 
 async function savePractices(form) {
+  const previous = [...app.state.practices];
   const practices = [];
   for (let index=0; index<5; index++) {
     const title = form.get(`title-${index}`); if (!title) continue;
@@ -472,15 +451,14 @@ async function savePractices(form) {
   }
   const newTitle = String(form.get('new-title') || '').trim();
   if (newTitle && practices.length < 5) practices.push({ id: crypto.randomUUID(), title: newTitle, minutes: 5, order: practices.length, active: true, updatedAt: nowISO() });
+  const retainedIDs = new Set(practices.map(item => item.id));
+  const removed = previous.filter(item => !retainedIDs.has(item.id));
   app.state.practices = practices; saveState(app.state); closeSheet(); renderToday();
-  await Promise.allSettled(practices.map(item => pushEntity('practice_template', item.id, item, entityRevision(app.snapshot, 'practice_template', item.id), 'userEntered')));
+  await Promise.allSettled([
+    ...practices.map(item => pushEntity('practice_template', item.id, item, entityRevision(app.snapshot, 'practice_template', item.id), 'userEntered')),
+    ...removed.map(item => deleteEntity('practice_template', item.id, entityRevision(app.snapshot, 'practice_template', item.id))),
+  ]);
   toast('Daily practices updated');
-}
-
-async function togglePlan(button) {
-  button.disabled = true;
-  try { await Training.enroll(button.dataset.planId, button.dataset.active !== 'true'); await refreshAll({ quiet: true }); toast('Training catalog updated'); }
-  catch (error) { button.disabled = false; toast(error.message); }
 }
 
 async function completeSession(button) {
@@ -497,12 +475,13 @@ function openSettings() {
     <div class="settings-row"><div><h3>WHOOP</h3><p>${whoopConnected ? `Connected · ${relativeTime(app.whoop.lastSyncedAt)}` : 'Official API · processed recovery, sleep and workouts'}</p></div><button class="${whoopConnected ? 'secondary-button' : 'primary-button'}" type="button" data-action="${whoopConnected ? 'whoop-sync' : 'whoop-connect'}">${whoopConnected ? 'Sync' : 'Connect'}</button></div>
     ${whoopConnected ? '<div class="settings-row"><div><h3>Disconnect WHOOP</h3><p>Imported summaries remain in history.</p></div><button class="danger-button" type="button" data-action="whoop-disconnect">Disconnect</button></div>' : ''}
     <div class="settings-row"><div><h3>Strava</h3><p>${stravaConnected ? 'Connected · webhook activity sync' : 'Import activities and share approved workouts'}</p></div><button class="${stravaConnected ? 'secondary-button' : 'primary-button'}" type="button" data-action="${stravaConnected ? 'strava-disconnect' : 'strava-connect'}">${stravaConnected ? 'Disconnect' : 'Connect'}</button></div>
+    <div class="settings-row"><div><h3>Genesis coach</h3><p>Workout logs and accepted schedule changes share the same encrypted Neon records.</p></div><span class="connection-state">SHARED STORE</span></div>
     <div class="settings-row"><div><h3>Apple Health Shortcut</h3><p>User-run body measurement bridge · no background HealthKit access</p></div><a class="secondary-button" style="display:grid;place-items:center;text-decoration:none" href="${HealthShortcut.setupURL}">Set up</a></div>
     <div class="settings-row"><div><h3>Write latest weight to Health</h3><p>Launches the installed Shortcut for confirmation.</p></div><button class="secondary-button" type="button" data-action="health-write">Run</button></div>
     <div class="settings-row"><div><h3>Home Screen reminders</h3><p>Workout and Dharma reminders only; never medical alerts.</p></div><button class="secondary-button" type="button" data-action="enable-notifications">Enable</button></div>
     <div class="settings-row"><div><h3>Install Kash OS</h3><p>In Comet: Share → Add to Home Screen → Add.</p><ol class="install-steps"><li>Open this URL in Comet on iPhone.</li><li>Choose Share and Add to Home Screen.</li><li>Launch the Kash OS icon for full-screen mode.</li></ol></div></div>
     <div class="settings-row"><div><h3>Export local data</h3><p>Download a readable JSON backup from this phone.</p></div><button class="secondary-button" type="button" data-action="export-data">Export</button></div>
-    <div class="settings-row"><div><h3>Refresh everything</h3><p>Reconcile WHOOP, Strava, plans and synced logs.</p></div><button class="secondary-button" type="button" data-action="refresh-app">Refresh</button></div>
+    <div class="settings-row"><div><h3>Refresh everything</h3><p>Reconcile WHOOP, Strava, the HYROX plan and synced logs.</p></div><button class="secondary-button" type="button" data-action="refresh-app">Refresh</button></div>
     <div class="settings-row public-warning"><div><h3>Public personal app</h3><p>There is no password. Anyone with the URL can view or modify synced data, as explicitly configured.</p></div></div>
     <a class="settings-row" style="text-decoration:none;color:inherit" href="/privacy.html"><div><h3>Privacy boundary</h3><p>Review what Kash OS stores and what never reaches the server.</p></div><span>→</span></a>
   </div>`);
@@ -534,8 +513,8 @@ function exportData() {
   const anchor = document.createElement('a'); anchor.href = url; anchor.download = `kash-os-backup-${localDay()}.json`; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function openSheet(html) { $('#sheet-content').innerHTML = html; $('#sheet-layer').hidden = false; document.body.style.overflow = 'hidden'; setTimeout(() => $('.bottom-sheet input, .bottom-sheet button')?.focus(), 50); }
-function closeSheet() { $('#sheet-layer').hidden = true; document.body.style.overflow = ''; }
+function openSheet(html) { app.lastFocus = document.activeElement; $('#sheet-content').innerHTML = html; $('#sheet-layer').hidden = false; $('#app-frame').inert = true; document.body.style.overflow = 'hidden'; setTimeout(() => $('.bottom-sheet input, .bottom-sheet button')?.focus(), 50); }
+function closeSheet() { $('#sheet-layer').hidden = true; $('#app-frame').inert = false; document.body.style.overflow = ''; app.lastFocus?.focus?.(); app.lastFocus = null; }
 function toast(message) { const node = $('#toast'); node.textContent = message; node.hidden = false; clearTimeout(toast.timer); toast.timer = setTimeout(() => { node.hidden = true; }, 2800); }
 
 function setupMotion() {

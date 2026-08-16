@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AVAILABILITY, applyPlanAdjustments, dailyBrief, localDay, metricEnvelope, practiceStreak } from '../app/models.js';
+import { AVAILABILITY, applyPlanAdjustments, dailyBrief, localDay, metricEnvelope, practiceStreak, workoutDetails } from '../app/models.js';
 import { DEFAULT_PRACTICES, mergeRemoteState, migrateLegacy } from '../app/state.js';
 
 test('metric envelope never invents unavailable values', () => {
@@ -56,6 +56,27 @@ test('remote legacy weight values remain visible as body measurements', () => {
   assert.equal(merged.measurements.length, 1);
   assert.equal(merged.measurements[0].weightKilograms, 95.75);
   assert.equal(merged.measurements[0].timestamp, '2026-04-20T06:00:00');
+});
+
+test('retired Gita practice is removed from defaults, migration, and remote sync', () => {
+  assert.equal(DEFAULT_PRACTICES.some(item => /gita verse/i.test(item.title)), false);
+  const migrated = migrateLegacy({ dharmaPractices: [
+    { id: 'dharma-verse', title: 'Read one Gita verse' },
+    { id: 'keep', title: 'Five quiet breaths' },
+  ] });
+  assert.deepEqual(migrated.practices.map(item => item.id), ['keep']);
+  const entities = new Map([
+    ['practice_template:dharma-verse', { id: 'dharma-verse', kind: 'practice_template', revision: 2, data: { id: 'dharma-verse', title: 'Read one Gita verse' } }],
+    ['practice_template:keep', { id: 'keep', kind: 'practice_template', revision: 1, data: { id: 'keep', title: 'Evening review' } }],
+  ]);
+  assert.deepEqual(mergeRemoteState(migrated, entities).practices.map(item => item.id), ['keep']);
+});
+
+test('workout details prefer structured segments and preserve fallback instructions', () => {
+  assert.deepEqual(workoutDetails({ segments: [{ instructions: 'SkiErg', target: '3 x 250 m' }] }), [{ name: 'SkiErg', target: '3 x 250 m' }]);
+  assert.deepEqual(workoutDetails({ instructions: 'Warm-up: 10 min · Main set: 4 x 1 km' }), [
+    { name: 'Warm-up', target: '10 min' }, { name: 'Main set', target: '4 x 1 km' },
+  ]);
 });
 
 test('accepted Genesis adjustments move stable plan sessions without rewriting their identity', () => {

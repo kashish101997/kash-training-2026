@@ -6,6 +6,7 @@ export default async function handler(req, res) {
   if (!method(req, res, ['GET', 'POST'])) return;
   if (req.method === 'GET') {
     const expected = process.env.STRAVA_WEBHOOK_VERIFY_TOKEN || process.env.STRAVA_VERIFY_TOKEN;
+    if (!expected) return json(res, 503, { error: 'verify_token_not_configured' });
     if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === expected) {
       return json(res, 200, { 'hub.challenge': req.query['hub.challenge'] });
     }

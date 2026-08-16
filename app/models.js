@@ -103,3 +103,24 @@ export function recoveryColor(score) {
   if (score < 67) return '#f1c845';
   return '#20d66b';
 }
+
+export function workoutDetails(session = {}) {
+  if (Array.isArray(session.segments) && session.segments.length) {
+    return session.segments.map(segment => ({
+      name: segment.instructions || segment.kind || 'Segment',
+      target: segment.target || [
+        segment.repetitions && `${segment.repetitions} reps`,
+        segment.distanceMeters && `${segment.distanceMeters} m`,
+        segment.durationSeconds && `${Math.round(segment.durationSeconds / 60)} min`,
+      ].filter(Boolean).join(' · '),
+    }));
+  }
+  return String(session.instructions || '')
+    .split(/\s*[·•]\s*|\n+/)
+    .map(value => value.trim())
+    .filter(Boolean)
+    .map(value => {
+      const [name, ...target] = value.split(':');
+      return { name, target: target.join(':').trim() };
+    });
+}

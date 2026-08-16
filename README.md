@@ -17,9 +17,11 @@ official Strava API. There is no direct Bluetooth connection and no subscription
   reconciliation for events or cycle/body changes that webhooks do not cover.
 - Honest dashboard states for pending, unscorable, or absent WHOOP metrics.
 - WHOOP workouts mapped into the existing training log without routes or high-frequency streams.
-- Password-free access through the private deployment URL, AES-256-GCM encrypted Neon payloads, idempotent mutations,
+- Password-free access through the publicly reachable personal URL, AES-256-GCM encrypted Neon payloads, idempotent mutations,
   audit history, tombstones, and user-edit precedence.
-- Existing training catalog, plan progress, nutrition, measurements, reports, and PWA offline shell.
+- One visible HYROX Mumbai plan through 18 September 2026, plus plan progress, nutrition,
+  measurements, reports, and the PWA offline shell. Other imported plans are tombstoned in the
+  encrypted catalog and can only be restored by an explicit private catalog reimport.
 - Strava OAuth, webhook imports, refresh-token rotation, and explicit summary-only exports.
 
 ## Official API boundaries

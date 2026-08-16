@@ -5,6 +5,8 @@ import { assertSameOrigin, body, json, method } from '../../lib/http.js';
 import { encodePayload } from '../../lib/merge.js';
 import { applyMutation } from '../../lib/sync-store.js';
 
+const PRIMARY_PLAN_ID = 'hyrox-current';
+
 export default async function handler(req, res) {
   if (!method(req, res, ['POST'])) return;
   try {
@@ -13,6 +15,7 @@ export default async function handler(req, res) {
     const input = body(req);
     const planID = String(input.planID || '');
     if (!/^[a-z0-9][a-z0-9._-]{1,119}$/i.test(planID)) throw new Error('invalid_plan_id');
+    if (planID !== PRIMARY_PLAN_ID) throw new Error('training_plan_not_available');
     const sql = await db();
     const plan = await one(await sql`
       SELECT 1 FROM sync_entities

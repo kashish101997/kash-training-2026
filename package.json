@@ -1,12 +1,12 @@
 {
   "name": "kash-training-2026",
-  "version": "6.0.0",
+  "version": "6.2.1",
   "private": true,
   "type": "module",
   "description": "Kash OS phone-first personal health PWA with official WHOOP and Strava integrations",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "check": "node --check app/main.js && node --check app/models.js && node --check app/services.js && node --check app/state.js && node --test test/*.test.js",
+    "check": "node --check app/main.js && node --check app/models.js && node --check app/services.js && node --check app/state.js && node --check api/index.js && for file in server/handlers/*.js lib/*.js; do node --check \"$file\" || exit 1; done && node --test test/*.test.js",
     "db:migrate": "node Tools/migrate.mjs",
     "catalog:build": "python3 Tools/TrainingCatalogBuilder/build_catalog.py",
     "catalog:import": "node Tools/import-training-catalog.mjs"
@@ -17,6 +17,6 @@
     "web-push": "^3.6.7"
   },
   "engines": {
-    "node": ">=20"
+    "node": "24.x"
   }
 }

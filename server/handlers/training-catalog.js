@@ -3,6 +3,8 @@ import { decryptJSON } from '../../lib/crypto.js';
 import { db } from '../../lib/db.js';
 import { json, method } from '../../lib/http.js';
 
+const PRIMARY_PLAN_ID = 'hyrox-current';
+
 export default async function handler(req, res) {
   if (!method(req, res, ['GET'])) return;
   try {
@@ -11,7 +13,9 @@ export default async function handler(req, res) {
     const rows = await sql`
       SELECT kind, entity_id, encrypted_payload
       FROM sync_entities
-      WHERE account_id = ${auth.account_id} AND kind IN ('training_plan', 'plan_enrollment') AND tombstone = false
+      WHERE account_id = ${auth.account_id} AND tombstone = false
+        AND ((kind = 'training_plan' AND entity_id = ${PRIMARY_PLAN_ID})
+          OR (kind = 'plan_enrollment' AND entity_id = ${PRIMARY_PLAN_ID}))
       ORDER BY kind, entity_id
     `;
     const decoded = rows.map(row => ({

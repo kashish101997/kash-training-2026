@@ -5,10 +5,11 @@ export const LEGACY_KEY = 'kash_fitness_2026_v3';
 
 export const DEFAULT_PRACTICES = Object.freeze([
   { id: 'dharma-breath', title: 'Five quiet breaths', minutes: 2, order: 0, active: true },
-  { id: 'dharma-verse', title: 'Read one Gita verse', minutes: 5, order: 1, active: true },
-  { id: 'dharma-gratitude', title: 'Write one gratitude', minutes: 2, order: 2, active: true },
-  { id: 'dharma-review', title: 'Evening review', minutes: 5, order: 3, active: true },
+  { id: 'dharma-gratitude', title: 'Write one gratitude', minutes: 2, order: 1, active: true },
+  { id: 'dharma-review', title: 'Evening review', minutes: 5, order: 2, active: true },
 ]);
+
+export const RETIRED_PRACTICE_IDS = Object.freeze(['dharma-verse']);
 
 export function defaultState() {
   return {
@@ -92,13 +93,19 @@ export function mergeRemoteState(state, entities) {
 
 function normalize(value) {
   const base = defaultState();
+  const practices = Array.isArray(value.practices) ? value.practices.filter(item => !isRetiredPractice(item)) : [];
   return {
     ...base, ...value, schemaVersion: 4,
-    practices: Array.isArray(value.practices) && value.practices.length ? value.practices : base.practices,
+    practices: practices.length ? practices.map((item, order) => ({ ...item, order })) : base.practices,
     practiceCompletions: value.practiceCompletions || [],
     measurements: value.measurements || [], bloodSugar: value.bloodSugar || [],
     journal: value.journal || [], workouts: value.workouts || [], meals: value.meals || [], injuries: value.injuries || [],
   };
+}
+
+export function isRetiredPractice(item) {
+  const title = String(item?.title || item?.name || '').trim().toLowerCase();
+  return RETIRED_PRACTICE_IDS.includes(String(item?.id || item?._entityID || '')) || title === 'read one gita verse';
 }
 
 function dedupe(values) {

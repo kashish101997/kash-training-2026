@@ -22,6 +22,6 @@
   "shortcuts": [
     { "name": "Log body measurement", "short_name": "Log body", "url": "/#/today?action=log-measurement", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
     { "name": "Log blood glucose", "short_name": "Log glucose", "url": "/#/today?action=log-glucose", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Today's training", "short_name": "Plan", "url": "/#/plan", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+    { "name": "Today's training", "short_name": "Train", "url": "/#/train", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }
