@@ -1,6 +1,6 @@
 {
   "name": "kash-training-2026",
-  "version": "6.2.1",
+  "version": "6.3.0",
   "private": true,
   "type": "module",
   "description": "Kash OS phone-first personal health PWA with official WHOOP and Strava integrations",

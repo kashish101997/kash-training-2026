@@ -237,6 +237,16 @@ main { min-height: calc(100dvh - 160px); padding-bottom: calc(118px + var(--safe
 .glass-flat { background: rgba(24,32,48,.6); border: 1px solid var(--line); backdrop-filter: blur(16px); border-radius: 18px; }
 .today-intro { padding: 22px 4px 10px; }
 .today-intro h2 { margin: 7px 0 0; font-family: Raleway, sans-serif; font-size: clamp(2.65rem, 12vw, 3.55rem); line-height: .94; letter-spacing: -.065em; }
+.focus-card { display:grid; gap:12px; padding:20px; border-color:rgba(216,255,62,.24); background:linear-gradient(145deg,rgba(216,255,62,.13),rgba(20,27,41,.86) 52%,rgba(13,18,29,.92)); }
+.focus-card::after { content:""; position:absolute; width:116px; height:116px; right:-48px; top:-55px; border:22px solid rgba(216,255,62,.045); border-radius:50%; pointer-events:none; }
+.focus-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.focus-head .card-kicker { margin:0; color:var(--lime); }
+.focus-head span { color:var(--muted); font-size:.63rem; font-variant-numeric:tabular-nums; }
+.focus-card h3 { position:relative; z-index:1; margin:0; max-width:90%; font-family:Raleway,sans-serif; font-size:1.6rem; line-height:1.03; letter-spacing:-.04em; text-wrap:balance; }
+.focus-card p { position:relative; z-index:1; margin:0; color:var(--muted); font-size:.73rem; line-height:1.5; }
+.focus-progress { height:6px; overflow:hidden; border-radius:99px; background:rgba(255,255,255,.07); box-shadow:inset 2px 2px 5px rgba(0,0,0,.32); }
+.focus-progress i { display:block; width:var(--progress); height:100%; border-radius:inherit; background:var(--lime); transition:width 260ms cubic-bezier(.2,.8,.2,1); }
+.focus-action { position:relative; z-index:1; width:100%; }
 .whoop-glass { border-radius:26px; padding:18px; overflow:visible; }
 .whoop-head { display:flex; align-items:center; justify-content:space-between; }
 .whoop-head h3 { margin:0; font-family:Raleway,sans-serif; font-size:1.25rem; letter-spacing:-.03em; }
@@ -273,6 +283,7 @@ main { min-height: calc(100dvh - 160px); padding-bottom: calc(118px + var(--safe
 .week-focus > span { color:var(--subtle); font-size:.61rem; }
 .detailed-plan { gap:12px; }
 .session-card { padding:0; border-color:color-mix(in srgb, var(--session-color) 18%, var(--line)); }
+#today-session { display:grid; }
 .session-card.is-open { border-color:color-mix(in srgb, var(--session-color) 46%, transparent); }
 .session-card.is-open::after { content:""; position:absolute; width:120px; height:120px; right:-70px; top:-70px; border-radius:50%; background:var(--session-color); opacity:.055; filter:blur(8px); }
 .session-toggle { position:relative; z-index:1; width:100%; min-height:82px; border:0; background:transparent; padding:14px; display:grid; grid-template-columns:50px 1fr 20px; align-items:center; gap:12px; text-align:left; }

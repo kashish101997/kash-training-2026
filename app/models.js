@@ -56,6 +56,50 @@ export function dailyBrief(metrics, plannedSession) {
   return { level: 'go', title: session ? `Good day for ${session}` : 'Capacity is available', body: 'The scored signals support the planned work. Execute the session rather than adding extra volume.', rule: 'Recovery ≥67%, sleep ≥75%, and strain below 17.' };
 }
 
+export function todayFocus({ session = null, sessionCompleted = false, practices = [], completedPracticeIDs = [] } = {}) {
+  const activePractices = practices.filter(item => item?.active !== false);
+  const completed = new Set(completedPracticeIDs.map(String));
+  const completedPractices = activePractices.filter(item => completed.has(String(item.id))).length;
+  const total = activePractices.length + (session ? 1 : 0);
+  const done = completedPractices + (session && sessionCompleted ? 1 : 0);
+  const progress = total ? Math.round(done / total * 100) : 0;
+
+  if (session && !sessionCompleted) {
+    const durationMinutes = Number(session.durationSeconds) > 0 ? Math.round(Number(session.durationSeconds) / 60) : null;
+    return {
+      kind: 'session',
+      title: session.title || session.name || 'Today’s training',
+      body: 'Open the session for the exact steps. Mark it complete when you finish.',
+      durationMinutes,
+      actionLabel: durationMinutes ? `View ${durationMinutes}-minute workout` : 'View workout',
+      done, total, progress,
+    };
+  }
+
+  const nextPractice = activePractices.find(item => !completed.has(String(item.id)));
+  if (nextPractice) {
+    const durationMinutes = Number(nextPractice.minutes) > 0 ? Number(nextPractice.minutes) : null;
+    return {
+      kind: 'practice',
+      targetID: nextPractice.id,
+      title: nextPractice.title || 'Daily practice',
+      body: durationMinutes ? `${durationMinutes} minutes is the smallest open step on today’s list.` : 'This is the smallest open step on today’s list.',
+      durationMinutes,
+      actionLabel: 'Go to practice',
+      done, total, progress,
+    };
+  }
+
+  return {
+    kind: 'complete',
+    title: total ? 'Today’s essentials are complete' : 'Nothing required right now',
+    body: total ? 'Your planned items are closed out. You can stop here or log anything worth remembering.' : 'You can add a quick log whenever it is useful.',
+    durationMinutes: null,
+    actionLabel: 'Open quick log',
+    done, total, progress: total ? 100 : 0,
+  };
+}
+
 export function localDay(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');

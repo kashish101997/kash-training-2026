@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AVAILABILITY, applyPlanAdjustments, dailyBrief, localDay, metricEnvelope, practiceStreak, workoutDetails } from '../app/models.js';
+import { AVAILABILITY, applyPlanAdjustments, dailyBrief, localDay, metricEnvelope, practiceStreak, todayFocus, workoutDetails } from '../app/models.js';
 import { DEFAULT_PRACTICES, mergeRemoteState, migrateLegacy } from '../app/state.js';
 
 test('metric envelope never invents unavailable values', () => {
@@ -29,6 +29,28 @@ test('practice streak uses local days and permits yesterday as the active edge',
   completions.push({ practiceID: 'p', day: '2026-08-13', completed: true });
   assert.equal(practiceStreak(completions, 'p', today), 4);
   assert.equal(localDay(today), '2026-08-13');
+});
+
+test('today focus exposes one concrete next action and forgiving completion state', () => {
+  const practices = [
+    { id: 'breath', title: 'Five quiet breaths', minutes: 2, active: true },
+    { id: 'review', title: 'Evening review', minutes: 5, active: true },
+  ];
+  const session = { id: 'run', title: 'HYROX intervals', durationSeconds: 3600 };
+  const workoutFirst = todayFocus({ session, practices, completedPracticeIDs: ['breath'] });
+  assert.equal(workoutFirst.kind, 'session');
+  assert.equal(workoutFirst.durationMinutes, 60);
+  assert.equal(workoutFirst.progress, 33);
+
+  const practiceNext = todayFocus({ session, sessionCompleted: true, practices, completedPracticeIDs: ['breath'] });
+  assert.equal(practiceNext.kind, 'practice');
+  assert.equal(practiceNext.targetID, 'review');
+  assert.equal(practiceNext.progress, 67);
+
+  const complete = todayFocus({ session, sessionCompleted: true, practices, completedPracticeIDs: ['breath', 'review'] });
+  assert.equal(complete.kind, 'complete');
+  assert.equal(complete.progress, 100);
+  assert.match(complete.body, /stop here/i);
 });
 
 test('legacy migration is idempotent and preserves logs', () => {

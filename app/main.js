@@ -1,5 +1,5 @@
 import { HealthShortcut, PushReminders, Strava, Training, Whoop, deleteEntity, entitiesOf, entityRevision, pullAllChanges, pushEntity } from './services.js';
-import { applyPlanAdjustments, dailyBrief, localDay, practiceStreak, recoveryColor, whoopMetrics, workoutDetails } from './models.js';
+import { applyPlanAdjustments, dailyBrief, localDay, recoveryColor, todayFocus, whoopMetrics, workoutDetails } from './models.js';
 import { isRetiredPractice, loadState, mergeRemoteState, saveState } from './state.js';
 
 const PRIMARY_PLAN_ID = 'hyrox-current';
@@ -162,6 +162,8 @@ function renderToday() {
   const today = localDay();
   const activePractices = app.state.practices.filter(item => item.active !== false).sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
   const completed = new Set(app.state.practiceCompletions.filter(item => item.day === today && item.completed).map(item => item.practiceID));
+  const sessionCompleted = Boolean(session && entitiesOf(app.snapshot, 'plan_completion').some(item => item.data.sessionID === session.id && item.data.completed !== false));
+  const focus = todayFocus({ session, sessionCompleted, practices: activePractices, completedPracticeIDs: [...completed] });
   const measurements = sorted(app.state.measurements, item => item.timestamp || item.date);
   const latestMeasurement = measurements[0];
   const weight = number(latestMeasurement?.weightKilograms ?? latestMeasurement?.weight ?? latestMeasurement?.kg);
@@ -171,6 +173,13 @@ function renderToday() {
   target.classList.remove('skeleton-screen');
   target.innerHTML = `
     <header class="today-intro" data-reveal><p class="eyebrow">${escapeHTML(new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase())}</p><h2>${escapeHTML(greeting())},<br>Kash.</h2></header>
+    <article class="card focus-card" aria-labelledby="today-focus-title">
+      <div class="focus-head"><p class="card-kicker">NEXT UP</p><span>${focus.total ? `${focus.done} of ${focus.total} essentials` : 'Open day'}</span></div>
+      <h3 id="today-focus-title">${escapeHTML(focus.title)}</h3>
+      <p>${escapeHTML(focus.body)}</p>
+      <div class="focus-progress" role="progressbar" aria-label="Today’s essentials" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${focus.progress}"><i style="--progress:${focus.progress}%"></i></div>
+      <button class="primary-button focus-action" type="button" data-action="${focus.kind === 'session' ? 'focus-session' : focus.kind === 'practice' ? 'focus-practice' : 'open-log'}"${focus.targetID ? ` data-practice-id="${escapeHTML(focus.targetID)}"` : ''}>${escapeHTML(focus.actionLabel)}</button>
+    </article>
     <section class="whoop-glass card" aria-label="WHOOP recovery" data-reveal>
       <div class="whoop-head"><div><p class="card-kicker">WHOOP · PROCESSED SYNC</p><h3>Daily recovery</h3></div><span class="freshness">${escapeHTML(relativeTime(refreshTime))}</span></div>
       <div class="whoop-layout">
@@ -181,12 +190,12 @@ function renderToday() {
     <article class="card brief-card ${brief.level === 'unavailable' ? 'is-quiet' : ''}" data-reveal>
       <p class="card-kicker">TODAY'S READ · ${escapeHTML(brief.level)}</p><h3>${escapeHTML(brief.title)}</h3><p>${escapeHTML(brief.body)}</p><div class="brief-rule">${escapeHTML(brief.rule)}</div>
     </article>
-    <div class="section-heading"><h3>Today’s training</h3><button type="button" data-route="train">View plan</button></div>
-    ${session ? sessionCard(session, { open: true, today: true }) : `<article class="card empty-state" data-reveal><strong>No scheduled session found</strong>Your active catalog has no session mapped to ${today}. Recovery advice remains available.</article>`}
+    <div class="section-heading" id="today-session-heading"><h3>Today’s training</h3><button type="button" data-route="train">View plan</button></div>
+    <div id="today-session">${session ? sessionCard(session, { open: true, today: true }) : `<article class="card empty-state" data-reveal><strong>No scheduled session found</strong>Your active catalog has no session mapped to ${today}. Recovery advice remains available.</article>`}</div>
     <div class="section-heading"><h3>Daily Dharma</h3><button type="button" data-action="edit-practices">Edit</button></div>
-    <article class="card" data-reveal><div class="practice-list">${activePractices.map(practice => {
+    <article class="card" id="daily-practices" data-reveal><div class="practice-list">${activePractices.map(practice => {
       const isDone = completed.has(practice.id);
-      return `<div class="practice-item ${isDone ? 'is-complete' : ''}"><button class="practice-check" type="button" data-action="toggle-practice" data-practice-id="${escapeHTML(practice.id)}" aria-label="${isDone ? 'Uncheck' : 'Complete'} ${escapeHTML(practice.title)}">${isDone ? '✓' : ''}</button><div><div class="practice-name">${escapeHTML(practice.title)}</div><div class="practice-time">${Number(practice.minutes || 0)} min · ${practiceStreak(app.state.practiceCompletions, practice.id)} day streak</div></div><span class="source-mark">${isDone ? 'DONE' : 'OPEN'}</span></div>`;
+      return `<div class="practice-item ${isDone ? 'is-complete' : ''}"><button class="practice-check" type="button" data-action="toggle-practice" data-practice-id="${escapeHTML(practice.id)}" aria-label="${isDone ? 'Uncheck' : 'Complete'} ${escapeHTML(practice.title)}">${isDone ? '✓' : ''}</button><div><div class="practice-name">${escapeHTML(practice.title)}</div><div class="practice-time">${Number(practice.minutes || 0)} min · ${isDone ? 'complete today' : 'ready when you are'}</div></div><span class="source-mark">${isDone ? 'DONE' : 'OPEN'}</span></div>`;
     }).join('')}</div></article>
     <div class="section-heading"><h3>Quick log</h3><span>One tap away</span></div>
     <div class="quick-grid" data-reveal>
@@ -274,6 +283,8 @@ function handleClick(event) {
   if (action === 'open-log') openLogPicker(event.target.closest('[data-log-kind]')?.dataset.logKind);
   if (action === 'choose-log') openLogForm(event.target.closest('[data-log-kind]').dataset.logKind);
   if (action === 'toggle-practice') togglePractice(event.target.closest('[data-practice-id]').dataset.practiceId);
+  if (action === 'focus-session') focusTodayTarget($('#today-session')?.querySelector('button'));
+  if (action === 'focus-practice') focusTodayTarget($$('.practice-check').find(button => button.dataset.practiceId === event.target.closest('[data-practice-id]')?.dataset.practiceId));
   if (action === 'edit-practices') openPracticeEditor();
   if (action === 'select-plan-week') { app.planWeek = event.target.closest('[data-week-key]').dataset.weekKey; app.expandedSession = null; renderTrain(); setupMotion(); }
   if (action === 'toggle-session-details') { const id = event.target.closest('[data-session-id]').dataset.sessionId; app.expandedSession = app.expandedSession === id ? null : id; app.route === 'today' ? renderToday() : renderTrain(); setupMotion(); }
@@ -433,7 +444,9 @@ async function togglePractice(practiceID) {
   const completed = index < 0 ? true : !app.state.practiceCompletions[index].completed;
   const record = { id, practiceID, day, completed, timestamp: nowISO(), source: 'Kash OS' };
   if (index < 0) app.state.practiceCompletions.push(record); else app.state.practiceCompletions[index] = record;
-  saveState(app.state); renderToday();
+  const practice = app.state.practices.find(item => item.id === practiceID);
+  saveState(app.state); renderToday(); setupMotion();
+  toast(`${practice?.title || 'Practice'} ${completed ? 'complete' : 'reopened'}`);
   try { await pushEntity('practice_completion', id, record, entityRevision(app.snapshot, 'practice_completion', id), 'userEntered'); }
   catch { toast('Practice saved on this phone; sync is offline.'); }
 }
@@ -516,6 +529,13 @@ function exportData() {
 function openSheet(html) { app.lastFocus = document.activeElement; $('#sheet-content').innerHTML = html; $('#sheet-layer').hidden = false; $('#app-frame').inert = true; document.body.style.overflow = 'hidden'; setTimeout(() => $('.bottom-sheet input, .bottom-sheet button')?.focus(), 50); }
 function closeSheet() { $('#sheet-layer').hidden = true; $('#app-frame').inert = false; document.body.style.overflow = ''; app.lastFocus?.focus?.(); app.lastFocus = null; }
 function toast(message) { const node = $('#toast'); node.textContent = message; node.hidden = false; clearTimeout(toast.timer); toast.timer = setTimeout(() => { node.hidden = true; }, 2800); }
+
+function focusTodayTarget(target) {
+  if (!target) return;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  target.scrollIntoView({ block: 'center', behavior: reducedMotion ? 'auto' : 'smooth' });
+  setTimeout(() => target.focus({ preventScroll: true }), reducedMotion ? 0 : 280);
+}
 
 function setupMotion() {
   const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }), { threshold: .08, rootMargin: '0px 0px -25px' });
