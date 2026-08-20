@@ -1,11 +1,12 @@
 /* Kash OS service worker — private APIs are network-only; the UI shell is offline-capable. */
-const VERSION = 'kash-os-v6.3.0';
+const VERSION = 'kash-os-v6.3.1';
 const SHELL = `${VERSION}-shell`;
 const STATIC = `${VERSION}-static`;
 const SHELL_URLS = [
   '/', '/index.html', '/manifest.json', '/icon.svg',
   '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png',
   '/app/styles.css', '/app/main.js', '/app/services.js', '/app/models.js', '/app/state.js',
+  '/app/cache.js',
   '/fonts/poppins-400.ttf', '/fonts/poppins-500.ttf', '/fonts/poppins-600.ttf', '/fonts/poppins-700.ttf',
   '/fonts/raleway-600.ttf', '/fonts/raleway-700.ttf', '/fonts/raleway-800.ttf',
   '/privacy.html', '/docs/KASH_OS_HEALTH_SHORTCUT.md',

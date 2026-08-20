@@ -323,6 +323,8 @@ main { min-height: calc(100dvh - 160px); padding-bottom: calc(118px + var(--safe
 
 .settings-row > div { min-width:0; }
 .settings-row > div h3 { padding-top:1px; }
+.quota-warning { border-color:rgba(255,209,102,.28); background:rgba(255,209,102,.075); }
+.quota-warning h3, .quota-warning .connection-state { color:var(--yellow); }
 .connection-state { flex:none; color:var(--subtle); font-size:.56rem; font-weight:700; letter-spacing:.08em; }
 .connection-state.is-online { color:var(--green); }
 .settings-row a.secondary-button { display:grid; place-items:center; text-decoration:none; }

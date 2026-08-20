@@ -1,19 +1,26 @@
 import { HealthShortcut, PushReminders, Strava, Training, Whoop, deleteEntity, entitiesOf, entityRevision, pullAllChanges, pushEntity } from './services.js';
 import { applyPlanAdjustments, dailyBrief, localDay, recoveryColor, todayFocus, whoopMetrics, workoutDetails } from './models.js';
 import { isRetiredPractice, loadState, mergeRemoteState, saveState } from './state.js';
+import { loadRemoteCache, loadSyncSnapshot, saveRemoteCache, saveSyncSnapshot } from './cache.js';
 
 const PRIMARY_PLAN_ID = 'hyrox-current';
+const AUTO_REFRESH_MS = 15 * 60_000;
+const QUOTA_BACKOFF_MS = 6 * 60 * 60_000;
+const QUOTA_MESSAGE = 'Cloud sync is paused because Neon’s monthly transfer allowance is used. Saved data remains available.';
+const remoteCache = loadRemoteCache();
 
 const app = {
   route: 'today',
   state: loadState(),
-  snapshot: { entities: new Map(), revisions: new Map(), cursor: '0' },
-  whoop: null,
-  strava: null,
-  catalog: { plans: [], enrollments: [] },
+  snapshot: loadSyncSnapshot(),
+  whoop: remoteCache.whoop || null,
+  strava: remoteCache.strava || null,
+  catalog: remoteCache.catalog || { plans: [], enrollments: [] },
   catalogError: null,
   online: navigator.onLine,
   refreshing: false,
+  quotaBackoffUntil: Number(remoteCache.quotaBackoffUntil || 0),
+  syncIssue: Number(remoteCache.quotaBackoffUntil || 0) > Date.now() ? QUOTA_MESSAGE : null,
   planWeek: null,
   expandedSession: localDay(),
 };
@@ -76,30 +83,40 @@ function bindShell() {
   document.addEventListener('submit', handleSubmit);
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && !$('#sheet-layer').hidden) closeSheet(); });
   window.addEventListener('hashchange', () => applyRoute(routeFromLocation(), false));
-  window.addEventListener('online', () => { app.online = true; updateConnectivity(); refreshAll({ quiet: true }); });
+  window.addEventListener('online', () => { app.online = true; updateConnectivity(); if (shouldAutoRefresh()) refreshAll({ quiet: true }); });
   window.addEventListener('offline', () => { app.online = false; updateConnectivity(); });
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && app.online) refreshAll({ quiet: true });
+    if (document.visibilityState === 'visible' && app.online && shouldAutoRefresh()) refreshAll({ quiet: true });
   });
   setInterval(() => {
     if (document.visibilityState === 'visible' && app.online) refreshAll({ quiet: true });
-  }, 120_000);
+  }, AUTO_REFRESH_MS);
   $('#library-search')?.addEventListener('input', event => renderLibrary(event.target.value));
   updateConnectivity();
 }
 
-async function refreshAll({ quiet = false } = {}) {
+async function refreshAll({ quiet = false, force = false } = {}) {
   if (app.refreshing) return;
-  app.refreshing = true;
   const indicator = $('#pull-indicator');
+  if (!force && Date.now() < app.quotaBackoffUntil) {
+    app.syncIssue = QUOTA_MESSAGE;
+    $('#sync-dot').dataset.state = 'error';
+    indicator.textContent = 'Cloud sync paused · saved data shown';
+    indicator.classList.add('is-visible');
+    setTimeout(() => indicator.classList.remove('is-visible'), 1600);
+    if (!quiet) toast(QUOTA_MESSAGE);
+    return;
+  }
+  app.refreshing = true;
   indicator.textContent = 'Refreshing health signals…';
   indicator.classList.add('is-visible');
   $('#sync-dot').dataset.state = 'loading';
   const [snapshotResult, whoopResult, catalogResult, stravaResult] = await Promise.allSettled([
-    pullAllChanges(), Whoop.status(), Training.catalog(false), Strava.status(),
+    pullAllChanges(app.snapshot), Whoop.status(), Training.catalog(false), Strava.status(),
   ]);
   if (snapshotResult.status === 'fulfilled') {
     app.snapshot = snapshotResult.value;
+    saveSyncSnapshot(app.snapshot);
     app.state = mergeRemoteState(app.state, app.snapshot.entities);
     await retireRemovedPractices();
     saveState(app.state);
@@ -117,12 +134,38 @@ async function refreshAll({ quiet = false } = {}) {
   if ([snapshotResult, whoopResult, catalogResult, stravaResult].some(result => result.status === 'fulfilled')) app.state.lastRefreshAt = nowISO();
   saveState(app.state);
   const failed = [snapshotResult, whoopResult, catalogResult, stravaResult].filter(result => result.status === 'rejected');
+  const quotaFailure = failed.find(result => result.reason?.code === 'database_quota_exceeded');
+  if (quotaFailure) {
+    app.quotaBackoffUntil = Date.now() + QUOTA_BACKOFF_MS;
+    app.syncIssue = QUOTA_MESSAGE;
+    if (app.catalog.plans?.length) app.catalogError = null;
+  } else if (!failed.length) {
+    app.quotaBackoffUntil = 0;
+    app.syncIssue = null;
+  }
+  persistRemoteState();
   $('#sync-dot').dataset.state = failed.length ? 'error' : 'online';
   renderAll();
   app.refreshing = false;
-  indicator.textContent = failed.length ? 'Some sources could not refresh' : 'Up to date';
+  indicator.textContent = quotaFailure ? 'Cloud sync paused · saved data shown' : failed.length ? 'Some sources could not refresh' : 'Up to date';
   setTimeout(() => indicator.classList.remove('is-visible'), 850);
-  if (!quiet && failed.length) toast('Some sources are unavailable. Cached data is still shown.');
+  if (quotaFailure) toast(QUOTA_MESSAGE);
+  else if (!quiet && failed.length) toast('Some sources are unavailable. Cached data is still shown.');
+}
+
+function shouldAutoRefresh() {
+  const lastRefresh = new Date(app.state.lastRefreshAt || 0).getTime();
+  return !Number.isFinite(lastRefresh) || Date.now() - lastRefresh >= AUTO_REFRESH_MS;
+}
+
+function persistRemoteState() {
+  saveRemoteCache({
+    whoop: app.whoop,
+    strava: app.strava,
+    catalog: app.catalog,
+    quotaBackoffUntil: app.quotaBackoffUntil,
+    cachedAt: nowISO(),
+  });
 }
 
 async function retireRemovedPractices() {
@@ -297,7 +340,7 @@ function handleClick(event) {
   if (action === 'health-write') writeLatestToHealth();
   if (action === 'enable-notifications') enableNotifications();
   if (action === 'export-data') exportData();
-  if (action === 'refresh-app') refreshAll();
+  if (action === 'refresh-app') refreshAll({ force: true });
 }
 
 async function handleSubmit(event) {
@@ -434,7 +477,7 @@ async function saveLog(form) {
   if (kind === 'injury') { entityKind = 'injuries'; stateKey = 'injuries'; }
   app.state[stateKey] = [value, ...(app.state[stateKey] || [])];
   saveState(app.state); closeSheet(); renderAll(); toast(`${({measurement:'Measurement',glucose:'Glucose',meal:'Meal',workout:'Workout',journal:'Journal',injury:'Injury'})[kind]} saved`);
-  try { await pushEntity(entityKind, id, value, 0, 'userEntered'); await refreshAll({ quiet: true }); }
+  try { await pushEntity(entityKind, id, value, 0, 'userEntered'); await refreshAll({ quiet: true, force: true }); }
   catch { toast('Saved on this phone. Cloud sync will retry when available.'); }
 }
 
@@ -478,13 +521,14 @@ async function completeSession(button) {
   const id = button.dataset.completionId;
   const record = { id, planID: button.dataset.planId, sessionID: button.dataset.sessionId, scheduledDate: button.dataset.date, completed: true, completedAt: nowISO(), source: 'userEntered' };
   button.disabled = true; button.textContent = 'Completed'; button.className = 'secondary-button';
-  try { await pushEntity('plan_completion', id, record, entityRevision(app.snapshot, 'plan_completion', id), 'userEntered'); toast('Session completed'); await refreshAll({ quiet: true }); }
+  try { await pushEntity('plan_completion', id, record, entityRevision(app.snapshot, 'plan_completion', id), 'userEntered'); toast('Session completed'); await refreshAll({ quiet: true, force: true }); }
   catch { button.disabled = false; button.textContent = 'Mark complete'; toast('Could not sync completion'); }
 }
 
 function openSettings() {
   const whoopConnected = Boolean(app.whoop?.connected); const stravaConnected = Boolean(app.strava?.connected);
   openSheet(`<div class="sheet-head"><div><h2>Settings</h2><p>Connections, installation and your data.</p></div></div><div class="settings-list">
+    ${app.syncIssue ? `<div class="settings-row quota-warning"><div><h3>Cloud sync paused</h3><p>${escapeHTML(app.syncIssue)} Use Refresh after the Neon quota resets or the project is upgraded.</p></div><span class="connection-state">CACHED</span></div>` : ''}
     <div class="settings-row"><div><h3>WHOOP</h3><p>${whoopConnected ? `Connected · ${relativeTime(app.whoop.lastSyncedAt)}` : 'Official API · processed recovery, sleep and workouts'}</p></div><button class="${whoopConnected ? 'secondary-button' : 'primary-button'}" type="button" data-action="${whoopConnected ? 'whoop-sync' : 'whoop-connect'}">${whoopConnected ? 'Sync' : 'Connect'}</button></div>
     ${whoopConnected ? '<div class="settings-row"><div><h3>Disconnect WHOOP</h3><p>Imported summaries remain in history.</p></div><button class="danger-button" type="button" data-action="whoop-disconnect">Disconnect</button></div>' : ''}
     <div class="settings-row"><div><h3>Strava</h3><p>${stravaConnected ? 'Connected · webhook activity sync' : 'Import activities and share approved workouts'}</p></div><button class="${stravaConnected ? 'secondary-button' : 'primary-button'}" type="button" data-action="${stravaConnected ? 'strava-disconnect' : 'strava-connect'}">${stravaConnected ? 'Disconnect' : 'Connect'}</button></div>
@@ -500,9 +544,9 @@ function openSettings() {
   </div>`);
 }
 
-async function syncWhoop() { try { toast('Syncing WHOOP…'); await Whoop.sync(30); closeSheet(); await refreshAll(); } catch (error) { toast(`WHOOP sync failed · ${error.message}`); } }
-async function disconnectWhoop() { if (!confirm('Disconnect WHOOP? Imported summaries remain.')) return; try { await Whoop.disconnect(); closeSheet(); await refreshAll(); } catch (error) { toast(error.message); } }
-async function disconnectStrava() { if (!confirm('Disconnect Strava? Imported activities remain.')) return; try { await Strava.disconnect(); closeSheet(); await refreshAll(); } catch (error) { toast(error.message); } }
+async function syncWhoop() { try { toast('Syncing WHOOP…'); await Whoop.sync(30); closeSheet(); await refreshAll({ force: true }); } catch (error) { toast(`WHOOP sync failed · ${error.message}`); } }
+async function disconnectWhoop() { if (!confirm('Disconnect WHOOP? Imported summaries remain.')) return; try { await Whoop.disconnect(); closeSheet(); await refreshAll({ force: true }); } catch (error) { toast(error.message); } }
+async function disconnectStrava() { if (!confirm('Disconnect Strava? Imported activities remain.')) return; try { await Strava.disconnect(); closeSheet(); await refreshAll({ force: true }); } catch (error) { toast(error.message); } }
 function writeLatestToHealth() { const latest = sorted(app.state.measurements, item => item.timestamp || item.date)[0]; if (!latest) { toast('Log a body measurement first.'); return; } HealthShortcut.runWrite(latest); }
 
 async function enableNotifications() {
@@ -546,7 +590,7 @@ function setupPullToRefresh() {
   let startY = null; let pulling = false;
   window.addEventListener('touchstart', event => { if (scrollY <= 0 && event.touches.length === 1) startY = event.touches[0].clientY; }, { passive: true });
   window.addEventListener('touchmove', event => { if (startY == null || scrollY > 0) return; const distance = event.touches[0].clientY - startY; pulling = distance > 72; if (distance > 25) { $('#pull-indicator').textContent = pulling ? 'Release to refresh' : 'Pull to refresh'; $('#pull-indicator').classList.add('is-visible'); } }, { passive: true });
-  window.addEventListener('touchend', () => { if (pulling) refreshAll(); else $('#pull-indicator').classList.remove('is-visible'); startY = null; pulling = false; }, { passive: true });
+  window.addEventListener('touchend', () => { if (pulling) refreshAll({ force: true }); else $('#pull-indicator').classList.remove('is-visible'); startY = null; pulling = false; }, { passive: true });
 }
 
 function setupSheetDrag() {

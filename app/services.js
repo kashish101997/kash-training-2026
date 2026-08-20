@@ -9,12 +9,25 @@ export async function api(path, options = {}) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const error = new Error(payload.error || `HTTP ${response.status}`);
-    error.status = response.status;
+    const details = classifyAPIError(payload.error || `HTTP ${response.status}`, response.status);
+    const error = new Error(details.message);
+    error.code = details.code;
+    error.status = details.status;
     error.retryAfter = payload.retryAfter;
     throw error;
   }
   return payload;
+}
+
+export function classifyAPIError(message, status = 500) {
+  if (/data transfer quota|exceeded.+quota|HTTP status 402/i.test(String(message || ''))) {
+    return {
+      code: 'database_quota_exceeded',
+      status: 503,
+      message: 'Cloud sync is paused because the database transfer allowance is used. Saved data remains available.',
+    };
+  }
+  return { code: 'api_error', status, message: String(message || `HTTP ${status}`) };
 }
 
 function decodeBase64JSON(value) {
@@ -29,10 +42,10 @@ function encodeBase64JSON(value) {
   return btoa(binary);
 }
 
-export async function pullAllChanges() {
-  let cursor = '0';
-  const entities = new Map();
-  const revisions = new Map();
+export async function pullAllChanges(previous = null) {
+  let cursor = String(previous?.cursor || '0');
+  const entities = new Map(previous?.entities || []);
+  const revisions = new Map(previous?.revisions || []);
   do {
     const page = await api(`/api/sync/pull?cursor=${encodeURIComponent(cursor)}`);
     for (const change of page.changes || []) {
