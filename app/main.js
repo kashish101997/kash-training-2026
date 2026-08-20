@@ -619,10 +619,20 @@ function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   addEventListener('load', async () => {
     try {
+      let reloading = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloading) return;
+        reloading = true;
+        location.reload();
+      });
       const registration = await navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' });
       await registration.update();
-      if (registration.waiting) toast('A Kash OS update is ready. Reopen the app to apply it.');
-      registration.addEventListener('updatefound', () => registration.installing?.addEventListener('statechange', () => { if (registration.installing?.state === 'installed' && navigator.serviceWorker.controller) toast('Kash OS was updated.'); }));
+      if (registration.waiting) registration.waiting.postMessage('SKIP_WAITING');
+      registration.addEventListener('updatefound', () => registration.installing?.addEventListener('statechange', () => {
+        if (registration.installing?.state === 'installed' && navigator.serviceWorker.controller) {
+          registration.installing.postMessage('SKIP_WAITING');
+        }
+      }));
     } catch { /* The online app remains usable without an offline worker. */ }
   });
 }
