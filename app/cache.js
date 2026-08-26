@@ -1,5 +1,17 @@
 export const SYNC_CACHE_KEY = 'kash_os_sync_snapshot_v1';
 export const REMOTE_CACHE_KEY = 'kash_os_remote_cache_v1';
+export const CLOUD_REFRESH_INTERVAL_MS = 12 * 60 * 60_000;
+
+export function cloudRefreshDue(lastRefreshAt, now = Date.now()) {
+  const lastRefresh = new Date(lastRefreshAt || 0).getTime();
+  return !Number.isFinite(lastRefresh) || now - lastRefresh >= CLOUD_REFRESH_INTERVAL_MS;
+}
+
+export function cloudRefreshWaitMs(lastRefreshAt, now = Date.now()) {
+  const lastRefresh = new Date(lastRefreshAt || 0).getTime();
+  if (!Number.isFinite(lastRefresh)) return 0;
+  return Math.max(0, CLOUD_REFRESH_INTERVAL_MS - (now - lastRefresh));
+}
 
 export function emptySyncSnapshot() {
   return { entities: new Map(), revisions: new Map(), cursor: '0' };

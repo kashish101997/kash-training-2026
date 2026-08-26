@@ -1,11 +1,11 @@
 import { HealthShortcut, PushReminders, Strava, Training, Whoop, deleteEntity, entitiesOf, entityRevision, pullAllChanges, pushEntity } from './services.js';
 import { applyPlanAdjustments, dailyBrief, localDay, recoveryColor, todayFocus, whoopMetrics, workoutDetails } from './models.js';
 import { isRetiredPractice, loadState, mergeRemoteState, saveState } from './state.js';
-import { loadRemoteCache, loadSyncSnapshot, saveRemoteCache, saveSyncSnapshot } from './cache.js';
+import { CLOUD_REFRESH_INTERVAL_MS, cloudRefreshDue, cloudRefreshWaitMs, loadRemoteCache, loadSyncSnapshot, saveRemoteCache, saveSyncSnapshot } from './cache.js';
 
 const PRIMARY_PLAN_ID = 'hyrox-current';
-const AUTO_REFRESH_MS = 15 * 60_000;
-const QUOTA_BACKOFF_MS = 6 * 60 * 60_000;
+const AUTO_REFRESH_MS = CLOUD_REFRESH_INTERVAL_MS;
+const QUOTA_BACKOFF_MS = AUTO_REFRESH_MS;
 const QUOTA_MESSAGE = 'Cloud sync is paused because Neon’s monthly transfer allowance is used. Saved data remains available.';
 const remoteCache = loadRemoteCache();
 
@@ -37,19 +37,19 @@ async function boot() {
   bindShell();
   applyRoute(routeFromLocation(), false);
   handleLaunchAction();
-  handleOAuthResult();
+  const connectedFromOAuth = handleOAuthResult();
   renderAll();
   setupMotion();
   setupPullToRefresh();
   setupSheetDrag();
   registerServiceWorker();
-  await refreshAll({ quiet: true });
+  await refreshAll({ quiet: true, bypassSchedule: connectedFromOAuth });
 }
 
 function handleOAuthResult() {
   const parameters = new URLSearchParams(location.search);
   const result = parameters.get('whoop');
-  if (!result) return;
+  if (!result) return false;
   const reason = parameters.get('reason') || '';
   const messages = {
     whoop_access_denied: 'WHOOP access was not approved.',
@@ -68,6 +68,7 @@ function handleOAuthResult() {
     : messages[reason] || `WHOOP connection failed${reason ? ` · ${reason.replaceAll('_', ' ')}` : ''}.`;
   setTimeout(() => toast(message), 120);
   history.replaceState(null, '', `${location.pathname}${location.hash || ''}`);
+  return result === 'connected';
 }
 
 function handleLaunchAction() {
@@ -89,22 +90,27 @@ function bindShell() {
     if (document.visibilityState === 'visible' && app.online && shouldAutoRefresh()) refreshAll({ quiet: true });
   });
   setInterval(() => {
-    if (document.visibilityState === 'visible' && app.online) refreshAll({ quiet: true });
+    if (document.visibilityState === 'visible' && app.online && shouldAutoRefresh()) refreshAll({ quiet: true });
   }, AUTO_REFRESH_MS);
   $('#library-search')?.addEventListener('input', event => renderLibrary(event.target.value));
   updateConnectivity();
 }
 
-async function refreshAll({ quiet = false, force = false } = {}) {
+async function refreshAll({ quiet = false, bypassSchedule = false } = {}) {
   if (app.refreshing) return;
   const indicator = $('#pull-indicator');
-  if (!force && Date.now() < app.quotaBackoffUntil) {
+  if (Date.now() < app.quotaBackoffUntil) {
     app.syncIssue = QUOTA_MESSAGE;
     $('#sync-dot').dataset.state = 'error';
     indicator.textContent = 'Cloud sync paused · saved data shown';
     indicator.classList.add('is-visible');
     setTimeout(() => indicator.classList.remove('is-visible'), 1600);
     if (!quiet) toast(QUOTA_MESSAGE);
+    return;
+  }
+  if (!bypassSchedule && !shouldAutoRefresh()) {
+    $('#sync-dot').dataset.state = 'online';
+    if (!quiet) toast(`Cloud refresh is limited to twice daily · next check ${nextCloudRefreshLabel()}`);
     return;
   }
   app.refreshing = true;
@@ -154,8 +160,30 @@ async function refreshAll({ quiet = false, force = false } = {}) {
 }
 
 function shouldAutoRefresh() {
-  const lastRefresh = new Date(app.state.lastRefreshAt || 0).getTime();
-  return !Number.isFinite(lastRefresh) || Date.now() - lastRefresh >= AUTO_REFRESH_MS;
+  return cloudRefreshDue(app.state.lastRefreshAt);
+}
+
+function nextCloudRefreshLabel() {
+  const wait = cloudRefreshWaitMs(app.state.lastRefreshAt);
+  if (wait <= 0) return 'available now';
+  const hours = Math.floor(wait / 3_600_000);
+  const minutes = Math.ceil((wait % 3_600_000) / 60_000);
+  return hours ? `in ${hours}h ${minutes}m` : `in ${minutes}m`;
+}
+
+function cacheSyncedEntity(kind, id, data, result, provenance = 'userEntered') {
+  const revision = Number(result?.revision || entityRevision(app.snapshot, kind, id) + 1);
+  const key = `${kind}:${id}`;
+  app.snapshot.entities.set(key, { id, kind, revision, provenance, updatedAt: nowISO(), data });
+  app.snapshot.revisions.set(key, revision);
+  saveSyncSnapshot(app.snapshot);
+}
+
+function removeCachedEntity(kind, id, result) {
+  const key = `${kind}:${id}`;
+  app.snapshot.entities.delete(key);
+  app.snapshot.revisions.set(key, Number(result?.revision || entityRevision(app.snapshot, kind, id) + 1));
+  saveSyncSnapshot(app.snapshot);
 }
 
 function persistRemoteState() {
@@ -340,7 +368,7 @@ function handleClick(event) {
   if (action === 'health-write') writeLatestToHealth();
   if (action === 'enable-notifications') enableNotifications();
   if (action === 'export-data') exportData();
-  if (action === 'refresh-app') refreshAll({ force: true });
+  if (action === 'refresh-app') refreshAll();
 }
 
 async function handleSubmit(event) {
@@ -477,7 +505,7 @@ async function saveLog(form) {
   if (kind === 'injury') { entityKind = 'injuries'; stateKey = 'injuries'; }
   app.state[stateKey] = [value, ...(app.state[stateKey] || [])];
   saveState(app.state); closeSheet(); renderAll(); toast(`${({measurement:'Measurement',glucose:'Glucose',meal:'Meal',workout:'Workout',journal:'Journal',injury:'Injury'})[kind]} saved`);
-  try { await pushEntity(entityKind, id, value, 0, 'userEntered'); await refreshAll({ quiet: true, force: true }); }
+  try { cacheSyncedEntity(entityKind, id, value, await pushEntity(entityKind, id, value, 0, 'userEntered')); }
   catch { toast('Saved on this phone. Cloud sync will retry when available.'); }
 }
 
@@ -490,7 +518,7 @@ async function togglePractice(practiceID) {
   const practice = app.state.practices.find(item => item.id === practiceID);
   saveState(app.state); renderToday(); setupMotion();
   toast(`${practice?.title || 'Practice'} ${completed ? 'complete' : 'reopened'}`);
-  try { await pushEntity('practice_completion', id, record, entityRevision(app.snapshot, 'practice_completion', id), 'userEntered'); }
+  try { cacheSyncedEntity('practice_completion', id, record, await pushEntity('practice_completion', id, record, entityRevision(app.snapshot, 'practice_completion', id), 'userEntered')); }
   catch { toast('Practice saved on this phone; sync is offline.'); }
 }
 
@@ -510,10 +538,15 @@ async function savePractices(form) {
   const retainedIDs = new Set(practices.map(item => item.id));
   const removed = previous.filter(item => !retainedIDs.has(item.id));
   app.state.practices = practices; saveState(app.state); closeSheet(); renderToday();
-  await Promise.allSettled([
-    ...practices.map(item => pushEntity('practice_template', item.id, item, entityRevision(app.snapshot, 'practice_template', item.id), 'userEntered')),
-    ...removed.map(item => deleteEntity('practice_template', item.id, entityRevision(app.snapshot, 'practice_template', item.id))),
+  const updates = await Promise.allSettled([
+    ...practices.map(async item => ({ action: 'upsert', item, result: await pushEntity('practice_template', item.id, item, entityRevision(app.snapshot, 'practice_template', item.id), 'userEntered') })),
+    ...removed.map(async item => ({ action: 'delete', item, result: await deleteEntity('practice_template', item.id, entityRevision(app.snapshot, 'practice_template', item.id)) })),
   ]);
+  updates.filter(update => update.status === 'fulfilled').forEach(update => {
+    const { action, item, result } = update.value;
+    if (action === 'upsert') cacheSyncedEntity('practice_template', item.id, item, result);
+    else removeCachedEntity('practice_template', item.id, result?.results?.[0]);
+  });
   toast('Daily practices updated');
 }
 
@@ -521,7 +554,10 @@ async function completeSession(button) {
   const id = button.dataset.completionId;
   const record = { id, planID: button.dataset.planId, sessionID: button.dataset.sessionId, scheduledDate: button.dataset.date, completed: true, completedAt: nowISO(), source: 'userEntered' };
   button.disabled = true; button.textContent = 'Completed'; button.className = 'secondary-button';
-  try { await pushEntity('plan_completion', id, record, entityRevision(app.snapshot, 'plan_completion', id), 'userEntered'); toast('Session completed'); await refreshAll({ quiet: true, force: true }); }
+  try {
+    cacheSyncedEntity('plan_completion', id, record, await pushEntity('plan_completion', id, record, entityRevision(app.snapshot, 'plan_completion', id), 'userEntered'));
+    toast('Session completed'); renderAll();
+  }
   catch { button.disabled = false; button.textContent = 'Mark complete'; toast('Could not sync completion'); }
 }
 
@@ -538,15 +574,15 @@ function openSettings() {
     <div class="settings-row"><div><h3>Home Screen reminders</h3><p>Workout and Dharma reminders only; never medical alerts.</p></div><button class="secondary-button" type="button" data-action="enable-notifications">Enable</button></div>
     <div class="settings-row"><div><h3>Install Kash OS</h3><p>In Comet: Share → Add to Home Screen → Add.</p><ol class="install-steps"><li>Open this URL in Comet on iPhone.</li><li>Choose Share and Add to Home Screen.</li><li>Launch the Kash OS icon for full-screen mode.</li></ol></div></div>
     <div class="settings-row"><div><h3>Export local data</h3><p>Download a readable JSON backup from this phone.</p></div><button class="secondary-button" type="button" data-action="export-data">Export</button></div>
-    <div class="settings-row"><div><h3>Refresh everything</h3><p>Reconcile WHOOP, Strava, the HYROX plan and synced logs.</p></div><button class="secondary-button" type="button" data-action="refresh-app">Refresh</button></div>
+    <div class="settings-row"><div><h3>Twice-daily cloud refresh</h3><p>WHOOP, Strava, the HYROX plan and synced logs refresh every 12 hours. Next check ${nextCloudRefreshLabel()}.</p></div><button class="secondary-button" type="button" data-action="refresh-app" ${shouldAutoRefresh() ? '' : 'disabled'}>${shouldAutoRefresh() ? 'Refresh' : 'Scheduled'}</button></div>
     <div class="settings-row public-warning"><div><h3>Public personal app</h3><p>There is no password. Anyone with the URL can view or modify synced data, as explicitly configured.</p></div></div>
     <a class="settings-row" style="text-decoration:none;color:inherit" href="/privacy.html"><div><h3>Privacy boundary</h3><p>Review what Kash OS stores and what never reaches the server.</p></div><span>→</span></a>
   </div>`);
 }
 
-async function syncWhoop() { try { toast('Syncing WHOOP…'); await Whoop.sync(30); closeSheet(); await refreshAll({ force: true }); } catch (error) { toast(`WHOOP sync failed · ${error.message}`); } }
-async function disconnectWhoop() { if (!confirm('Disconnect WHOOP? Imported summaries remain.')) return; try { await Whoop.disconnect(); closeSheet(); await refreshAll({ force: true }); } catch (error) { toast(error.message); } }
-async function disconnectStrava() { if (!confirm('Disconnect Strava? Imported activities remain.')) return; try { await Strava.disconnect(); closeSheet(); await refreshAll({ force: true }); } catch (error) { toast(error.message); } }
+async function syncWhoop() { try { toast('Syncing WHOOP…'); await Whoop.sync(30); closeSheet(); toast('WHOOP synced · dashboard updates at the next twice-daily refresh'); } catch (error) { toast(`WHOOP sync failed · ${error.message}`); } }
+async function disconnectWhoop() { if (!confirm('Disconnect WHOOP? Imported summaries remain.')) return; try { await Whoop.disconnect(); app.whoop = { ...(app.whoop || {}), connected: false }; persistRemoteState(); closeSheet(); renderAll(); } catch (error) { toast(error.message); } }
+async function disconnectStrava() { if (!confirm('Disconnect Strava? Imported activities remain.')) return; try { await Strava.disconnect(); app.strava = { ...(app.strava || {}), connected: false }; persistRemoteState(); closeSheet(); renderAll(); } catch (error) { toast(error.message); } }
 function writeLatestToHealth() { const latest = sorted(app.state.measurements, item => item.timestamp || item.date)[0]; if (!latest) { toast('Log a body measurement first.'); return; } HealthShortcut.runWrite(latest); }
 
 async function enableNotifications() {
@@ -590,7 +626,7 @@ function setupPullToRefresh() {
   let startY = null; let pulling = false;
   window.addEventListener('touchstart', event => { if (scrollY <= 0 && event.touches.length === 1) startY = event.touches[0].clientY; }, { passive: true });
   window.addEventListener('touchmove', event => { if (startY == null || scrollY > 0) return; const distance = event.touches[0].clientY - startY; pulling = distance > 72; if (distance > 25) { $('#pull-indicator').textContent = pulling ? 'Release to refresh' : 'Pull to refresh'; $('#pull-indicator').classList.add('is-visible'); } }, { passive: true });
-  window.addEventListener('touchend', () => { if (pulling) refreshAll({ force: true }); else $('#pull-indicator').classList.remove('is-visible'); startY = null; pulling = false; }, { passive: true });
+  window.addEventListener('touchend', () => { if (pulling) refreshAll(); else $('#pull-indicator').classList.remove('is-visible'); startY = null; pulling = false; }, { passive: true });
 }
 
 function setupSheetDrag() {

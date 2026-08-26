@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { emptySyncSnapshot, loadRemoteCache, loadSyncSnapshot, saveRemoteCache, saveSyncSnapshot } from '../app/cache.js';
+import { CLOUD_REFRESH_INTERVAL_MS, cloudRefreshDue, cloudRefreshWaitMs, emptySyncSnapshot, loadRemoteCache, loadSyncSnapshot, saveRemoteCache, saveSyncSnapshot } from '../app/cache.js';
 import { classifyAPIError, pullAllChanges } from '../app/services.js';
 
 function memoryStorage() {
@@ -35,6 +35,17 @@ test('remote dashboard cache round trips without throwing when storage is unavai
   assert.equal(saveRemoteCache({ whoop: { connected: true }, quotaBackoffUntil: 123 }, storage), true);
   assert.equal(loadRemoteCache(storage).whoop.connected, true);
   assert.equal(saveRemoteCache({}, { setItem() { throw new Error('quota'); } }), false);
+});
+
+test('cloud reads are due no more than once every twelve hours', () => {
+  const now = Date.parse('2026-08-26T12:00:00Z');
+  const almostDue = new Date(now - CLOUD_REFRESH_INTERVAL_MS + 1).toISOString();
+  const due = new Date(now - CLOUD_REFRESH_INTERVAL_MS).toISOString();
+  assert.equal(cloudRefreshDue(almostDue, now), false);
+  assert.equal(cloudRefreshWaitMs(almostDue, now), 1);
+  assert.equal(cloudRefreshDue(due, now), true);
+  assert.equal(cloudRefreshWaitMs(due, now), 0);
+  assert.equal(cloudRefreshDue(null, now), true);
 });
 
 test('change pulls continue from the saved cursor and retain prior entities', async () => {
