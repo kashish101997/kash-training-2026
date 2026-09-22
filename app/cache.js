@@ -1,6 +1,17 @@
 export const SYNC_CACHE_KEY = 'kash_os_sync_snapshot_v1';
 export const REMOTE_CACHE_KEY = 'kash_os_remote_cache_v1';
 export const CLOUD_REFRESH_INTERVAL_MS = 12 * 60 * 60_000;
+export const CLOUD_RECOVERY_VERSION = 'neon-restored-2026-09-22';
+
+// One recovery check per installation after billing was restored. Keep all data
+// and cursors intact, and persist the marker before making network requests.
+export function recoverCloudCache(cache) {
+  if (cache.recoveryVersion === CLOUD_RECOVERY_VERSION) return { cache, recovered: false };
+  return {
+    cache: { ...cache, quotaBackoffUntil: 0, recoveryVersion: CLOUD_RECOVERY_VERSION },
+    recovered: true,
+  };
+}
 
 export function cloudRefreshDue(lastRefreshAt, now = Date.now()) {
   const lastRefresh = new Date(lastRefreshAt || 0).getTime();

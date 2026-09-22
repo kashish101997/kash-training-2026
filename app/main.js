@@ -1,13 +1,15 @@
 import { HealthShortcut, PushReminders, Strava, Training, Whoop, deleteEntity, entitiesOf, entityRevision, pullAllChanges, pushEntity } from './services.js';
 import { applyPlanAdjustments, dailyBrief, localDay, recoveryColor, todayFocus, whoopMetrics, workoutDetails } from './models.js';
 import { isRetiredPractice, loadState, mergeRemoteState, saveState } from './state.js';
-import { CLOUD_REFRESH_INTERVAL_MS, cloudRefreshDue, cloudRefreshWaitMs, loadRemoteCache, loadSyncSnapshot, saveRemoteCache, saveSyncSnapshot } from './cache.js';
+import { CLOUD_REFRESH_INTERVAL_MS, cloudRefreshDue, cloudRefreshWaitMs, loadRemoteCache, loadSyncSnapshot, recoverCloudCache, saveRemoteCache, saveSyncSnapshot } from './cache.js';
 
 const PRIMARY_PLAN_ID = 'hyrox-current';
 const AUTO_REFRESH_MS = CLOUD_REFRESH_INTERVAL_MS;
 const QUOTA_BACKOFF_MS = AUTO_REFRESH_MS;
 const QUOTA_MESSAGE = 'Cloud sync is paused because Neon’s monthly transfer allowance is used. Saved data remains available.';
-const remoteCache = loadRemoteCache();
+const recovery = recoverCloudCache(loadRemoteCache());
+const remoteCache = recovery.cache;
+saveRemoteCache(remoteCache);
 
 const app = {
   route: 'today',
@@ -43,7 +45,7 @@ async function boot() {
   setupPullToRefresh();
   setupSheetDrag();
   registerServiceWorker();
-  await refreshAll({ quiet: true, bypassSchedule: connectedFromOAuth });
+  await refreshAll({ quiet: true, bypassSchedule: connectedFromOAuth || recovery.recovered });
 }
 
 function handleOAuthResult() {
@@ -192,6 +194,7 @@ function persistRemoteState() {
     strava: app.strava,
     catalog: app.catalog,
     quotaBackoffUntil: app.quotaBackoffUntil,
+    recoveryVersion: remoteCache.recoveryVersion,
     cachedAt: nowISO(),
   });
 }

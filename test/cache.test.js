@@ -2,6 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CLOUD_REFRESH_INTERVAL_MS, cloudRefreshDue, cloudRefreshWaitMs, emptySyncSnapshot, loadRemoteCache, loadSyncSnapshot, saveRemoteCache, saveSyncSnapshot } from '../app/cache.js';
 import { classifyAPIError, pullAllChanges } from '../app/services.js';
+import { CLOUD_RECOVERY_VERSION, recoverCloudCache } from '../app/cache.js';
+
+test('billing recovery clears the old pause once and preserves cached data', () => {
+  const original = { quotaBackoffUntil: 9999999999999, whoop: { connected: true }, catalog: { plans: ['hyrox'] } };
+  const first = recoverCloudCache(original);
+  assert.equal(first.recovered, true);
+  assert.equal(first.cache.quotaBackoffUntil, 0);
+  assert.equal(first.cache.recoveryVersion, CLOUD_RECOVERY_VERSION);
+  assert.deepEqual(first.cache.catalog, original.catalog);
+  assert.deepEqual(first.cache.whoop, original.whoop);
+  assert.equal(original.quotaBackoffUntil, 9999999999999);
+  const later = { ...first.cache, quotaBackoffUntil: 123456 };
+  assert.deepEqual(recoverCloudCache(later), { cache: later, recovered: false });
+});
 
 function memoryStorage() {
   const values = new Map();
